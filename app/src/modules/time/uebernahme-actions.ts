@@ -1,5 +1,7 @@
 "use server";
 
+import { appReturnPath } from "@/lib/app-return-path";
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireSchreibenSession } from "@/lib/session";
@@ -20,7 +22,7 @@ export async function uebernehmenZeitenFahrtenAlsRechnungAction(
   const session = await requireSchreibenSession();
   const firmaId = session.firmaId;
   const kunde = formString(formData, "kunde");
-  const returnTo = formString(formData, "return_to") || "/app/zeiten";
+  const returnTo = appReturnPath(formString(formData, "return_to"), "/app/zeiten");
 
   if (!kunde) {
     redirect(

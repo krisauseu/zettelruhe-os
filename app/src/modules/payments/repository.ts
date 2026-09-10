@@ -1,3 +1,4 @@
+import { getInstanceContext } from "@/lib/instance-context";
 import { finanzAkteur, finanzSystemAkteur, neueFinanzRecordId, releaseOperation } from "@/lib/finanz-transaktion";
 /**
  * Persistenz Zahlungen über PocketBase (Superuser).
@@ -277,7 +278,9 @@ export async function nachziehenZahlungsjournale(
   opts?: { now?: Date; force?: boolean },
 ): Promise<number> {
   if (!firmaId) return 0;
-  if (!opts?.force && nachzugDone.has(firmaId)) return 0;
+  const instance = await getInstanceContext();
+  const cacheKey = `${instance.tenantId}:${instance.configVersion}:${firmaId}`;
+  if (!opts?.force && nachzugDone.has(cacheKey)) return 0;
 
   let geschrieben = 0;
   let page = 1;
@@ -306,7 +309,7 @@ export async function nachziehenZahlungsjournale(
     );
   }
 
-  nachzugDone.add(firmaId);
+  nachzugDone.add(cacheKey);
   return geschrieben;
 }
 

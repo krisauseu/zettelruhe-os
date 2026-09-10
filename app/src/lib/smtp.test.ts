@@ -3,7 +3,6 @@ import {
   assertSmtpConfigured,
   getSmtpConfig,
   isSmtpConfigured,
-  resetSmtpCache,
   SMTP_NOT_CONFIGURED_ERROR,
 } from "./smtp";
 
@@ -29,7 +28,6 @@ function restoreEnv() {
     if (saved[k] === undefined) delete process.env[k];
     else process.env[k] = saved[k];
   }
-  resetSmtpCache();
 }
 
 describe("SMTP config guard", () => {
@@ -38,32 +36,32 @@ describe("SMTP config guard", () => {
     restoreEnv();
   });
 
-  it("ohne SMTP_HOST: nicht konfiguriert", () => {
+  it("ohne SMTP_HOST: nicht konfiguriert", async () => {
     delete process.env.SMTP_HOST;
-    expect(getSmtpConfig()).toBeNull();
-    expect(isSmtpConfigured()).toBe(false);
-    expect(() => assertSmtpConfigured()).toThrow(SMTP_NOT_CONFIGURED_ERROR);
+    expect(await getSmtpConfig()).toBeNull();
+    expect(await isSmtpConfigured()).toBe(false);
+    await expect(assertSmtpConfigured()).rejects.toThrow(SMTP_NOT_CONFIGURED_ERROR);
   });
 
-  it("mit SMTP_HOST: konfiguriert", () => {
+  it("mit SMTP_HOST: konfiguriert", async () => {
     process.env.SMTP_HOST = "smtp.example.com";
     process.env.SMTP_PORT = "587";
     process.env.SMTP_USER = "u";
     process.env.SMTP_PASSWORD = "p";
     process.env.SMTP_FROM = "from@example.com";
-    const cfg = getSmtpConfig();
+    const cfg = await getSmtpConfig();
     expect(cfg).not.toBeNull();
     expect(cfg!.host).toBe("smtp.example.com");
     expect(cfg!.port).toBe(587);
     expect(cfg!.from).toBe("from@example.com");
     expect(cfg!.secure).toBe(false);
-    expect(isSmtpConfigured()).toBe(true);
+    expect(await isSmtpConfigured()).toBe(true);
   });
 
-  it("Port 465 → secure", () => {
+  it("Port 465 → secure", async () => {
     process.env.SMTP_HOST = "smtp.example.com";
     process.env.SMTP_PORT = "465";
-    const cfg = getSmtpConfig();
+    const cfg = await getSmtpConfig();
     expect(cfg!.secure).toBe(true);
   });
 });

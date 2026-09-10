@@ -1,3 +1,4 @@
+import { getInstanceContext, isCloud } from "./instance-context";
 /**
  * SMTP light (Nodemailer) — ENV aus Compose (ADR-0010).
  * Ohne SMTP_HOST darf die App laufen; Versand schlägt klar fehl.
@@ -19,7 +20,8 @@ export const SMTP_NOT_CONFIGURED_ERROR =
   "SMTP ist nicht konfiguriert. Bitte SMTP_HOST (und ggf. PORT/USER/PASSWORD/FROM) in der Umgebung setzen.";
 
 /** Liest SMTP_* aus ENV. null wenn Host fehlt. */
-export function getSmtpConfig(): SmtpConfig | null {
+export async function getSmtpConfig(): Promise<SmtpConfig | null> {
+  if (isCloud()) return (await getInstanceContext()).smtp;
   const host = (process.env.SMTP_HOST ?? "").trim();
   if (!host) return null;
 
@@ -34,48 +36,23 @@ export function getSmtpConfig(): SmtpConfig | null {
   return { host, port, user, password, from, secure };
 }
 
-export function isSmtpConfigured(): boolean {
-  return getSmtpConfig() !== null;
+export async function isSmtpConfigured(): Promise<boolean> {
+  return (await getSmtpConfig()) !== null;
 }
 
-export function assertSmtpConfigured(): SmtpConfig {
-  const cfg = getSmtpConfig();
+export async function assertSmtpConfigured(): Promise<SmtpConfig> {
+  const cfg = await getSmtpConfig();
   if (!cfg) {
     throw new Error(SMTP_NOT_CONFIGURED_ERROR);
   }
   return cfg;
 }
 
-let cachedTransporter: Transporter | null = null;
-let cachedKey = "";
-
-function transporterKey(cfg: SmtpConfig): string {
-  return `${cfg.host}:${cfg.port}:${cfg.user}`;
-}
-
-export function getMailTransporter(cfg?: SmtpConfig): Transporter {
-  const config = cfg ?? assertSmtpConfigured();
-  const key = transporterKey(config);
-  if (cachedTransporter && cachedKey === key) {
-    return cachedTransporter;
-  }
-  cachedTransporter = nodemailer.createTransport({
-    host: config.host,
-    port: config.port,
-    secure: config.secure,
-    auth:
-      config.user || config.password
-        ? { user: config.user, pass: config.password }
-        : undefined,
-  });
-  cachedKey = key;
-  return cachedTransporter;
-}
-
-/** Test-Hook: Cache leeren */
-export function resetSmtpCache(): void {
-  cachedTransporter = null;
-  cachedKey = "";
+/** A transporter belongs to one send; no cross-instance or stale-password cache. */
+export async function getMailTransporter(cfg?: SmtpConfig): Promise<Transporter> {
+  const config = cfg ?? await assertSmtpConfigured();
+  return nodemailer.createTransport({ host: config.host, port: config.port, secure: config.secure,
+    auth: config.user || config.password ? { user: config.user, pass: config.password } : undefined });
 }
 
 export type SendMailInput = {
@@ -99,7 +76,7 @@ export type SendMailResult = {
  * Sendet eine E-Mail. Wirft mit klarer Meldung wenn SMTP fehlt.
  */
 export async function sendMail(input: SendMailInput): Promise<SendMailResult> {
-  const cfg = assertSmtpConfigured();
+  const cfg = await assertSmtpConfigured();
   const to = (input.to ?? "").trim();
   if (!to) {
     throw new Error("Empfänger-E-Mail fehlt.");
@@ -108,7 +85,7 @@ export async function sendMail(input: SendMailInput): Promise<SendMailResult> {
     throw new Error("Betreff fehlt.");
   }
 
-  const transport = getMailTransporter(cfg);
+  const transport = await getMailTransporter(cfg);
   const info = await transport.sendMail({
     from: cfg.from,
     to,

@@ -6,6 +6,7 @@
  * Route-Handler unter /setup/submit und /login/submit bleiben als Fallback.
  */
 
+import { assertMutationOrigin, assertPublicSetupAllowed } from "@/lib/instance-context";
 import { redirect } from "next/navigation";
 import {
   clearSessionCookie,
@@ -28,6 +29,7 @@ function formString(formData: FormData, key: string): string {
 }
 
 export async function loginAction(formData: FormData): Promise<void> {
+  await assertMutationOrigin();
   const email = formString(formData, "email");
   const password = formString(formData, "password");
 
@@ -70,6 +72,8 @@ export async function logoutAction(): Promise<void> {
 }
 
 export async function setupAction(formData: FormData): Promise<void> {
+  await assertMutationOrigin();
+  await assertPublicSetupAllowed();
   if (!(await isSetupRequired())) {
     redirect("/login");
   }

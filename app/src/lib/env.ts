@@ -28,6 +28,12 @@ export function checkRuntimeEnv(): EnvCheck {
   const errors: string[] = [];
   const warnings: string[] = [];
 
+  if (process.env.INSTANCE_MODE === "cloud") {
+    for (const key of ["INSTANCE_CONTROL_URL", "INSTANCE_CONTROL_TOKEN", "INSTANCE_INGRESS_TOKEN"]) {
+      if (!process.env[key] || (key.endsWith("TOKEN") && process.env[key]!.length < 32)) errors.push(`${key} fehlt oder ist ungültig.`);
+    }
+    return { ok: errors.length === 0, errors, warnings };
+  }
   const session = process.env.SESSION_SECRET ?? "";
   if (!session || session.length < 32) {
     errors.push("SESSION_SECRET fehlt oder ist kürzer als 32 Zeichen.");

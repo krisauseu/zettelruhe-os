@@ -1,3 +1,4 @@
+import { getInstanceContext } from "@/lib/instance-context";
 /**
  * Belegdatei über Next streamen (Superuser → PB Files).
  * Kein direkter Client-Zugriff auf PB nötig; Session + Firma-Check.
@@ -21,7 +22,7 @@ export async function GET(
     const session = await requireFirmaSession();
     firmaId = session.firmaId;
   } catch {
-    return NextResponse.redirect(new URL("/login", process.env.APP_URL || "http://localhost"));
+    return NextResponse.redirect(new URL("/login", (await getInstanceContext()).appUrl));
   }
 
   const { id } = await context.params;

@@ -1,5 +1,10 @@
 # Betrieb — Zettelruhe (self-hosted Solo)
 
+Für den optionalen gemeinsamen Cloud-Betrieb nach v1.0.0 gilt zusätzlich
+[Instanzkontext](instance-context.md). Die folgenden Compose-/Caddy-Anleitungen
+betreffen weiterhin ausschließlich Self-Hosting. Dessen öffentliche PB-Routen
+werden nicht in Cloud übernommen. TP-002 hat keinen bestehenden Betrieb verändert.
+
 Praxishinweise für eine Instanz mit **Instanz-Eigentümer:in**, optional weiteren Nutzer:innen (Mitgliedschaft je Firma) und einer oder mehreren Firmen (Session wechselt die aktive Firma).  
 Stack: Caddy + Next.js + PocketBase (SQLite), Named Volume `zettelruhe_pb_data` (ADR-0007).  
 Dieses Repo liefert **eine** Instanz (ein Next, ein PocketBase). Mandanten-Provisioning, Stripe und Subdomain-Verwaltung gehören nicht hierher (ADR-0030).

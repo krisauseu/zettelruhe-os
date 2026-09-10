@@ -11,7 +11,7 @@ export async function GET(): Promise<Response> {
   const env = checkRuntimeEnv();
   let pb: "ok" | "unreachable" | "skipped" = "skipped";
 
-  const pbUrl = process.env.PB_URL?.replace(/\/$/, "");
+  const pbUrl = process.env.INSTANCE_MODE === "cloud" ? undefined : process.env.PB_URL?.replace(/\/$/, "");
   if (pbUrl) {
     try {
       const res = await fetch(`${pbUrl}/api/health`, {

@@ -473,7 +473,7 @@ export default async function RechnungDetailPage({
               <CardDescription>
                 Zusätzlich zum Original-PDF und ggf. erzeugter E-Rechnung. Für
                 Postweg reicht „PDF ansehen / drucken“.
-                {isSmtpConfigured()
+                {(await isSmtpConfigured())
                   ? " Versand an die Kontakt-E-Mail."
                   : " SMTP ist nicht konfiguriert (SMTP_HOST) — kein Mailversand."}{" "}
                 Zahlungserinnerung manuell, kein Mahnlauf.
@@ -486,7 +486,7 @@ export default async function RechnungDetailPage({
                   type="submit"
                   variant="secondary"
                   size="sm"
-                  disabled={!isSmtpConfigured() || !rechnung.pdf}
+                  disabled={!(await isSmtpConfigured()) || !rechnung.pdf}
                 >
                   Rechnung per E-Mail
                 </Button>
@@ -499,7 +499,7 @@ export default async function RechnungDetailPage({
                     type="submit"
                     variant="secondary"
                     size="sm"
-                    disabled={!isSmtpConfigured()}
+                    disabled={!(await isSmtpConfigured())}
                   >
                     Zahlungserinnerung
                   </Button>

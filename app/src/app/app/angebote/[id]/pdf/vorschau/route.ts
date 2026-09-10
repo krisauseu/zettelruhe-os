@@ -1,3 +1,4 @@
+import { getInstanceContext } from "@/lib/instance-context";
 /**
  * Angebots-Entwurfsvorschau on-the-fly — kein Persistieren, kein Nummernkreis.
  */
@@ -24,7 +25,7 @@ export async function GET(
     firmaId = session.firmaId;
   } catch {
     return NextResponse.redirect(
-      new URL("/login", process.env.APP_URL || "http://localhost"),
+      new URL("/login", (await getInstanceContext()).appUrl),
     );
   }
 

@@ -6,12 +6,12 @@
 
 import { eigentuemerCreateBody } from "./setup-verified";
 
-function pbUrl(): string {
-  const url = process.env.PB_URL;
-  if (!url) {
-    throw new Error("PB_URL ist nicht gesetzt.");
-  }
-  return url.replace(/\/$/, "");
+import { getInstanceContext, isCloud, type InstanceContext } from "./instance-context";
+
+async function pbUrl(): Promise<string> {
+  const url = (await getInstanceContext()).pocketbaseUrl;
+  if (!url) throw new Error("PB_URL ist nicht gesetzt.");
+  return url;
 }
 
 export type NummernkreisConfig = {
@@ -138,9 +138,7 @@ type PbList<T> = {
   totalPages: number;
 };
 
-let adminToken: string | null = null;
-let adminTokenAt = 0;
-const ADMIN_TTL_MS = 10 * 60 * 1000;
+const adminTokens = new WeakMap<InstanceContext, { token: Promise<string>; expiresAt: number }>();
 
 async function pbFetch<T>(
   path: string,
@@ -160,10 +158,12 @@ async function pbFetch<T>(
     headers.set("Authorization", token);
   }
 
-  const res = await fetch(`${pbUrl()}${path}`, {
+  const res = await fetch(`${await pbUrl()}${path}`, {
     ...rest,
     headers,
     cache: "no-store",
+    redirect: "error",
+    signal: AbortSignal.timeout(30_000),
   });
 
   if (!res.ok) {
@@ -211,43 +211,32 @@ export async function pbFetchRaw(
   if (token) {
     headers.set("Authorization", token);
   }
-  const res = await fetch(`${pbUrl()}${path}`, {
+  const res = await fetch(`${await pbUrl()}${path}`, {
     ...rest,
     headers,
     cache: "no-store",
+    redirect: "error",
+    signal: AbortSignal.timeout(30_000),
   });
   return res;
 }
 
 export async function getAdminToken(): Promise<string> {
-  const now = Date.now();
-  if (adminToken && now - adminTokenAt < ADMIN_TTL_MS) {
-    return adminToken;
-  }
-
-  const email = process.env.PB_SUPERUSER_EMAIL;
-  const password = process.env.PB_SUPERUSER_PASSWORD;
-  if (!email || !password) {
-    throw new Error(
-      "PB_SUPERUSER_EMAIL / PB_SUPERUSER_PASSWORD fehlen.",
-    );
-  }
-
-  const result = await pbFetch<{ token: string }>(
-    "/api/collections/_superusers/auth-with-password",
-    {
-      method: "POST",
-      body: JSON.stringify({ identity: email, password }),
-    },
-  );
-
-  adminToken = result.token;
-  adminTokenAt = now;
-  return adminToken;
+  const context = await getInstanceContext();
+  const existing = adminTokens.get(context);
+  if (existing && existing.expiresAt > Date.now()) return existing.token;
+  const { adminEmail: email, adminPassword: password } = context;
+  if (!email || !password) throw new Error("PB_SUPERUSER_EMAIL / PB_SUPERUSER_PASSWORD fehlen.");
+  const pending = pbFetch<{ token: string }>("/api/collections/_superusers/auth-with-password", {
+    method: "POST", body: JSON.stringify({ identity: email, password }),
+  }).then(result => result.token);
+  adminTokens.set(context, { token: pending, expiresAt: Date.now() + 10 * 60 * 1000 });
+  try { return await pending; } catch (error) { adminTokens.delete(context); throw error; }
 }
 
 /** True, wenn noch keine Firma existiert → Setup-Wizard */
 export async function isSetupRequired(): Promise<boolean> {
+  if (isCloud()) { await getInstanceContext(); return false; }
   try {
     const token = await getAdminToken();
     const list = await pbFetch<PbList<{ id: string }>>(

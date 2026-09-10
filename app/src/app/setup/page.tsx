@@ -1,3 +1,4 @@
+import { assertPublicSetupAllowed } from "@/lib/instance-context";
 import { redirect } from "next/navigation";
 import { isSetupRequired } from "@/lib/pb";
 import { SetupForm } from "./setup-form";
@@ -17,6 +18,7 @@ export default async function SetupPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
+  await assertPublicSetupAllowed();
   if (!(await isSetupRequired())) {
     redirect("/login");
   }

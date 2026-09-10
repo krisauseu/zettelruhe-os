@@ -53,7 +53,7 @@ export default async function NutzerPage({
 
   const sp = await searchParams;
   const mitglieder = await listMitgliederDerFirma(session.firmaId);
-  const smtpOk = isSmtpConfigured();
+  const smtpOk = (await isSmtpConfigured());
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-6">

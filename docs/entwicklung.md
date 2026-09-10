@@ -17,6 +17,15 @@ TP-024-/UI-Nachtests wurden dabei nicht benannt. Der aktuelle Gesamtstand
 steht in [90-status.md](90-status.md), die Pflegezuständigkeit in der
 [Dokumentenübersicht](README.md#pflege-bei-änderungen).
 
+## Entwicklung nach v1.0.0: Cloud-TP-002
+
+Kontext-/Sessionadapter, Node-Proxy, interne HTTP-Auflösung, explizite Jobs,
+tenantgerechte URLs und SMTP sind im [Laufzeitdokument](instance-context.md)
+beschrieben. Es gibt keine Kernmigration oder Hookänderung in diesem Auftrag.
+Die vollständige Zwei-PB-Abnahme liegt im separaten Cloud-Repository unter
+`docs/tasks/TP-002.md`, der Starter unter `scripts/test-tp002-isolated.mjs`.
+Die Kernreferenz dort kennzeichnet diesen Stand ausdrücklich als Entwicklung.
+
 ## Quellen und Arbeitsregeln
 
 | Quelle | Wann lesen und wie einordnen |
@@ -104,8 +113,9 @@ Next → optional SMTP; BZSt-Abfrage nur auf ausdrückliche Nutzeraktion
   kommen ebenfalls vor.
 - [app/src/lib/pb.ts](../app/src/lib/pb.ts) bündelt `fetch`, generisches
   Superuser-CRUD, Multipart-Dateien und Firmendaten. Der
-  Superuser-Token wird pro Prozess zwischengespeichert. `PB_URL` ist die einzige
-  Zielauflösung; der in ADR-0030 beschriebene Cloud-Adapter ist nicht gebaut.
+  Superuser-Token gehört zum serverseitigen Instanzkontext. Self-Hosting liest
+  `PB_URL`; der generische Cloud-Adapter ist nach v1.0.0 implementiert.
+  Siehe [Instanzkontext](instance-context.md).
 - [app/src/lib/finanz-transaktion.ts](../app/src/lib/finanz-transaktion.ts)
   ruft die festen internen PocketBase-Operationen für Belege, Rechnungen,
   Kassenbuch und RC-Korrekturen auf.
@@ -162,7 +172,7 @@ Firma, Bankimport-Hashes und Mitgliedschaften ab.
 Auth beginnt mit PocketBase-Passwortlogin. Next stellt anschließend einen
 eigenen HS256-JWT im httpOnly-Cookie `zettelruhe_session` aus, Laufzeit 14 Tage,
 `SameSite=Lax`, `Secure` bei HTTPS-`APP_URL`.
-[middleware.ts](../app/src/middleware.ts) prüft den Token vor `/app`;
+[proxy.ts](../app/src/proxy.ts) prüft den Eingang und den Token vor `/app`;
 [lib/session.ts](../app/src/lib/session.ts) löst die aktuelle Mitgliedschaft auf.
 Schreib-, Verwaltungs- und Instanzeigentümer-Gates sind getrennt. Passwortwechsel
 verwendet nur die eigene Session und lässt bestehende Next-Sessions gültig.

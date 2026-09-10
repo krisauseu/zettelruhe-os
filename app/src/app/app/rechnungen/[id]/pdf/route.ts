@@ -1,3 +1,4 @@
+import { getInstanceContext } from "@/lib/instance-context";
 /**
  * Rechnungs-Original-PDF (nach Festschreibung) über Next streamen.
  * Route unter /app/... (nicht /api/* — Caddy leitet /api an PB).
@@ -25,7 +26,7 @@ export async function GET(
     firmaId = session.firmaId;
   } catch {
     return NextResponse.redirect(
-      new URL("/login", process.env.APP_URL || "http://localhost"),
+      new URL("/login", (await getInstanceContext()).appUrl),
     );
   }
 

@@ -375,7 +375,7 @@ export default async function AngebotDetailPage({
               <CardTitle>E-Mail (optional)</CardTitle>
               <CardDescription>
                 Zusätzlich zum PDF. Für Postweg reicht „PDF ansehen / drucken“.
-                {isSmtpConfigured()
+                {(await isSmtpConfigured())
                   ? " Versand an die Kontakt-E-Mail."
                   : " SMTP ist nicht konfiguriert (SMTP_HOST) — kein Mailversand."}
               </CardDescription>
@@ -387,7 +387,7 @@ export default async function AngebotDetailPage({
                   type="submit"
                   variant="secondary"
                   size="sm"
-                  disabled={!isSmtpConfigured() || !angebot.pdf}
+                  disabled={!(await isSmtpConfigured()) || !angebot.pdf}
                 >
                   Angebot per E-Mail
                 </Button>

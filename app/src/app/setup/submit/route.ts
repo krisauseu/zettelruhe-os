@@ -1,3 +1,4 @@
+import { getInstanceContext, assertMutationOrigin, assertPublicSetupAllowed } from "@/lib/instance-context";
 import { NextResponse } from "next/server";
 import {
   createEigentuemer,
@@ -16,7 +17,9 @@ function str(formData: FormData, key: string): string {
 }
 
 export async function POST(request: Request) {
-  const appUrl = process.env.APP_URL || "http://localhost";
+  await assertMutationOrigin();
+  await assertPublicSetupAllowed();
+  const appUrl = (await getInstanceContext()).appUrl;
 
   if (!(await isSetupRequired())) {
     return NextResponse.redirect(new URL("/login", appUrl), 303);

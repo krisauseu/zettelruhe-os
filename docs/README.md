@@ -87,3 +87,6 @@ Produktions-VPS getestet und live. Die ELSTER-Prüfsperre ist verworfen; Zettelr
 exportiert XML und betreibt keine Finanzamtsschnittstelle. TP-009 wird dem
 Cloud-Ausbau zugeordnet. Technische Kandidaten und nächste Schritte stehen im
 [Release- und Cloud-Plan](release-und-cloud-plan.md).
+
+[Serverseitiger Instanzkontext](instance-context.md) dokumentiert den optionalen
+Cloud-Adapter nach v1.0.0, seinen HTTP-Vertrag und seine Betriebsgrenzen.

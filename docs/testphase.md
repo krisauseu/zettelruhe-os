@@ -46,3 +46,27 @@ Funde aus dem Alltagstest nach Meilenstein 2: kleine Bugs, Verbesserungen, Ände
 | TP-027 | 2026-09-10 | Bug | Lint / Diagramme / RC-Anzeige | Beide Lintfehler, sechs Warnungen und SVG-Hydrierungsfehler behoben; RC-Zahllast mit Decimal | Owner: `einvoice/parse-pdf-xml.ts`, `reporting/uebersicht-{kategorien,verlauf}.tsx`, `expenses/rc-details.tsx`, Jobs, Firma, PDF. Zwei SVG-Renderregressionen zuerst reproduziert, finaler Browser ohne Fehler; `npm test` 739 bestanden, Typecheck und Lint grün. [Abnahme](issues/release-abnahme-2026-09-10.md). |
 | TP-028 | 2026-09-10 | Bug | Wiederkehrend / Zahlungen / Bank / Storno | Reproduzierte Parallel-/Replay- und Fehlerzustände gezielt abgesichert; Jobpagination vollständig | Owner: `jobs`, `sales/wiederkehrend-repository.ts`, `payments`, `banking/repository.ts`, `journal`, `lib/finanz-transaktion.ts`, `pocketbase/pb_hooks/finanz.*`, Hook-Generator. Acht neue Fälle gegen `f48be21` rot; 15 Releasefälle jetzt grün, gesamte echte PB-/RC-Suite 195/195 über `scripts/test-festschreibung-isolated.mjs`. Firma 51/Vorlage 201 und überlappende Timer separat getestet. [Abnahme und Grenzen](issues/release-abnahme-2026-09-10.md). |
 | TP-029 | 2026-09-10 | Änderung | Releaseunterlagen / Arbeitsmaterialien | Synthetische Importfixture, lokale Installations-/Restoreprüfung, CI, CONTRIBUTING, SECURITY und Release Notes | Owner: `scripts/test-release-smoke-isolated.mjs`, `scripts/seed-release-browser.mjs`, `.github/workflows/ci.yml`, README/CHANGELOG und Projekt-Dokumentation. Frische synthetische Installation und Offline-Upgrade/Restore ab `f48be21` bestanden. Für R-01 wurde `krisauseu/zettelruhe-os` mit bereinigtem Initial-Commit angelegt; der Vorgänger-Repository-Verlauf wird nicht fortgeführt. [Befund](issues/release-materialpruefung-2026-09-10.md), [Prüfungen](issues/release-abnahme-2026-09-10.md). |
+
+## TP-030: generischer Instanzkontext für Cloud-TP-002, 2026-09-10
+
+Gezielter Auftrag für gemeinsame Next-Anwendung und getrennte PocketBase-Instanzen.
+PB und Finanzoperationen, Sessionbindung, beide Auth-/Setup-Pfade, Firmenwechsel,
+kanonische URLs, SMTP, Zahlungsnachzug-Cache und Scheduler sind angepasst.
+Keine Migration, kein Hookumbau und keine Cloud-Pakete im Build.
+[Umfang, Laufzeitvertrag und Grenzen](instance-context.md).
+
+Lokale Abnahme mit Node 22 im Docker-Produktionsimage: Cloud-Starter mit zwei
+synthetischen PBs und Caddy, anschließend Self-Hosting mit frischer PB bestanden.
+Nachweis am 2026-09-10: 748 Unit-Tests bestanden, 161 nur durch sichere Starter
+aktivierbare Tests im normalen Lauf übersprungen; Typecheck und warnungsfreies
+ESLint bestanden. Der separate synthetische Finanz-/RC-Starter besteht mit
+195 Tests. Die Cloud-Abnahme besteht mit 14 Prüfgruppen einschließlich eines
+zusätzlichen echten PB-Kontexttests mit 20 verschachtelten Parallelzugriffen.
+Next 16.3.0 / Node 22 im Produktionsimage, PB 0.39.10, Caddy 2.10; lokale
+Unit-/Type-/Lint-Prüfung unter Node 25.9.0. Kein Deployment.
+
+Geprüftes lokales Next-Image:
+`sha256:73ea018489759a317cadbfcc623831d80e221589fbf95da5c4ee91000eff567a`.
+PB-Testimage: `sha256:89ea17d1ef47bd9ebb981b60309ae258c287bc7c2ed42618405321de134c2682`.
+Keine Änderung an Kernmigrationen oder Hooks. Testressourcen wurden entfernt.
+Die fremde lokale `.codex/config.toml` bleibt unverändert und außerhalb des Commits.

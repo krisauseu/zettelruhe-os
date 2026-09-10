@@ -1,5 +1,7 @@
 "use server";
 
+import { appReturnPath } from "@/lib/app-return-path";
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireSchreibenSession } from "@/lib/session";
@@ -19,7 +21,7 @@ function formString(formData: FormData, key: string): string {
 export async function runJobsTickAction(formData: FormData): Promise<void> {
   const session = await requireSchreibenSession();
   const returnTo =
-    formString(formData, "returnTo") || "/app/wiederkehrende-rechnungen";
+    appReturnPath(formString(formData, "returnTo"), "/app/wiederkehrende-rechnungen");
 
   try {
     const result = await runWiederkehrendTick({

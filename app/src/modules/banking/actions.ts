@@ -1,5 +1,7 @@
 "use server";
 
+import { appReturnPath } from "@/lib/app-return-path";
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireSchreibenSession } from "@/lib/session";
@@ -156,7 +158,7 @@ export async function matchBewegungAction(formData: FormData): Promise<void> {
   const bewegungId = formString(formData, "bewegung");
   const rechnungId = formString(formData, "rechnung");
   const bankkontoId = formString(formData, "bankkonto");
-  const returnTo = formString(formData, "returnTo") || "/app/kontoauszug";
+  const returnTo = appReturnPath(formString(formData, "returnTo"), "/app/kontoauszug");
 
   if (!bewegungId || !rechnungId) {
     redirect(
@@ -184,7 +186,7 @@ export async function matchBewegungAction(formData: FormData): Promise<void> {
 export async function ignoreBewegungAction(formData: FormData): Promise<void> {
   const firmaId = await requireFirmaId();
   const bewegungId = formString(formData, "bewegung");
-  const returnTo = formString(formData, "returnTo") || "/app/kontoauszug";
+  const returnTo = appReturnPath(formString(formData, "returnTo"), "/app/kontoauszug");
 
   if (!bewegungId) {
     redirect(returnTo);
@@ -204,7 +206,7 @@ export async function ignoreBewegungAction(formData: FormData): Promise<void> {
 export async function reopenBewegungAction(formData: FormData): Promise<void> {
   const firmaId = await requireFirmaId();
   const bewegungId = formString(formData, "bewegung");
-  const returnTo = formString(formData, "returnTo") || "/app/kontoauszug";
+  const returnTo = appReturnPath(formString(formData, "returnTo"), "/app/kontoauszug");
 
   if (!bewegungId) {
     redirect(returnTo);

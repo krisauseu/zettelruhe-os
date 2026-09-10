@@ -1,3 +1,4 @@
+import { isCloud, jobInstanceHosts, resolveInstance, selfHostedInstance, withInstance } from "@/lib/instance-context";
 /**
  * In-Process-Scheduler im Next-Container (ADR-0010).
  * Start über instrumentation.ts; kein Extra-Worker-Service.
@@ -31,11 +32,15 @@ async function safeTick(): Promise<void> {
   if (globalThis.__zettelruhe_scheduler_running) return;
   globalThis.__zettelruhe_scheduler_running = true;
   try {
-    const result = await runWiederkehrendTick();
-    if (result.status === "fehler") {
-      console.error("[jobs] wiederkehrend tick:", result.ergebnis);
-    } else if (result.erzeugt > 0) {
-      console.info("[jobs] wiederkehrend:", result.ergebnis);
+    const hosts = isCloud() ? await jobInstanceHosts() : [null];
+    for (const host of hosts) {
+      try {
+        const context = host ? await resolveInstance(host) : selfHostedInstance();
+        const result = await withInstance(context, () => runWiederkehrendTick());
+        if (result.status === "fehler") console.error("[jobs] Instanzlauf fehlgeschlagen", context.tenantId);
+      } catch {
+        console.error("[jobs] Instanzlauf nicht verfügbar");
+      }
     }
   } catch (e) {
     console.error(

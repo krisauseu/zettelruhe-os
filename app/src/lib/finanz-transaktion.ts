@@ -1,3 +1,4 @@
+import { getInstanceContext } from "./instance-context";
 /** Fixed service operations; source ID is the durable idempotency key for closing a receipt. */
 import { randomBytes } from "node:crypto";
 import { getAdminToken, listRecords, pbEq } from "./pb";
@@ -43,11 +44,11 @@ export function neueFinanzRecordId(): string {
 }
 
 async function request<T>(path: string, body: string | FormData): Promise<T> {
-  const url = process.env.PB_URL;
+  const url = (await getInstanceContext()).pocketbaseUrl;
   if (!url) throw new Error("PB_URL ist nicht gesetzt.");
   const token = await getAdminToken();
   const response = await fetch(`${url.replace(/\/$/, "")}/internal/zettelruhe/finanz/v1/${path}`, {
-    method: "POST", cache: "no-store", headers: { Authorization: token, ...(typeof body === "string" ? { "Content-Type": "application/json" } : {}) }, body,
+    method: "POST", cache: "no-store", redirect: "error", headers: { Authorization: token, ...(typeof body === "string" ? { "Content-Type": "application/json" } : {}) }, body,
     signal: AbortSignal.timeout(30_000),
   });
   if (response.status === 404) throw new FinanzFehler("OPERATION_UNAVAILABLE");

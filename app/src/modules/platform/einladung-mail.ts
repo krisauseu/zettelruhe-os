@@ -1,3 +1,4 @@
+import { getInstanceContext } from "@/lib/instance-context";
 /**
  * Optionaler Einladungsversand. SMTP nicht Pflicht (ADR-0025).
  * Kein Startpasswort in der Mail.
@@ -40,8 +41,8 @@ export function baueEinladungMail(input: {
   };
 }
 
-function loginUrl(): string {
-  const base = (process.env.APP_URL ?? "").replace(/\/$/, "");
+async function loginUrl(): Promise<string> {
+  const base = (await getInstanceContext()).appUrl;
   return base ? `${base}/login` : "";
 }
 
@@ -52,7 +53,7 @@ export async function sendeEinladungPerMail(input: {
   rolle: MitgliedschaftRolle;
   einladendeName: string;
 }): Promise<{ to: string; messageId: string } | null> {
-  if (!isSmtpConfigured()) {
+  if (!(await isSmtpConfigured())) {
     return null;
   }
 
@@ -62,7 +63,7 @@ export async function sendeEinladungPerMail(input: {
     firmaName: firma?.name ?? "",
     rolleLabel: MITGLIEDSCHAFT_ROLLE_LABELS[input.rolle],
     einladendeName: input.einladendeName,
-    loginUrl: loginUrl(),
+    loginUrl: await loginUrl(),
   });
 
   const result = await sendMail({

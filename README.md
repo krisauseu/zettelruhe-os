@@ -1,5 +1,11 @@
 # Zettelruhe
 
+Stand nach v1.0.0: Der generische [serverseitige Instanzkontext](docs/instance-context.md)
+für Cloud-TP-002 ist implementiert und lokal mit einer gemeinsamen Next-Anwendung
+und getrennten PocketBase-Instanzen geprüft. Self-Hosting bleibt verfügbar.
+Dies ist ein Entwicklungsstand, kein neuer veröffentlichter Release oder Deployment.
+
+
 Self-hosted Open-Source-Buchhaltung für Solo-Selbstständige in Deutschland  
 Website: [zettelruhe.de](https://zettelruhe.de)
 

@@ -1,5 +1,11 @@
 # Zettelruhe — Feature-Roadmap
 
+Stand nach v1.0.0: Der generische [serverseitige Instanzkontext](instance-context.md)
+für Cloud-TP-002 ist implementiert und lokal mit einer gemeinsamen Next-Anwendung
+und getrennten PocketBase-Instanzen geprüft. Self-Hosting bleibt verfügbar.
+Dies ist ein Entwicklungsstand, kein neuer veröffentlichter Release oder Deployment.
+
+
 Abgeleitet aus dem Grill-with-Docs (Scope: Solo-Selbstständige DE, self-hosted, EÜR).  
 Glossary: [`CONTEXT.md`](../CONTEXT.md) · ADRs: [`docs/adr/`](./adr/)
 

@@ -44,7 +44,7 @@ export async function sendeRechnungPerMail(
   rechnungId: string,
   opts?: { to?: string },
 ): Promise<{ to: string; messageId: string }> {
-  if (!isSmtpConfigured()) {
+  if (!(await isSmtpConfigured())) {
     throw new Error(SMTP_NOT_CONFIGURED_ERROR);
   }
 
@@ -136,7 +136,7 @@ export async function sendeAngebotPerMail(
   angebotId: string,
   opts?: { to?: string },
 ): Promise<{ to: string; messageId: string }> {
-  if (!isSmtpConfigured()) {
+  if (!(await isSmtpConfigured())) {
     throw new Error(SMTP_NOT_CONFIGURED_ERROR);
   }
 
@@ -205,7 +205,7 @@ export async function sendeZahlungserinnerungPerMail(
   rechnungId: string,
   opts?: { to?: string },
 ): Promise<{ to: string; messageId: string }> {
-  if (!isSmtpConfigured()) {
+  if (!(await isSmtpConfigured())) {
     throw new Error(SMTP_NOT_CONFIGURED_ERROR);
   }
 

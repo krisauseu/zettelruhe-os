@@ -77,7 +77,7 @@ export default async function WiederkehrendeRechnungenPage({
     listRecentJobRuns(JOB_KEY_WIEDERKEHREND, 3).catch(() => []),
   ]);
 
-  const smtpOk = isSmtpConfigured();
+  const smtpOk = (await isSmtpConfigured());
   const lastRun = runs[0] ?? null;
 
   return (

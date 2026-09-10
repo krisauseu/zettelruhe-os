@@ -1,3 +1,4 @@
+import { getInstanceContext } from "@/lib/instance-context";
 /**
  * Logo der Firma für die Einstellungsvorschau (nicht das Dokumenten-PDF).
  */
@@ -15,7 +16,7 @@ export async function GET(): Promise<Response> {
     firmaId = session.firmaId;
   } catch {
     return NextResponse.redirect(
-      new URL("/login", process.env.APP_URL || "http://localhost"),
+      new URL("/login", (await getInstanceContext()).appUrl),
     );
   }
 

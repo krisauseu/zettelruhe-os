@@ -1,3 +1,4 @@
+import { getInstanceContext } from "@/lib/instance-context";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { validateNeueFirmaInput } from "@/modules/platform/firma-invariants";
@@ -15,7 +16,7 @@ function str(formData: FormData, key: string): string {
 }
 
 export async function POST(request: Request) {
-  const appUrl = process.env.APP_URL || "http://localhost";
+  const appUrl = (await getInstanceContext()).appUrl;
 
   const session = await getSession();
   if (!session) {

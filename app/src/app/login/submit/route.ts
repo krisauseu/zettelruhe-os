@@ -1,3 +1,4 @@
+import { getInstanceContext, assertMutationOrigin } from "@/lib/instance-context";
 import { NextResponse } from "next/server";
 import { authWithPassword, isSetupRequired } from "@/lib/pb";
 import { setSessionCookie } from "@/lib/session";
@@ -11,7 +12,8 @@ function str(formData: FormData, key: string): string {
 }
 
 export async function POST(request: Request) {
-  const appUrl = process.env.APP_URL || "http://localhost";
+  await assertMutationOrigin();
+  const appUrl = (await getInstanceContext()).appUrl;
 
   if (await isSetupRequired()) {
     return NextResponse.redirect(new URL("/setup", appUrl), 303);

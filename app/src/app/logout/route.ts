@@ -1,3 +1,4 @@
+import { getInstanceContext } from "@/lib/instance-context";
 import { NextResponse } from "next/server";
 import { clearSessionCookie } from "@/lib/session";
 
@@ -5,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 async function logout() {
   await clearSessionCookie();
-  const appUrl = process.env.APP_URL || "http://localhost";
+  const appUrl = (await getInstanceContext()).appUrl;
   return NextResponse.redirect(new URL("/login", appUrl), 303);
 }
 
