@@ -8,18 +8,18 @@ implementierten Stand gebracht. Die schon zuvor vorhandene Löschung von
 
 ## Empfehlung
 
-**Noch nicht zur stabilen Veröffentlichung bereit.** Die beauftragten lokalen
-Korrekturen und technischen Prüfungen sind abgeschlossen. Offen bleibt eine
-Betreiberentscheidung zum konkreten R-01-Befund in der öffentlichen Git-Historie.
-Ein Löschcommit entfernt die früher veröffentlichten Konto-/Transaktionsdaten
-nicht. [Befund und konkrete Maßnahme](release-materialpruefung-2026-09-10.md).
-Kein Rewrite, Commit, Push, Tag, GitHub-Release, VPS-Update oder Cloud-Projekt
-wurde vorgenommen. Ein stabiles `v1.0.0` wird vor dieser Abnahme nicht vorgeschlagen.
-Der verwendbare Release-Titel und -Text stehen in [CHANGELOG](../../CHANGELOG.md).
+**Zur stabilen Veröffentlichung bereit.** Die beauftragten lokalen Korrekturen
+und technischen Prüfungen sind abgeschlossen. R-01 ist erledigt: Der Betreiber
+hat `krisauseu/zettelruhe-os` mit einem bereinigten Initial-Commit angelegt und
+lokales Projekt, Test-VPS und Produktion umgestellt. Die frühere öffentliche
+Historie wird für diesen Release nicht fortgeführt. [Materialbefund](release-materialpruefung-2026-09-10.md).
+Der Release `v1.0.0` markiert diesen Stand. Der veröffentlichungsfertige Text
+steht im [CHANGELOG](../../CHANGELOG.md).
 
-GitHub wurde lesend geprüft: Repository öffentlich, keine offenen Issues,
-kein GitHub-Release. Offen ist PR #1 „chore: Auto-Deploy (update.sh + Actions-Vorlage)“;
-er wurde weder übernommen noch geändert. Lokal existiert `meilenstein-2`.
+Im Vorgänger-Repository wurde GitHub lesend geprüft: Repository öffentlich,
+keine offenen Issues und kein GitHub-Release. PR #1 „chore: Auto-Deploy
+(update.sh + Actions-Vorlage)“ wurde weder übernommen noch geändert. Der dortige
+Tag `meilenstein-2` gehört nicht zum neuen Repository-Verlauf.
 Die frühere ELSTER-Prüfsperre bleibt verworfen. RC ist laut Betreiber bereits
 produktiv getestet und live; daraus wird keine Produktionsabnahme der heutigen
 neuen Finanzkorrekturen abgeleitet.
@@ -28,7 +28,7 @@ neuen Finanzkorrekturen abgeleitet.
 
 | Kandidat | Ergebnis |
 |---|---|
-| R-01 Arbeitsmaterialien | Konto-/Transaktionsdaten bestätigt; aktuelle Dateien entfernt, historische Verweise gekennzeichnet, synthetische MT940-Fixture mit Parsertest. Historienentscheidung offen. Keine vertraulichen Werte im Bericht. |
+| R-01 Arbeitsmaterialien | Konto-/Transaktionsdaten im Vorgänger-Repository bestätigt; aktuelle Dateien entfernt, synthetische MT940-Fixture mit Parsertest. Der neue Repository-Verlauf beginnt mit bereinigtem Initial-Commit und wird für den Release verwendet. Keine vertraulichen Werte im Bericht. |
 | R-02 Lint und Donut | Beide Fehler reproduziert und korrigiert. Segmente ohne mutiertes `offset`; Monats-/Quartalswerte und Tastaturfokus visuell geprüft. Zusätzlich SVG-Titel im Donut und Monatsverlauf korrigiert: Serverrender lieferte leere Titel und verursachte React-Hydrierungsfehler. Renderreproduktion zuerst rot, nach Korrektur grün; finaler Browser ohne Konsolenfehler. |
 | R-03 Scheduler und Wiederholung | Übernahme einer abgelaufenen Lease ist atomar; derselbe Holder kann eine aktive Lease nicht erneut erwerben. Veraltete Freigabe kann neue Lease nicht löschen. Eigene Tick-ID und Überlappungsschutz. Entwurf, Positionen und Datumsfortschritt committen zusammen; Fehler beim Vorlagenfortschritt rollt den Entwurf zurück. |
 | R-04 Seitenlimits | Firma 51 und Vorlage 201 in gezielten Runner-/Repositorytests erreicht. Alle Seiten werden vor der Erzeugung eingesammelt, sodass das Schrumpfen der Fälligkeitsliste keine nächste Seite überspringt. Die bisherigen 50/200 sind nur noch Seitengrößen. |
@@ -39,7 +39,7 @@ neuen Finanzkorrekturen abgeleitet.
 | R-09 Installation/Upgrade | Leere Dockerinstanz eingerichtet; synthetischer Altbestand mit Hooks/Migrationen von `f48be21` offline gesichert und in eigenem Volume wiederhergestellt. Records und Datei-SHA-256 identisch. linux/amd64-PB; kein ARM-Nativnachweis. |
 | R-10 Betrieb | Health-JSON, feste Session-TTL, schreibende Nachzüge bei GET und fest benanntes Compose-Volume dokumentiert. Keine Cloud-Betriebsarchitektur eingeführt. |
 | R-11 Wartung | Sechs ESLint-Warnungen behoben: ungenutzte Ausnahmen/Importe und Verwechslung von react-pdf-Image mit HTML-Image. CI, CONTRIBUTING, SECURITY, App-Einstieg und Release Notes ergänzt. Vite-Hinweis auf künftigen Konfigurationsloader, Next-Middleware-Abkündigung und Google-Fonts-Buildabhängigkeit bleiben eingeordnet. |
-| R-12 Nachvollziehbarkeit | Diese datierte Abnahme nennt Basis, veränderten Arbeitsbaum, Prüfungen und Grenzen. Releasecommit/Tag noch nicht vergeben; keine Fremdlöschung übernommen und keine erfundenen VPS-Nachweise. |
+| R-12 Nachvollziehbarkeit | Diese datierte Abnahme nennt Basis, Prüfungen und Grenzen. `v1.0.0` markiert den bereinigten Release-Commit; keine erfundenen VPS-Nachweise. |
 
 ## Bestätigte Fehler und Regressionen
 
@@ -165,8 +165,6 @@ Materialbericht und diese Abnahme; historische Asset-Verweise in zwei Testberich
 sind gekennzeichnet. Bereits vorhandene Änderungen an AGENTS, CONTEXT und ADRs
 bleiben erhalten. Ein pauschales `git add -A` wäre ungeeignet.
 
-Nach der gesonderten R-01-Entscheidung die bereinigten veröffentlichten Referenzen
-kontrollieren, den konkreten Releasecommit auswählen und den Versionsnamen
-abnehmen. Veröffentlichung und Produktionsübernahme benötigen den ausdrücklich
-getrennten Auftrag. Es bleibt kein offener Implementierungsauftrag für OCR,
-Briefpapier, Stripe-Abos oder Managed Hosting im Kern.
+Der Release nutzt das neue bereinigte Repository. Er ersetzt keine zusätzlichen
+VPS-Abnahmen und eröffnet keinen Implementierungsauftrag für OCR, Briefpapier,
+Stripe-Abos oder Managed Hosting im Kern.

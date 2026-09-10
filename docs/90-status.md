@@ -1,22 +1,22 @@
 # Status — Zettelruhe
 
-Stand: 2026-09-10, lokale Releasevorbereitung auf `main` ab `f48be21`.
+Stand: 2026-09-10, Release `v1.0.0` im bereinigten Repository
+`krisauseu/zettelruhe-os`.
 
-**Noch nicht zur stabilen Veröffentlichung empfohlen:** Die technischen
-Releasekorrekturen und lokalen Prüfungen sind abgeschlossen. Die bestätigten
-vertraulichen Arbeitsmaterialien bleiben in der öffentlichen Git-Historie
-erreichbar; die konkrete Bereinigungsentscheidung braucht einen eigenen Auftrag.
-[Abnahme](issues/release-abnahme-2026-09-10.md),
-[Materialbefund](issues/release-materialpruefung-2026-09-10.md),
-[Release Notes](../CHANGELOG.md). Kein Commit, Tag oder Deployment in dieser Runde.
+Die technischen Releasekorrekturen und lokalen Prüfungen sind abgeschlossen.
+Der Release entsteht im neuen Repository mit bereinigtem Initial-Commit; die
+frühere öffentliche Historie mit falsch hochgeladenen Dateien wird nicht
+fortgeführt. [Abnahme](issues/release-abnahme-2026-09-10.md),
+[Materialbefund](issues/release-materialpruefung-2026-09-10.md) und
+[Release Notes](../CHANGELOG.md) halten Entscheidung und Prüfgrenzen fest.
 
 ## Aktueller Stand
 
 M1 und M2 sind abgeschlossen. Der Git-Tag `meilenstein-2` beschreibt einen
-früheren Stand. GitHub ist bereits öffentlich; am 2026-09-10 waren dort keine
-offenen Issues und keine GitHub-Releases vorhanden. Offen ist PR #1
-„chore: Auto-Deploy (update.sh + Actions-Vorlage)“; er wurde nicht übernommen. Der nächste Schritt ist der
-[Open-Source-Release mit anschließendem Cloud-Projekt](release-und-cloud-plan.md).
+früheren Stand des Vorgänger-Repositorys. Der stabile Open-Source-Stand ist
+`v1.0.0` im neuen Repository. PR #1 aus dem Vorgänger-Repository wurde nicht
+übernommen. Der nächste Schritt nach dem Release bleibt das separate
+[Cloud-Projekt](release-und-cloud-plan.md).
 
 Betreiberbestätigung vom 2026-09-10: Reverse Charge ist auf dem Produktions-VPS
 getestet und live. Die frühere ELSTER-Prüfsperre ist aufgehoben und nicht mehr
@@ -35,8 +35,8 @@ Die RC-Fachgrenzen und Bedienung stehen in der
 [RC-Umsetzung](reverse-charge-umsetzung.md), technische Einstiege und bekannte
 Befunde in [Entwicklung](entwicklung.md). Die vorhandenen Audit-Dokumentationsänderungen
 sind erhalten und einbezogen. Die schon vorher vorhandene Löschung des VPS-Berichts
-ist keine Releaseänderung dieses Auftrags. Commit/Push/Tag/Veröffentlichung folgen
-nur auf gesonderten Auftrag. Ein Dokumentationsdatum ist keine Deploymentbestätigung.
+ist keine Releaseänderung dieses Auftrags. Ein Dokumentationsdatum ist keine
+Deploymentbestätigung. Der Release ersetzt keine offene VPS- oder Produktionsabnahme.
 
 ## Historie bis Meilenstein 2 und technische Nachzüge
 
@@ -95,8 +95,8 @@ Zettelruhe soll ein Tool für jedermann werden — verschiedene Steuer-Modi, ver
 
 **Offene Abnahmen und mögliche Folgearbeit:**
 
-- Open-Source-Release vorbereiten; mögliche technische Issues und Prüfstand stehen im [Releaseplan](release-und-cloud-plan.md).
-- RC ist produktiv bestätigt. Exakten Releasecommit festlegen; keine neue ELSTER-Freigabe verlangen.
+- Open-Source-Kern ab `v1.0.0` pflegen; technische Grenzen und Prüfstand stehen im [Releaseplan](release-und-cloud-plan.md).
+- RC ist produktiv bestätigt. `v1.0.0` ist der Release-Stand; keine neue ELSTER-Freigabe verlangen.
 - TP-009 und neue Komfortfunktionen sind dem späteren Cloud-Angebot zugeordnet. Kernpflege und bekannte technische Befunde bleiben in `entwicklung.md`.
 - **Zwei-Instanzen-Testbetrieb**: Voraussetzung vor einem späteren Adapter-/Control-Plane-Auftrag; keine Bestätigung eines abgeschlossenen Tests im Repository.
 - Nach dem Kernrelease folgt das separate Cloud-Projekt. Neue Komfortfunktionen aus der Roadmap gehören ins Aboangebot; die genaue Reihenfolge und Umsetzung erhalten eigene Aufträge.
@@ -121,9 +121,8 @@ und spätere Wünsche stehen in der Roadmap; ihre Priorisierung ist noch kein Au
 
 ## Blocker
 
-Keine offene RC-/ELSTER-Freigabe. Vor dem nächsten stabilen Release stehen
-Materialprüfung, zwei aktuelle Lintfehler und gezielte Prüfungen verbleibender
-Finanz-/Scheduler-Risiken an; Einordnung im Releaseplan.
+Keine offenen Releaseblocker. Die bekannten Produkt- und Betriebsgrenzen bleiben
+im [Releaseplan](release-und-cloud-plan.md) dokumentiert.
 
 ## Bauabschnitte v1 (verbindlich)
 

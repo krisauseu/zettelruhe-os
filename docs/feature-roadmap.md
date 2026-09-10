@@ -9,7 +9,8 @@ Glossary: [`CONTEXT.md`](../CONTEXT.md) · ADRs: [`docs/adr/`](./adr/)
 
 *Happy Path ohne OCR, PSD2, API, Kundenportal, automatischen Mahnlauf.*
 
-Stand: 2026-09-10, Releasevorbereitung ab `f48be21`.
+Stand: 2026-09-10, Release `v1.0.0` im bereinigten Repository
+`krisauseu/zettelruhe-os`.
 M1 und M2 sind abgeschlossen. Die Listen beschreiben den vorhandenen Umfang;
 noch fehlende frühere v1-Wünsche stehen gesondert außerhalb des Releaseumfangs. Abnahme und Betriebsstand stehen ausschließlich im [Status](90-status.md).
 Reverse Charge ist implementiert, freigegeben und laut Betreiberbestätigung vom

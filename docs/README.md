@@ -1,6 +1,7 @@
 # Dokumentation pflegen
 
-Stand: 2026-09-10, Releasevorbereitung ab `f48be21`; der frühere Abgleich auf `0842832` bleibt unten datiert. Diese Übersicht ordnet die
+Stand: 2026-09-10, Release `v1.0.0` im bereinigten Repository
+`krisauseu/zettelruhe-os`; der frühere Abgleich auf `0842832` bleibt unten datiert. Diese Übersicht ordnet die
 Dateien im Dokumentationsordner ein und legt ihre Pflege fest. Der laufende
 Projektstand steht in [90-status.md](90-status.md).
 
@@ -49,8 +50,8 @@ es gibt dafür keinen Scheduler, Git-Hook oder automatischen Commit.
 | `sessions/*.md`, einschließlich `*-prompt.md` | Historische Übergaben, Entscheidungen und damalige Arbeitsaufträge | Erhalten. Neue Session-Dateien nur bei größeren Schnitten mit zusätzlichem Erklärungswert. Alte Prompts nicht wieder ausführen oder regelmäßig aktualisieren. |
 | `recherche/2026-09-09-graphify-und-crg.md` | Datierte Werkzeugrecherche | Als Entscheidungsgrundlage erhalten. Bei neuer Recherche ergänzen; die aktuelle Anleitung steht in `codegraph.md`. |
 | `logo-512x512-transparent.png` und verbliebene Logos | Marken-/Layoutreferenzen | Erhalten. Historische Layoutbilder und Muster-PDF wurden bei der Release-Materialprüfung entfernt; [Befund](issues/release-materialpruefung-2026-09-10.md). |
-| Frühere Screenshots und `.sta` unter `issues/` | Aus dem aktuellen Arbeitsbaum entfernt | Vertrauliche Kontodaten bestätigt. Synthetische MT940-Fixture in `app/src/modules/banking/fixtures/`; Historienbereinigung gesondert entscheiden. |
-| `issues/release-materialpruefung-2026-09-10.md`, `issues/release-abnahme-2026-09-10.md` | Befund und lokale Releaseabnahme | Datiert erhalten; offene Veröffentlichungsschritte nicht als erledigt markieren. |
+| Frühere Screenshots und `.sta` unter `issues/` | Aus dem aktuellen Arbeitsbaum entfernt | Vertrauliche Kontodaten bestätigt. Synthetische MT940-Fixture in `app/src/modules/banking/fixtures/`; das neue Repository beginnt mit bereinigter Historie. |
+| `issues/release-materialpruefung-2026-09-10.md`, `issues/release-abnahme-2026-09-10.md` | Befund und lokale Releaseabnahme | Datiert erhalten; R-01 ist durch das neue bereinigte Repository abgeschlossen. |
 | `Bericht_Test_VPS_06092026` | Bereits vor diesem Audit im Arbeitsbaum gelöscht | Löschung unverändert gelassen. Nicht als geprüfter oder verfügbarer aktueller VPS-Nachweis verwendet. |
 
 Außerhalb von `docs/` bleiben Root-README und `CONTEXT.md` aktive Einstiege.

@@ -1,13 +1,12 @@
-# Release Notes
+# Changelog
 
-## Vorbereitet, noch unveröffentlicht — 2026-09-10
+## [1.0.0] - 2026-09-10
 
 Release-Titel: **Zettelruhe – Open-Source-Buchhaltung für Solo-Selbstständige**
 
-Ein stabiler Versionsname ist noch nicht vergeben. Der technische Kandidat ist
-lokal geprüft; vor Veröffentlichung ist der Umgang mit vertraulichen Materialien
-in der bereits öffentlichen Git-Historie zu klären. Ein Vorab-Tag umgeht diesen
-Befund nicht. [Abnahme](docs/issues/release-abnahme-2026-09-10.md).
+Der Release basiert auf dem bereinigten Repository `krisauseu/zettelruhe-os`.
+Die frühere öffentliche Historie mit falsch hochgeladenen Dateien gehört nicht
+zu diesem Repository. [Abnahme](docs/issues/release-abnahme-2026-09-10.md).
 
 ### Release-Text
 

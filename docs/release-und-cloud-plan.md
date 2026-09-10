@@ -1,15 +1,13 @@
 # Open-Source-Release und Zettelruhe Cloud
 
-Historischer Planungsstand: 2026-09-10, Codebasis `0842832`.
-Umsetzungsstand am selben Tag: lokale Releasevorbereitung auf `main` ab `f48be21`.
+Historischer Planungsstand: 2026-09-10, Codebasis `0842832`. Der Release
+`v1.0.0` entsteht im bereinigten Repository `krisauseu/zettelruhe-os`.
 R-02 bis R-06 sind gezielt korrigiert beziehungsweise geprüft; R-07 bis R-12
-sind lokal abgenommen oder als Grenzen dokumentiert. R-01 bleibt wegen der
-öffentlichen Git-Historie offen. [Ergebnisse je Kandidat](issues/release-abnahme-2026-09-10.md),
+sind lokal abgenommen oder als Grenzen dokumentiert. R-01 ist durch den neuen
+Repository-Verlauf erledigt. [Ergebnisse je Kandidat](issues/release-abnahme-2026-09-10.md),
 [Release Notes](../CHANGELOG.md), [Materialbefund](issues/release-materialpruefung-2026-09-10.md).
 Die folgenden ursprünglichen Prüfzahlen und Kandidaten beschreiben den Stand
 vor der Umsetzung; sie werden nicht als aktuelle Fehlerliste weitergeführt.
- Die lokale Umsetzung ist beauftragt; dieser ursprüngliche Plan autorisiert weder Veröffentlichung noch
-Projektanlage, Infrastruktur, Stripe-Konfiguration oder Datenänderungen.
 
 ## Entscheidung und bestätigter Stand
 
@@ -203,10 +201,9 @@ Anlagen/AfA und die übrige Liste sind spätere Ausbaustufen.
 Abschlusskriterium: tragfähiger Betrieb mit erprobtem Restore, korrekter Abrechnung
 und klarer Leistungsgrenze. Erst dann das Angebot breiter vermarkten.
 
-## Nächster konkreter Schritt nach lokaler Umsetzung
+## Nächster konkreter Schritt nach dem Release
 
-Über den dokumentierten R-01-Befund und eine Bereinigung der öffentlichen Historie
-entscheiden. Anschließend den gezielt ausgewählten Releasecommit samt erhaltenen
-Audit-Dokumenten festlegen; die fremde Löschung des VPS-Berichts nicht automatisch
-übernehmen. Erst nach dieser Abnahme Tag und Veröffentlichung separat beauftragen.
-Cloud-Gründung bleibt ein eigener Auftrag. Keine GitHub-Issues wurden angelegt.
+Den Open-Source-Kern ab `v1.0.0` pflegen und das separate Cloud-Projekt nur mit
+einem eigenen Auftrag beginnen. Die frühere Repository-Historie mit falsch
+hochgeladenen Dateien wird nicht fortgeführt. Cloud-Gründung bleibt ein eigener
+Auftrag.

@@ -51,8 +51,8 @@ Betrieb (Backup, Secrets, Health): [`docs/betrieb.md`](./docs/betrieb.md).
 - Kopie von `.env.example` → `.env` mit **echten** Secrets (keine `change-me`-Werte in Produktion)
 
 ```bash
-git clone https://github.com/krisauseu/zettelruhe.git
-cd zettelruhe
+git clone https://github.com/krisauseu/zettelruhe-os.git
+cd zettelruhe-os
 cp .env.example .env
 # Pflicht setzen:
 #   SESSION_SECRET  → openssl rand -base64 48  (≥ 32 Zeichen)
@@ -180,16 +180,15 @@ LICENSE                   AGPL-3.0
 
 ## Status
 
-Stand: 10. September 2026, lokale Releasevorbereitung auf `main` ab `f48be21`.
+Stand: 10. September 2026, Release `v1.0.0`.
 
 Scheduler, Zahlungen, Bankzuordnung und Rechnungsstorno wurden gegen konkrete
 Fehler-, Replay- und Parallelitätsfälle abgesichert. Tests, Typecheck, Lint,
 Dockerbuild sowie synthetische Installation und Upgrade/Restore sind lokal
 geprüft. [Abnahme und Prüfgrenzen](docs/issues/release-abnahme-2026-09-10.md),
-[fertige Release Notes](CHANGELOG.md). **Noch kein stabiler Release:** Über den
-Umgang mit vertraulichen Arbeitsmaterialien in der bereits öffentlichen
-Git-Historie ist gesondert zu entscheiden. Der Arbeitsbaum wurde bereinigt;
-das entfernt frühere Veröffentlichungen nicht. [Materialbefund](docs/issues/release-materialpruefung-2026-09-10.md).
+[Release Notes](CHANGELOG.md). Das Release liegt im neu angelegten, bereinigten
+Repository `krisauseu/zettelruhe-os`; die frühere Repository-Historie ist nicht
+Teil dieses Releases.
 
 Nach M2 wurden unter anderem Belegerfassung, Finanzfestschreibung und Exporte
 verbessert sowie Reverse Charge ergänzt. Der Betreiber hat am 10. September
@@ -198,7 +197,7 @@ benötigt keine Freigabe einer von Zettelruhe betriebenen ELSTER-Schnittstelle;
 eine solche Schnittstelle gibt es nicht. Aktuelle Abnahmen und offene Punkte
 stehen im [Status](docs/90-status.md).
 
-Das Repository ist bereits öffentlich; ein GitHub-Release wird vorbereitet.
+Das Repository ist öffentlich. Der GitHub-Release zu `v1.0.0` markiert diesen Stand.
 Der heutige Funktionsumfang bleibt Open Source. Neue Komfortfunktionen wie
 Belegerkennung und Briefpapier sind für das separate Aboangebot
 `zettelruhe-cloud` vorgesehen. [Release- und Cloud-Plan](docs/release-und-cloud-plan.md).

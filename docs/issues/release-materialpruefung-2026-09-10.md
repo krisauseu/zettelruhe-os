@@ -1,5 +1,10 @@
 # Arbeitsmaterialien vor dem Release
 
+> Nachtrag 2026-09-10: R-01 ist abgeschlossen. Der Betreiber hat das neue
+> Repository `krisauseu/zettelruhe-os` mit einem bereinigten Initial-Commit
+> erstellt und lokale Entwicklung, Test-VPS sowie Produktion darauf umgestellt.
+> Die in diesem Bericht beschriebene Vorgänger-Historie wird nicht fortgeführt.
+
 Geprüft am 2026-09-10 im lokalen Checkout auf `f48be21` mit vorhandenen
 Auditänderungen. Keine Inhalte an einen OCR-Dienst hochgeladen. Keine vertraulichen
 Werte in Prüfprotokolle oder Chat übernommen.
@@ -45,19 +50,14 @@ Die bereits vor dem Auftrag vorhandene Löschung von
 `docs/Bericht_Test_VPS_06092026` bleibt unverändert und zählt nicht zu dieser
 Bereinigung. Es wurden keine vorhandenen lokalen Backups oder Belege verwendet.
 
-## Gesondert zu entscheidende Maßnahme
+## Historische Maßnahme im Vorgänger-Repository
 
-Ein späterer Löschcommit entfernt die veröffentlichten Altversionen nicht.
-Vor Freigabe als stabilen Release die Historienbereinigung dieser Fundstellen
-entscheiden. Empfohlen ist ein gesicherter Mirror, eine vollständige Liste der
-betroffenen Pfade und Varianten und anschließend eine gezielte Entfernung der
-Blobs aus allen veröffentlichten Referenzen, etwa mit `git filter-repo`.
-Tags, Forks, Pull-Request-Referenzen und GitHub-Caches sind dabei separat zu prüfen.
-Ein Rewrite ändert Commit-IDs und erfordert abgestimmten Force-Push sowie neue
-Klone. Gegebenenfalls GitHub Support zur Entfernung zwischengespeicherter Inhalte
-ansprechen. Das ist eine vorgeschlagene Maßnahme, kein ausgeführter Vorgang.
+Ein Löschcommit im Vorgänger-Repository hätte die veröffentlichten Altversionen
+nicht entfernt. Stattdessen hat der Betreiber ein neues Repository mit einem
+bereinigten Initial-Commit angelegt. Dieser Release nutzt ausschließlich dieses
+neue Repository. Alte Klone, Forks, Tags und Caches des Vorgänger-Repositorys
+sind nicht Teil dieses Releaseumfangs und müssen getrennt behandelt werden.
 
-Der öffentliche Stand wurde nur lesend abgefragt. Keine Historienumschreibung,
-kein Push, kein Tag und keine GitHub-Veröffentlichung. Ob betroffene Personen
-oder Stellen zu informieren sind, muss der Betreiber anhand der konkreten
-Originale entscheiden. Dieser Bericht enthält dazu keine rechtliche Bewertung.
+Dieser Bericht enthält keine rechtliche Bewertung. Ob über den Umgang mit dem
+Vorgänger-Repository hinaus Personen oder Stellen zu informieren sind, entscheidet
+der Betreiber anhand der Originale.
