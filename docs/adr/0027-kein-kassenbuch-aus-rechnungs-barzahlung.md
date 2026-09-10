@@ -1,0 +1,10 @@
+# Kein automatischer Kassenbuch-Eintrag aus Rechnungs-Barzahlung
+
+Eine Zahlung mit Zahlungsweg `bar` erzeugt keinen Kassenbuch-Eintrag. Der steuerliche Zufluss bleibt allein die Zahlungsbuchung (`quelle_typ=zahlung`, ADR-0024). Das Kassenbuch bleibt das manuelle Buch für Bargeld ohne diese Zahlung; Anlegen schreibt weiter `quelle_typ=kasse`. Ein Satellit ohne Journal wäre eine zweite Klasse Einträge im selben Buch und bräche Anlegen = Journal (Storno verlangt `journal_eintrag`). Derselbe Schreibpfad wie manuell inkl. `quelle_typ=kasse` würde EÜR, USt, BWA, Dashboard und DATEV verdoppeln — Zahlung mappt auf Umsatzerlöse, Kassen-Einnahme auf Bareinnahmen; nur die Auswertungen zu filtern ließe im Journal-CSV zwei Einnahmenzeilen für einen Vorgang (Schein). Das manuelle Kassenbuch oder die Ist-Versteuerungs-Regeln umzubauen, um den Keil zu erzwingen (`kasse` aus dem Zufluss nehmen, zweites Kassenjournal), wäre ein anderer Schnitt: Bareinnahmen ohne Rechnung fielen aus der EÜR oder Anlegen wäre nicht mehr Journal; bestehende Originale bekämen still eine andere Bedeutung. Deshalb kein Hook an `createZahlung` / `deleteZahlung` / Rechnungs-Storno und kein Nachzug bestehender Barzahlungen. Zahlungsweg `bar` bleibt Markierung; der Formular-Hinweis warnt vor doppelter Erfassung im Kassenbuch. Begründung: lieber der Hinweis als eine zweite Umsatzerfassung.
+
+## Alternatives considered
+
+- Satellit der Zahlung (Kassen-Satz für Saldo/Belegnummer, ohne zweites Einnahmen-Journal) — bricht Anlegen = Journal; zwei Klassen im selben Buch; sähe nach GoBD-Kasse aus, wäre es nicht.
+- Gleicher Schreibpfad wie manuell inkl. `quelle_typ=kasse`, Filter nur in EÜR/USt/DATEV — Journal-CSV zeigt trotzdem zwei Einnahmen; der Filter ist eine zweite Zufluss-Regel neben ADR-0024.
+- Manuelles Kassenbuch von der EÜR entkoppeln, um den Keil zu erzwingen — anderer Schnitt, nicht dieser; Bareinnahmen ohne Rechnung unterzählen oder „Anlegen = Journal“ still brechen.
+- Automatisch buchen und beide Quellen in EÜR/USt/DATEV zählen — doppelte Einnahme.

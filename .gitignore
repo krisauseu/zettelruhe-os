@@ -1,0 +1,36 @@
+# Dependencies & build
+node_modules/
+app/node_modules/
+app/.next/
+app/out/
+app/coverage/
+.firecrawl/
+.code-review-graph/
+
+# Env & secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# PocketBase local data (Compose uses named volume; local runs may create this)
+pocketbase/pb_data/
+pb_data/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Betriebsbackups enthalten Datenbank, Dateien und ggf. Secrets
+/backups/

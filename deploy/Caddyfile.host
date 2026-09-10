@@ -1,0 +1,49 @@
+# Öffentlicher Eingang auf dem Server (ADR-0023).
+# TLS: Let’s Encrypt (Caddy ACME). Nicht ins Compose mounten.
+#
+#   sudo cp deploy/Caddyfile.host /etc/caddy/Caddyfile
+#   # oder den Site-Block in die bestehende Host-Caddy einfügen / importieren
+#   sudo systemctl reload caddy
+#
+# DNS: app.zettelruhe.de → dieser Host. Port 80 und 443 frei (nicht Compose-Caddy).
+# Optional oben im Host-Caddyfile:
+# {
+# 	email du@example.de
+# }
+
+app.zettelruhe.de {
+	encode gzip
+
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+		X-Permitted-Cross-Domain-Policies none
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+	}
+
+	# PocketBase API
+	handle /api/* {
+		reverse_proxy 127.0.0.1:8090
+	}
+
+	# PocketBase Admin-UI und Realtime — bewusst öffentlich über denselben Host
+	handle /_/* {
+		reverse_proxy 127.0.0.1:8090
+	}
+
+	handle /realtime {
+		reverse_proxy 127.0.0.1:8090
+	}
+
+	# Next.js (Host/Proto für Server Actions & Redirects); inkl. /health
+	handle {
+		reverse_proxy 127.0.0.1:3000 {
+			header_up Host {host}
+			header_up X-Forwarded-Host {host}
+			header_up X-Forwarded-Proto {scheme}
+			header_up X-Forwarded-For {remote_host}
+		}
+	}
+}

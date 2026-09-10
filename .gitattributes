@@ -1,0 +1,2 @@
+# Preserve the upstream Decimal distribution and licence exactly across checkouts.
+pocketbase/pb_hooks/vendor/decimal* -text whitespace=cr-at-eol,-blank-at-eof

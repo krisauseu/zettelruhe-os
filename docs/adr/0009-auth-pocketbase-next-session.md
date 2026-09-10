@@ -1,0 +1,3 @@
+# Auth: PocketBase als Quelle, Next.js als Session-Gate
+
+Identität und Login laufen über **PocketBase-Auth**; Next.js hält die App-Session in einem **httpOnly-Cookie** und prüft sie in Server Actions / Route Handlers. Der PB-Superuser bleibt strikt vom App-Login der:s Eigentümer:in getrennt und dient nur Betrieb/Schema. Begründung: Ein Identitätssystem ohne doppelte User-DB; serverseitige Session passt zu ADR-0006 (keine Finanz-Writes mit Client-PB-Rechten); Bootstrap der leeren Instanz legt ersten App-User und Firma an. Die Eigentümer:in wird beim Anlegen automatisch verifiziert; der Login hängt nicht an `users.verified` und nicht an SMTP (keine E-Mail-Bestätigung in v1).

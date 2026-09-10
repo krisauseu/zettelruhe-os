@@ -1,0 +1,84 @@
+# Lokal: docker compose up --build
+# Server (Host-Caddy, kein öffentliches Compose-Caddy): siehe docker-compose.server.yml
+services:
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - "${CADDY_HTTP_PORT:-80}:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on:
+      next:
+        condition: service_healthy
+      pocketbase:
+        condition: service_healthy
+
+  next:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+      args:
+        APP_URL: ${APP_URL:-http://localhost}
+    restart: unless-stopped
+    environment:
+      APP_URL: ${APP_URL:-http://localhost}
+      PB_URL: ${PB_URL:-http://pocketbase:8090}
+      PB_SUPERUSER_EMAIL: ${PB_SUPERUSER_EMAIL}
+      PB_SUPERUSER_PASSWORD: ${PB_SUPERUSER_PASSWORD}
+      SESSION_SECRET: ${SESSION_SECRET}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      JOB_TICK_INTERVAL_MS: ${JOB_TICK_INTERVAL_MS:-}
+      JOBS_DISABLED: ${JOBS_DISABLED:-}
+      EVATR_URL: ${EVATR_URL:-}
+    depends_on:
+      pocketbase:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  pocketbase:
+    build:
+      context: ./pocketbase
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PB_SUPERUSER_EMAIL: ${PB_SUPERUSER_EMAIL}
+      PB_SUPERUSER_PASSWORD: ${PB_SUPERUSER_PASSWORD}
+    volumes:
+      - pb_data:/pb_data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-qO-",
+          "http://127.0.0.1:8090/api/health",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    # Direct access for local debugging (optional)
+    # ports:
+    #   - "8090:8090"
+
+volumes:
+  pb_data:
+    name: zettelruhe_pb_data

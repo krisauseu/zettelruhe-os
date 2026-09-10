@@ -1,0 +1,21 @@
+# Overlay Server (ADR-0023): Host-Caddy ist der öffentliche Eingang.
+# Lokal nicht verwenden. Auf dem Server:
+#   APP_URL=https://app.zettelruhe.de
+#   docker compose -f docker-compose.yml -f docker-compose.server.yml up -d --build
+#
+# Compose-Caddy startet nicht (Profil compose-caddy). Next und PocketBase
+# nur auf localhost — Host-Caddy (deploy/Caddyfile.host) holt sich 80/443.
+
+services:
+  caddy:
+    profiles:
+      - compose-caddy
+
+  next:
+    # ports mergen sonst 0.0.0.0:3000 + localhost — !override (Compose ≥ 2.24)
+    ports: !override
+      - "127.0.0.1:3000:3000"
+
+  pocketbase:
+    ports:
+      - "127.0.0.1:8090:8090"
