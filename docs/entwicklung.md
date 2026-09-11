@@ -135,9 +135,9 @@ PDF-/Datei-Routen an Dokumenten. Neue App-Endpunkte müssen diese Proxy-Grenze b
 
 ## Fachmodule und Datenmodell
 
-Das Schema liegt in den 33 JavaScript-Migrationen unter
+Das Schema liegt in den 34 JavaScript-Migrationen unter
 [pocketbase/pb_migrations/](../pocketbase/pb_migrations/), zuletzt
-`1730002900_kontakt_ausgabensteuerstandard.js`. Die Finanzoperation und Record-Guards
+`1730003000_positionsbeschreibung.js`. Die Finanzoperation und Record-Guards
 liegen unter [pocketbase/pb_hooks/](../pocketbase/pb_hooks/).
 Die folgenden Collections und Beziehungen ergänzen die Routenkarte im
 vorhandenen Testphase-Skill:
@@ -509,3 +509,36 @@ Planungsrunde. Einordnung und Releasefolge: [Release- und Cloud-Plan](release-un
 Installation/Upgrade/Restore bestanden. Diagramme, Zahlungen, Bankmatch und RC
 gezielt im Browser geprüft. [Umgebung, Images, Fehlerfälle und offene Grenzen](issues/release-abnahme-2026-09-10.md).
 Dies ist eine lokale Abnahme des Arbeitsbaums ab `f48be21`, kein Deployment.
+
+
+## Positionsbeschreibung, TP-031, 2026-09-11
+
+`RechnungspositionInput`, `AngebotspositionInput` und gespeicherte Positionstypen
+führen `description?: string`. Beide Formulare übertragen indexgleich
+`position_description` über `FormData.getAll()`. Die gemeinsame Validierung
+trimmt die äußeren Leerzeichen, erhält Zeilenumbrüche und begrenzt auf 2000 Zeichen.
+Fehlende Werte werden als leerer String normalisiert, auch zum Leeren beim Editieren.
+Keine Zod-Abhängigkeit. Katalogauswahl ergänzt keine Beschreibung und erhält
+bereits manuell eingetragene Details.
+
+Migration `1730003000_positionsbeschreibung.js` ergänzt nur
+`rechnungspositionen` und `angebotspositionen`. `sales/repository.ts` übernimmt
+das Feld in Reads, Writes, Normalisierungsprüfung, Festschreibungsprojektion
+und Angebot → Rechnung. `pb_hooks/finanz.js` muss dieselbe Projektion verwenden;
+die generierten Verkaufsregeln sind mit aktualisiert. App, Migration und Hooks
+gehören deshalb in dasselbe Update. Artikel und wiederkehrende Vorlagen erhalten
+kein neues Stammdatenfeld. Der E-Rechnungs-XML-Export ist nicht erweitert.
+
+Der gemeinsame PDF-Renderer verwendet 9 pt für die Bezeichnung und davon
+abgeleitet 7 pt für Details. Leere Beschreibungen erzeugen kein Textelement.
+Positionen mit Beschreibung dürfen über Seiten umbrechen; der Einzug bleibt
+auf Folgeseiten erhalten. Bestehende gespeicherte Original-PDFs bleiben unverändert.
+
+Lokale Prüfung unter macOS, Node 25.9.0, Next 16.3.0 und isolierter PB 0.39.10:
+760 Unit-Tests und 197 echte Finanz-/RC-Integrationstests bestanden; Typecheck,
+warnungsfreies ESLint und beide Hook-Generatorabgleiche bestanden.
+PDF-Regressionen lesen Text und Schriftgrößen aus den erzeugten PDF-Streams,
+prüfen fehlende/leere Details sowie 120 Detailzeilen über zwei Seiten.
+Browserprüfung beider Neu-/Bearbeitungsformulare und visuelle PDF-Prüfung mit
+Poppler lokal erfolgt. [Einzelheiten](testphase.md#tp-031-optionale-positionsbeschreibung-2026-09-11).
+Kein Produktionsbuild, kein VPS-Test und kein Deployment in diesem Auftrag.

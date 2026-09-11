@@ -58,6 +58,9 @@ Die [RC-Referenz](reverse-charge-umsetzung.md) beschreibt Grenzen und Bedienung.
 - Layout Angebot/Rechnung: DIN-ähnlicher Briefkopf, Logo, Akzentfarbe, Textbausteine, Sichtbarkeit Header/Fuß/Zahlblock; GiroCode auf der Rechnung bei IBAN. Briefpapier-Hintergrund, Font-Upload, Mehrvorlagen → Cloud
 - Dokumente folgen Steuer-Modus: **ohne USt + §-19-Hinweis** bzw. **mit USt-Ausweis** (Regelbesteuerung)
 - Angebote: Positionen, Mengen, Preise, Freitext; PDF und Übersicht
+- Angebote/Rechnungen: optionale mehrzeilige Positionsbeschreibung bis 2000 Zeichen,
+  manuell und unabhängig vom Katalog; Bearbeitung im Entwurf, Übernahme Angebot →
+  Rechnung und PDF mit 7 pt unter der 9-pt-Bezeichnung (TP-031).
 - Angebotsstatus: Entwurf → Gesendet → Angenommen / Abgelehnt / Abgelaufen → Abgerechnet
 - Rechnungen: aus Angebot, aus Zeiten/Fahrten, oder frei; PDF und Übersicht
 - **Wiederkehrende Rechnungen** (Abo/Dauerrechnung): atomare Entwurfsanlage mit Datumsfortschritt; alle Firmen/fälligen Vorlagen paginiert, höchstens zwölf Nachholperioden je Vorlage und Aufruf

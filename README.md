@@ -17,6 +17,9 @@ Lizenz: [AGPL-3.0](./LICENSE)
 
 - Kontakte, Katalog, Projekte, Zeiten und Fahrten; Angebote, Rechnungen,
   wiederkehrende Rechnungen, PDF und optionaler E-Mail-Versand.
+- Optionale mehrzeilige Beschreibung je Angebots-/Rechnungsposition für Domains,
+  Zeiträume und Projektdetails, unabhängig vom Artikelkatalog. Im PDF steht sie
+  unter der Bezeichnung in 2 pt kleinerer Schrift.
 - Belege mit mehreren PDF-/Bilddateien, Kategorien für Einnahmen und Ausgaben,
   Kassenbuch sowie CSV-/MT940-Bankimport mit bestätigtem Rechnungsmatching.
 - EÜR und BWA light, UStVA-Kennzahlen, ZM-Übersicht, Journal-CSV und Belegarchiv.

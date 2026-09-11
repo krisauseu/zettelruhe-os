@@ -428,7 +428,12 @@ export default async function RechnungDetailPage({
                 <TableBody>
                   {rechnung.positionen.map((p) => (
                     <TableRow key={p.id}>
-                      <TableCell className="text-sm">{p.bezeichnung}</TableCell>
+                      <TableCell className="text-sm">
+                        {p.bezeichnung}
+                        {p.description?.trim() ? (
+                          <p className="whitespace-pre-wrap text-xs text-muted-foreground">{p.description}</p>
+                        ) : null}
+                      </TableCell>
                       <TableCell className="text-right font-mono text-xs">
                         {p.menge}
                       </TableCell>

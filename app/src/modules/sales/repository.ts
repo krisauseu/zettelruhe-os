@@ -121,6 +121,7 @@ type PbPosition = {
   rechnung: string;
   sortierung: number;
   bezeichnung: string;
+  description?: string;
   menge: string;
   einheit?: string;
   einzelpreis: string;
@@ -191,6 +192,7 @@ function mapPosition(r: PbPosition): Rechnungsposition {
     rechnung: r.rechnung,
     sortierung: Number(r.sortierung) || 0,
     bezeichnung: r.bezeichnung,
+    description: r.description ?? "",
     menge: r.menge,
     einheit: r.einheit ?? "",
     einzelpreis: r.einzelpreis,
@@ -249,6 +251,7 @@ function rechnungProjektion(rechnung: RechnungMitPositionen) {
       rechnung: p.rechnung,
       sortierung: p.sortierung,
       bezeichnung: p.bezeichnung,
+      description: p.description ?? "",
       menge: p.menge,
       einheit: p.einheit,
       einzelpreis: p.einzelpreis,
@@ -286,6 +289,7 @@ function positionValues(
   return positionen.map((p) => ({
     sortierung: p.sortierung,
     bezeichnung: p.bezeichnung,
+    description: p.description ?? "",
     menge: p.menge,
     einheit: p.einheit,
     einzelpreis: p.einzelpreis,
@@ -454,6 +458,7 @@ export async function festschreibenRechnung(
         notiz: existing.notiz,
         positionen: existing.positionen.map((p) => ({
           bezeichnung: p.bezeichnung,
+          description: p.description ?? "",
           menge: p.menge,
           einheit: p.einheit,
           einzelpreis: p.einzelpreis,
@@ -476,6 +481,7 @@ export async function festschreibenRechnung(
         existing.positionen.map((p) => ({
           sortierung: p.sortierung,
           bezeichnung: p.bezeichnung,
+          description: p.description ?? "",
           menge: p.menge,
           einheit: p.einheit,
           einzelpreis: p.einzelpreis,
@@ -824,6 +830,7 @@ type PbAngebotsposition = {
   angebot: string;
   sortierung: number;
   bezeichnung: string;
+  description?: string;
   menge: string;
   einheit?: string;
   einzelpreis: string;
@@ -890,6 +897,7 @@ function mapAngebotsposition(r: PbAngebotsposition): Angebotsposition {
     angebot: r.angebot,
     sortierung: Number(r.sortierung) || 0,
     bezeichnung: r.bezeichnung,
+    description: r.description ?? "",
     menge: r.menge,
     einheit: r.einheit ?? "",
     einzelpreis: r.einzelpreis,
@@ -932,6 +940,7 @@ async function replaceAngebotspositionen(
       // sortierung muss > 0 sein (PB required number: 0 = blank)
       sortierung: p.sortierung > 0 ? p.sortierung : 1,
       bezeichnung: p.bezeichnung,
+      description: p.description ?? "",
       menge: p.menge,
       einheit: p.einheit,
       einzelpreis: p.einzelpreis,
@@ -1075,6 +1084,7 @@ export async function sendenAngebot(
       notiz: existing.notiz,
       positionen: existing.positionen.map((p) => ({
         bezeichnung: p.bezeichnung,
+        description: p.description ?? "",
         menge: p.menge,
         einheit: p.einheit,
         einzelpreis: p.einzelpreis,
@@ -1179,6 +1189,7 @@ export async function uebernehmenAlsRechnung(
     notiz: notizParts.join(" — ").slice(0, 2000),
     positionen: existing.positionen.map((p) => ({
       bezeichnung: p.bezeichnung,
+      description: p.description ?? "",
       menge: p.menge,
       einheit: p.einheit,
       einzelpreis: p.einzelpreis,

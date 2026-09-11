@@ -70,3 +70,40 @@ Geprüftes lokales Next-Image:
 PB-Testimage: `sha256:89ea17d1ef47bd9ebb981b60309ae258c287bc7c2ed42618405321de134c2682`.
 Keine Änderung an Kernmigrationen oder Hooks. Testressourcen wurden entfernt.
 Die fremde lokale `.codex/config.toml` bleibt unverändert und außerhalb des Commits.
+
+
+## TP-031: optionale Positionsbeschreibung, 2026-09-11
+
+Verbesserung in Angebote/Rechnungen. Owner: `sales/{types,invariants,actions,
+repository,pdf}.ts(x)`, beide Positionsformulare und Detailseiten,
+`pocketbase/pb_hooks/finanz.js` samt generierten Verkaufsregeln,
+Migration `1730003000_positionsbeschreibung.js`.
+
+Unter Bezeichnung steht ein optionales mehrzeiliges Feld Beschreibung, maximal
+2000 Zeichen. Artikelkatalog und Stammdaten bleiben unverändert. Katalogauswahl
+befüllt keine Details; manuell erfasste Details bleiben erhalten. Die Beschreibung
+wird gespeichert, beim Bearbeiten wieder geladen und aus Angeboten in Rechnungen
+übernommen. PDFs zeigen sie mit 7 pt unter der 9-pt-Bezeichnung; leer ohne
+zusätzliche Zeile. Lange Details können auf die nächste Seite umbrechen.
+
+Lokale Abnahme am 2026-09-11, macOS/Node 25.9.0, Next 16.3.0, PB 0.39.10:
+
+- `cd app && npm test`: 760 bestanden, 163 Integrationstests ohne sicheren Starter
+  übersprungen. Neue Tests für beide Validatoren und vier Formularaktionen;
+  PDF-Streams mit 9/7 pt, mehrzeiligen, leeren und seitenlangen Details geprüft.
+- `node scripts/test-festschreibung-isolated.mjs`: 197/197 bestanden. Neue echte
+  PB-Fälle für Anlegen, Ändern, Leeren, Festschreibung, Schutz vor direkter Änderung,
+  Angebot senden und Übernahme in Rechnung. Nur synthetische tmpfs-Daten.
+- `npm run typecheck`, `npm run lint -- --max-warnings=0`, beide Hook-Generatoren
+  mit `--check` und `git diff --check` bestanden.
+- Browser über `scripts/test-rc-ui-isolated.mjs`: beide Katalogauswahlen lassen
+  Beschreibung leer; Rechnung mit mehrzeiligen Details anlegen, ändern und neu
+  laden; Angebot mit gefüllter und leerer Beschreibung in zwei Positionen anlegen
+  und bearbeiten. Neue Feld-IDs verwenden `useId`, damit Server- und Browser-HTML
+  übereinstimmen. Visuelle PDF-Prüfung kurzer Details sowie beider Seiten bei
+  120 Detailzeilen mit Poppler; Folgeseiteneinzug geprüft.
+
+README, Status, Roadmap und Entwicklung sind nachgezogen. App und PocketBase mit
+Migration/Hook gemeinsam aktualisieren. Kein Produktionsbuild, VPS-Nachtest oder
+Deployment. Der E-Rechnungs-XML-Export und wiederkehrende Vorlagen sind nicht
+Teil der Erweiterung. Bestehende Original-PDFs werden nicht neu erzeugt.

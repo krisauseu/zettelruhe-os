@@ -40,6 +40,7 @@ export type Rechnungsposition = {
   rechnung: string;
   sortierung: number;
   bezeichnung: string;
+  description?: string;
   /** Menge als Decimal-String */
   menge: string;
   einheit: string;
@@ -56,6 +57,7 @@ export type Rechnungsposition = {
 /** Eingabe Position (ohne id/firma/rechnung) */
 export type RechnungspositionInput = {
   bezeichnung: string;
+  description?: string;
   menge: string;
   einheit?: string;
   einzelpreis: string;
@@ -136,6 +138,7 @@ export type Angebotsposition = {
   angebot: string;
   sortierung: number;
   bezeichnung: string;
+  description?: string;
   menge: string;
   einheit: string;
   einzelpreis: string;
@@ -149,6 +152,7 @@ export type Angebotsposition = {
 /** Eingabe Position (ohne id/firma/angebot) */
 export type AngebotspositionInput = {
   bezeichnung: string;
+  description?: string;
   menge: string;
   einheit?: string;
   einzelpreis: string;

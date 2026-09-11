@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +22,7 @@ export type KatalogOption = {
 
 type PositionRow = {
   key: string;
+  description: string;
   bezeichnung: string;
   menge: string;
   einheit: string;
@@ -44,6 +45,7 @@ function emptyRow(): PositionRow {
   return {
     key: `n-${Math.random().toString(36).slice(2, 9)}`,
     bezeichnung: "",
+    description: "",
     menge: "1",
     einheit: "Stück",
     einzelpreis: "",
@@ -61,6 +63,7 @@ export function AngebotForm({
   angebot,
   mode,
 }: Props) {
+  const descriptionId = useId();
   const showUst = steuermodus === "regelbesteuerung_ist";
   const datum = angebot?.angebotsdatum || todayBerlin();
 
@@ -69,6 +72,7 @@ export function AngebotForm({
       return angebot.positionen.map((p) => ({
         key: p.id,
         bezeichnung: p.bezeichnung,
+        description: p.description ?? "",
         menge: p.menge,
         einheit: p.einheit,
         einzelpreis: p.einzelpreis,
@@ -240,6 +244,17 @@ export function AngebotForm({
                     onChange={(e) =>
                       updateRow(row.key, { bezeichnung: e.target.value })
                     }
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
+                  <Label htmlFor={`${descriptionId}-${idx}`} className="text-xs">Beschreibung</Label>
+                  <Textarea
+                    id={`${descriptionId}-${idx}`}
+                    name="position_description"
+                    rows={2}
+                    maxLength={2000}
+                    value={row.description}
+                    onChange={(e) => updateRow(row.key, { description: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">

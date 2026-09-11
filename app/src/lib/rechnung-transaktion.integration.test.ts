@@ -1,3 +1,4 @@
+import * as finanzTransaktion from "./finanz-transaktion";
 import { createZahlung } from "@/modules/payments/repository";
 /** TP-022 Rechnung acceptance against PB 0.39.10 and the production hooks. */
 import { createHash } from "node:crypto";
@@ -24,6 +25,12 @@ import {
   updateRecord,
 } from "./pb";
 import {
+  createAngebot,
+  updateAngebot,
+  getAngebotMitPositionen,
+  sendenAngebot,
+  setAngebotStatus,
+  uebernehmenAlsRechnung,
   createRechnung,
   deleteRechnung,
   festschreibenRechnung,
@@ -191,6 +198,34 @@ describe.skipIf(!isolated)("TP-022 Rechnung acceptance", () => {
     await deleteRechnung(firma, created.id, { akteur });
     expect(await getRechnungMitPositionen(firma, created.id)).toBeNull();
     expect(await rows("rechnungspositionen")).toHaveLength(0);
+  });
+
+  it("speichert, ändert und leert Positionsdetails; sperrt sie nach Festschreibung", async () => {
+    const description = "example.test\nSeptember 2026";
+    const values = { ...input(), positionen: [{ ...input().positionen[0], description }] };
+    const draft = await createRechnung(firma, values, { akteur });
+    expect((await getRechnungMitPositionen(firma, draft.id))!.positionen[0].description).toBe(description);
+    const cleared = await updateRechnung(firma, draft.id, input(), { akteur });
+    expect(cleared.positionen[0].description).toBe("");
+    await updateRechnung(firma, draft.id, values, { akteur });
+    const closed = await festschreibenRechnung(firma, draft.id, { akteur });
+    expect(closed.rechnung.positionen[0].description).toBe(description);
+    await expect(updateRecord("rechnungspositionen", closed.rechnung.positionen[0].id, { description: "changed" })).rejects.toThrow();
+  });
+
+  it("erhält Angebotsdetails beim Speichern, Senden und Übernehmen als Rechnung", async () => {
+    const values = { kunde, angebotsdatum: date, positionen: [{ ...input().positionen[0], description: "example.test\nSeptember 2026" }] };
+    const draft = await createAngebot(firma, values);
+    expect((await getAngebotMitPositionen(firma, draft.id))!.positionen[0].description).toBe(values.positionen[0].description);
+    const cleared = await updateAngebot(firma, draft.id, { ...values, positionen: input().positionen });
+    expect(cleared.positionen[0].description).toBe("");
+    await updateAngebot(firma, draft.id, values);
+    const sent = await sendenAngebot(firma, draft.id);
+    expect(sent.positionen[0].description).toBe(values.positionen[0].description);
+    await setAngebotStatus(firma, draft.id, "angenommen");
+    vi.spyOn(finanzTransaktion, "finanzAkteur").mockResolvedValue(akteur);
+    const converted = await uebernehmenAlsRechnung(firma, draft.id);
+    expect(converted.rechnung.positionen[0].description).toBe(values.positionen[0].description);
   });
 
   it("commits number, original PDF, journal and invoice together; replay is stable", async () => {

@@ -57,6 +57,8 @@ import type {
   Rechnungsposition,
 } from "./types";
 
+const POSITION_FONT_SIZE = 9;
+
 const styles = StyleSheet.create({
   page: {
     paddingTop: PDF_PAGE_PADDING_TOP,
@@ -170,11 +172,15 @@ const styles = StyleSheet.create({
     fontFamily: "Helvetica-Bold",
     fontSize: 8,
   },
+  positionDescription: {
+    fontSize: POSITION_FONT_SIZE - 2,
+    color: "#52525B",
+  },
   tableRow: {
     flexDirection: "row",
     paddingVertical: 6,
     paddingHorizontal: 6,
-    fontSize: 9,
+    fontSize: POSITION_FONT_SIZE,
     alignItems: "flex-start",
   },
   totals: {
@@ -273,6 +279,7 @@ type PdfPosition = {
   id?: string;
   sortierung: number;
   bezeichnung: string;
+  description?: string;
   menge: string;
   einheit: string;
   einzelpreis: string;
@@ -504,14 +511,19 @@ function Positionstabelle({
         return (
           <View
             key={p.id || `${p.sortierung}-${p.bezeichnung}`}
-            wrap={false}
+            wrap={Boolean(p.description?.trim())}
             style={[
               styles.tableRow,
               i % 2 === 0 ? { backgroundColor: "#F4F4F5" } : {},
             ]}
           >
-            <Text style={{ width: w.pos }}>{String(i + 1)}</Text>
-            <Text style={{ width: w.bez }}>{p.bezeichnung}</Text>
+            <Text style={{ position: "absolute", left: 6, top: 6, width: w.pos }}>{String(i + 1)}</Text>
+            <View style={{ width: w.bez, marginLeft: w.pos }}>
+              <Text>{p.bezeichnung}</Text>
+              {p.description?.trim() ? (
+                <Text style={styles.positionDescription}>{p.description}</Text>
+              ) : null}
+            </View>
             <Text style={{ width: w.menge, textAlign: "right" }}>
               {menge || "—"}
             </Text>

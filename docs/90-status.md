@@ -1,5 +1,10 @@
 # Status — Zettelruhe
 
+2026-09-11: Optionale Positionsbeschreibungen für Angebote und Rechnungen
+sind implementiert und lokal geprüft (TP-031). Formulare, Persistenz,
+Angebotsübernahme und PDF sind ergänzt. Migration und Hooks müssen zusammen
+mit der App ausgerollt werden. Kein Deployment; [Abnahme](testphase.md#tp-031-optionale-positionsbeschreibung-2026-09-11).
+
 Stand nach v1.0.0: Der generische [serverseitige Instanzkontext](instance-context.md)
 für Cloud-TP-002 ist implementiert und lokal mit einer gemeinsamen Next-Anwendung
 und getrennten PocketBase-Instanzen geprüft. Self-Hosting bleibt verfügbar.

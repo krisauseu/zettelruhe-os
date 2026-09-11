@@ -1,3 +1,5 @@
+import { inflateSync } from "node:zlib";
+import { writeFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import type { FirmaRecord } from "@/lib/pb";
 import type { Kontakt } from "@/modules/contacts/types";
@@ -86,7 +88,54 @@ function rechnung(over: Partial<Rechnung> = {}): Rechnung {
 const TINY_PNG =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
 
+function pdfTextRuns(buffer: Buffer) {
+  const source = buffer.toString("latin1");
+  const runs: { text: string; size: number }[] = [];
+  for (const match of source.matchAll(/stream\r?\n([\s\S]*?)\r?\nendstream/g)) {
+    let content: string;
+    try { content = inflateSync(Buffer.from(match[1], "latin1")).toString("latin1"); }
+    catch { continue; }
+    for (const block of content.matchAll(/BT([\s\S]*?)ET/g)) {
+      const size = Number(block[1].match(/\/F\d+ ([\d.]+) Tf/)?.[1]);
+      const text = Array.from(block[1].matchAll(/<([0-9a-f]+)>/gi), m => Buffer.from(m[1], "hex").toString("latin1")).join("");
+      if (text) runs.push({ text, size });
+    }
+  }
+  return runs;
+}
+
 describe("PDF-Render", () => {
+  it.each([
+    ["rechnung", "kleinunternehmer"], ["angebot", "kleinunternehmer"],
+    ["rechnung", "regelbesteuerung_ist"], ["angebot", "regelbesteuerung_ist"],
+  ] as const)("%s/%s: Details sind 2 pt kleiner; leer ohne Zusatzzeile", async (kind, steuermodus) => {
+    async function render(description?: string) {
+      const common = { firma: firma({ steuermodus }), kunde, entwurf: true, layout: defaultDokumentPdfLayout() };
+      const p = { ...position, bezeichnung: "Hosting", description, steuersatz: "" as const, betrag_ust: "0.00", betrag_brutto: "190.00" };
+      return kind === "rechnung"
+        ? renderRechnungPdf({ ...common, rechnung: rechnung({ steuermodus }), positionen: [p] })
+        : renderAngebotPdf({ ...common, angebot: {
+          ...rechnung({ steuermodus }), angebotsdatum: "2026-09-11", gueltig_bis: "2026-10-11",
+          angebotsnummer: "", status: "entwurf", gesendet_am: "", rechnung: null,
+        }, positionen: [{ ...p, angebot: "a1" }] });
+    }
+    const buffer = await render("domain.example\nSeptember 2026");
+    const runs = pdfTextRuns(buffer);
+    const title = runs.findIndex(r => r.text === "Hosting");
+    expect(title).toBeGreaterThan(-1);
+    expect(runs[title].size).toBe(9);
+    expect(runs[title + 1]).toEqual({ text: "domain.example", size: 7 });
+    expect(runs[title + 2]).toEqual({ text: "September 2026", size: 7 });
+    expect(pdfTextRuns(await render(" \n "))).toEqual(pdfTextRuns(await render()));
+    const long = await render(Array.from({ length: 120 }, (_, i) => `Detail ${i + 1}`).join("\n"));
+    const longRuns = pdfTextRuns(long);
+    for (let i = 1; i <= 120; i++) expect(longRuns).toContainEqual({ text: `Detail ${i}`, size: 7 });
+    expect((long.toString("latin1").match(/\/Type \/Page\b/g) ?? []).length).toBeGreaterThan(1);
+    if (process.env.PDF_TEST_OUTPUT_DIR) {
+      writeFileSync(`${process.env.PDF_TEST_OUTPUT_DIR}/${kind}-${steuermodus}-long-description.pdf`, long);
+      writeFileSync(`${process.env.PDF_TEST_OUTPUT_DIR}/${kind}-${steuermodus}-description.pdf`, buffer);
+    }
+  });
   it("erzeugt Entwurfs-Rechnung unter Kleinunternehmerregelung", async () => {
     const buf = await renderRechnungPdf({
       rechnung: rechnung(),

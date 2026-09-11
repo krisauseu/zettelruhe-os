@@ -147,7 +147,7 @@ function sumPositionen(positionen) {
 }
 /** Validiert und normalisiert eine Position. */
 function validatePositionInput(input, steuermodus, sortierung) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     const bezeichnung = ((_a = input.bezeichnung) !== null && _a !== void 0 ? _a : "").trim();
     if (!bezeichnung) {
         throw new Error("Positionsbezeichnung ist erforderlich.");
@@ -155,7 +155,11 @@ function validatePositionInput(input, steuermodus, sortierung) {
     if (bezeichnung.length > 500) {
         throw new Error("Positionsbezeichnung ist zu lang (max. 500 Zeichen).");
     }
-    const einheit = ((_b = input.einheit) !== null && _b !== void 0 ? _b : "").trim();
+    const description = ((_b = input.description) !== null && _b !== void 0 ? _b : "").trim();
+    if (description.length > 2000) {
+        throw new Error("Positionsbeschreibung ist zu lang (max. 2000 Zeichen).");
+    }
+    const einheit = ((_c = input.einheit) !== null && _c !== void 0 ? _c : "").trim();
     if (einheit.length > 40) {
         throw new Error("Einheit ist zu lang (max. 40 Zeichen).");
     }
@@ -166,7 +170,8 @@ function validatePositionInput(input, steuermodus, sortierung) {
     }, steuermodus);
     return Object.assign(Object.assign({ sortierung,
         bezeichnung,
-        einheit }, betraege), { katalog_position: ((_c = input.katalog_position) === null || _c === void 0 ? void 0 : _c.trim()) || null });
+        description,
+        einheit }, betraege), { katalog_position: ((_d = input.katalog_position) === null || _d === void 0 ? void 0 : _d.trim()) || null });
 }
 /** Validiert Rechnungskopf + Positionen (Entwurf). */
 function validateRechnungInput(input, steuermodus) {

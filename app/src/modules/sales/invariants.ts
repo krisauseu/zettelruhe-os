@@ -100,6 +100,7 @@ export const KLEINUNTERNEHMER_HINWEIS =
 export type ValidatedPosition = {
   sortierung: number;
   bezeichnung: string;
+  description?: string;
   menge: string;
   einheit: string;
   einzelpreis: string;
@@ -236,6 +237,11 @@ export function validatePositionInput(
     throw new Error("Positionsbezeichnung ist zu lang (max. 500 Zeichen).");
   }
 
+  const description = (input.description ?? "").trim();
+  if (description.length > 2000) {
+    throw new Error("Positionsbeschreibung ist zu lang (max. 2000 Zeichen).");
+  }
+
   const einheit = (input.einheit ?? "").trim();
   if (einheit.length > 40) {
     throw new Error("Einheit ist zu lang (max. 40 Zeichen).");
@@ -253,6 +259,7 @@ export function validatePositionInput(
   return {
     sortierung,
     bezeichnung,
+    description,
     einheit,
     ...betraege,
     katalog_position: input.katalog_position?.trim() || null,

@@ -41,6 +41,7 @@ async function requireFirmaId(): Promise<string> {
  */
 function parsePositionen(formData: FormData): RechnungspositionInput[] {
   const bezeichnungen = formData.getAll("position_bezeichnung");
+  const descriptions = formData.getAll("position_description");
   const mengen = formData.getAll("position_menge");
   const einheiten = formData.getAll("position_einheit");
   const preise = formData.getAll("position_einzelpreis");
@@ -75,6 +76,7 @@ function parsePositionen(formData: FormData): RechnungspositionInput[] {
 
     positionen.push({
       bezeichnung,
+      description: typeof descriptions[i] === "string" ? String(descriptions[i]).trim() : undefined,
       menge: menge || "1",
       einheit,
       einzelpreis,
