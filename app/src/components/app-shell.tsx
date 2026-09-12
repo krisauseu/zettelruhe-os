@@ -59,7 +59,7 @@ function buildNav(kannVerwalten: boolean): NavItem[] {
     { href: "/app/eur", label: "EÜR", icon: "eur" },
     { href: "/app/ust", label: "USt-Übersicht", icon: "ust" },
     { href: "/app/zm", label: "ZM-Übersicht", icon: "zm" },
-    { href: "/app/export", label: "Export", icon: "export" },
+    { href: "/app/export", label: "Daten exportieren", icon: "export" },
   ];
 }
 

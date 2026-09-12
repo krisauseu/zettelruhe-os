@@ -13,7 +13,7 @@ export const VERSAND_BEREITS_ERROR =
   "Für dieses Profil liegt bereits eine E-Rechnung vor. Das Original wird nicht überschrieben.";
 
 export const VERSAND_NUR_FESTGESCHRIEBEN_ERROR =
-  "E-Rechnung nur aus einer festgeschriebenen Rechnung. Bitte zuerst festschreiben.";
+  "E-Rechnungen können Sie nur für eine gebuchte Rechnung erstellen. Bitte buchen Sie die Rechnung zuerst.";
 
 export const VERSAND_ORIGINAL_IMMUTABLE_ERROR =
   "Das E-Rechnungs-Original ist nach der Erzeugung unveränderbar (ADR-0012).";
@@ -27,7 +27,7 @@ export function assertCanErzeugenVersand(
   }
   if (!rechnung.rechnungsnummer) {
     throw new Error(
-      "Ohne Rechnungsnummer keine E-Rechnung (Nummern erst bei Festschreibung).",
+      "E-Rechnungen benötigen eine Rechnungsnummer, die erst nach dem Buchen vergeben wird.",
     );
   }
   if (existingForProfil) {

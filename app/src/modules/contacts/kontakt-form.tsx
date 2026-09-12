@@ -79,7 +79,7 @@ export function KontaktForm({ action, kontakt, submitLabel, error }: Props) {
           <option value="">Kein Vorschlag</option>
           {Object.entries(STEUERBEHANDLUNGEN).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
         </select>
-        <p className="text-xs text-muted-foreground">Nur ein Vorschlag bei neuen Ausgabenbelegen. Die endgültige Auswahl erfolgt am Beleg. Bestehende Entwürfe und Festschreibungen bleiben unverändert. Land und USt-ID allein entscheiden die Behandlung nicht.</p>
+        <p className="text-xs text-muted-foreground">Für neue Ausgabenbelege ist dies nur ein Vorschlag. Die endgültige Zuordnung treffen Sie im Beleg. Bestehende Entwürfe und festgeschriebene Belege bleiben unverändert. Land und USt-IdNr. allein entscheiden die Steuerbehandlung nicht.</p>
       </div>
 
       <fieldset className="grid gap-3 sm:grid-cols-2">

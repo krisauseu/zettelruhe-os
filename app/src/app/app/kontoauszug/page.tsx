@@ -130,7 +130,7 @@ export default async function KontoauszugPage({
     <div className="mx-auto flex max-w-5xl flex-col gap-6">
       <PageHeader
         title="Kontoauszug"
-        description="Importierte Bankbewegungen zuordnen (Matching → Zahlung). Kein stiller Auto-Match — Vorschlag annehmen oder Rechnung wählen."
+        description="Importierte Bankbewegungen zuordnen. Keine automatische Zuordnung: Vorschlag übernehmen oder Rechnung auswählen."
       >
         <Link
           href="/app/bankkonten"

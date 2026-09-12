@@ -56,8 +56,8 @@ export default async function BelegNeuPage({
           Beleg anlegen
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Zuerst als Entwurf speichern, optional Datei anhängen, dann
-          festschreiben.
+          Erstellen Sie zuerst einen Entwurf. Eine Datei können Sie jederzeit
+          nachtragen.
         </p>
       </div>
 
@@ -65,8 +65,8 @@ export default async function BelegNeuPage({
         <CardHeader>
           <CardTitle>Entwurf</CardTitle>
           <CardDescription>
-            Metadaten und Datei sind editierbar, bis der Beleg festgeschrieben
-            wird.
+            Metadaten und Datei können Sie bearbeiten, bis Sie den Beleg
+            buchen.
           </CardDescription>
         </CardHeader>
         <CardContent>

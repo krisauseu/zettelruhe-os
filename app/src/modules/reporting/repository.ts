@@ -75,7 +75,7 @@ import type {
 } from "./types";
 
 const EXPORT_DATEN_GEAENDERT =
-  "Exportdaten haben sich während des Exports geändert. Bitte Export erneut starten.";
+  "Die Daten haben sich während des Exports geändert. Bitte starten Sie den Export neu.";
 const EXPORT_UNVOLLSTAENDIG =
   "Exportdaten konnten nicht vollständig gelesen werden. Bitte Export erneut starten.";
 const BELEGARCHIV_ZU_GROSS =

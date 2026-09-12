@@ -82,7 +82,7 @@ export function validateEInvoiceOutbound(
         issue(
           "RECHNUNG_OHNE_NUMMER",
           "rechnung.rechnungsnummer",
-          "Ohne Rechnungsnummer keine E-Rechnung (Nummern erst bei Festschreibung).",
+          "E-Rechnungen benötigen eine Rechnungsnummer, die erst nach dem Buchen vergeben wird.",
         ),
       );
     }

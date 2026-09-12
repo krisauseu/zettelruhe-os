@@ -132,8 +132,8 @@ export default async function AppHomePage() {
           <CardHeader>
             <CardTitle>Willkommen, {session?.name}</CardTitle>
             <CardDescription>
-              Keine Firma gefunden. Bitte Setup erneut durchlaufen oder Support
-              prüfen.
+              Es ist noch keine Firma eingerichtet. Bitte schließen Sie das
+              Setup ab oder wenden Sie sich an den Support.
             </CardDescription>
           </CardHeader>
         </Card>

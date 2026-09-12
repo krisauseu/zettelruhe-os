@@ -39,8 +39,8 @@ export default async function ERechnungNeuPage({
           E-Rechnung empfangen
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Originaldatei wird revisionssicher archiviert und geparst. Bei
-          Parse-Fehler bleibt die Datei trotzdem erhalten.
+          Die Datei wird sicher gespeichert. Wir lesen sie automatisch aus.
+          Wenn das nicht klappt, bleibt die Datei trotzdem erhalten.
         </p>
       </div>
 
@@ -90,7 +90,7 @@ export default async function ERechnungNeuPage({
                 placeholder="Interner Hinweis …"
               />
             </div>
-            <Button type="submit">Hochladen und parsen</Button>
+            <Button type="submit">E-Rechnung auslesen</Button>
           </form>
         </CardContent>
       </Card>

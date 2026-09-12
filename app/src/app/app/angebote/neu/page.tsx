@@ -59,8 +59,9 @@ export default async function AngebotNeuPage({
           Angebot anlegen
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Zuerst als Entwurf speichern, dann senden (Nummer + PDF). Kein
-          Buchungsjournal — erst bei Rechnung.
+          Erstellen Sie zuerst einen Entwurf. Beim Versand erhält das Angebot
+          eine Nummer und ein PDF. Ein Buchungsjournal entsteht erst bei der
+          Rechnung.
         </p>
       </div>
 

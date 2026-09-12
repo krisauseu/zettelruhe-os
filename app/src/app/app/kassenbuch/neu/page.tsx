@@ -65,14 +65,14 @@ export default async function KassenbuchNeuPage({
           Bareinnahme / Barausgabe
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Wird mit Speichern festgeschrieben und ins Buchungsjournal
-          übernommen (GoBD-Mindeststandard).
+          Beim Buchen wird der Eintrag festgeschrieben und ins
+          Buchungsjournal übernommen.
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Festschreiben</CardTitle>
+          <CardTitle>Eintrag buchen</CardTitle>
           <CardDescription>
             Kein Entwurf — der Eintrag erhält eine Belegnummer und ist danach
             unveränderbar. Korrektur nur über Storno/Gegenbuchung. Der Saldo

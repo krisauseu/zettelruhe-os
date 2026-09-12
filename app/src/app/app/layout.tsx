@@ -53,7 +53,7 @@ export default async function ProtectedAppLayout({
       >
         <EmptyState
           title="Kein Zugang zu einer Firma"
-          description="Für dieses Login liegt keine Mitgliedschaft vor. Bitte die Eigentümer:in um eine Einladung."
+          description="Sie haben noch keine Mitgliedschaft in dieser Firma. Bitte bitten Sie die Eigentümer:in um eine Einladung."
         />
       </AppShell>
     );

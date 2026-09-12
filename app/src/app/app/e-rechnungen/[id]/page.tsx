@@ -150,11 +150,11 @@ export default async function ERechnungDetailPage({
         <Card>
           <CardHeader>
             <CardTitle className="text-base text-destructive">
-              Parse-Fehler
+              Einlesefehler
             </CardTitle>
             <CardDescription>
-              Das Original ist trotzdem archiviert. XML hochladen oder Beleg
-              manuell anlegen.
+              Die Datei bleibt gespeichert. Sie können jetzt eine XML-Datei
+              nachladen oder den Beleg manuell anlegen.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -175,7 +175,7 @@ export default async function ERechnungDetailPage({
       {dto ? (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Geparste Felder</CardTitle>
+            <CardTitle className="text-base">Ausgelesene Felder</CardTitle>
             <CardDescription>
               Vorschau vor dem Anlegen des Beleg-Entwurfs. Felder liegen
               separat vom Original.
@@ -256,7 +256,8 @@ export default async function ERechnungDetailPage({
           <CardHeader>
             <CardTitle className="text-base">Verknüpfter Beleg</CardTitle>
             <CardDescription>
-              Entwurf prüfen und bei Bedarf festschreiben (Buchungsjournal).
+              Entwurf prüfen und bei Bedarf buchen. Dabei entsteht ein
+              Buchungsjournal-Eintrag.
             </CardDescription>
           </CardHeader>
           <CardContent>

@@ -80,7 +80,7 @@ export default async function ERechnungenListPage({
     <div className="mx-auto flex max-w-5xl flex-col gap-6">
       <PageHeader
         title="E-Rechnungen"
-        description="Empfang: XRechnung-XML, CII-XML oder PDF mit eingebettetem XML (auch Flate). Original archivieren, Beleg vorbefüllen. Versand von der festgeschriebenen Rechnung aus."
+        description="XRechnung-XML, CII-XML oder PDF mit eingebettetem XML empfangen. Die Originaldatei bleibt erhalten, der Beleg wird vorbefüllt. E-Rechnungen versenden Sie aus einer gebuchten Rechnung."
       >
         {session.kannSchreiben ? (
           <Link
@@ -96,7 +96,7 @@ export default async function ERechnungenListPage({
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Filter</CardTitle>
           <CardDescription>
-            Nach Nummer, Lieferant:in, Status oder Parse-Ergebnis filtern.
+            Suchen nach Nummer, Kontakt oder Auslesestatus.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -136,7 +136,7 @@ export default async function ERechnungenListPage({
                 htmlFor="parse_status"
                 className="text-xs text-muted-foreground"
               >
-                Parse
+                Auslesestatus
               </Label>
               <select
                 id="parse_status"
@@ -145,8 +145,8 @@ export default async function ERechnungenListPage({
                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs"
               >
                 <option value="">Alle</option>
-                <option value="ok">Geparst</option>
-                <option value="fehler">Parse-Fehler</option>
+                <option value="ok">Ausgelesen</option>
+                <option value="fehler">Einlesefehler</option>
               </select>
             </div>
             <button

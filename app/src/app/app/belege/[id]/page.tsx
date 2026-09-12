@@ -129,7 +129,7 @@ export default async function BelegDetailPage({
           description={
             beleg.festgeschrieben_am
               ? `Festgeschrieben am ${formatDateTimeDe(beleg.festgeschrieben_am)}`
-              : "Entwurf — editierbar bis zur Festschreibung."
+              : "Sie können den Beleg bis zur Buchung noch bearbeiten."
           }
         />
         {sp.error ? (
@@ -152,7 +152,7 @@ export default async function BelegDetailPage({
         <p>Gespeicherte Auswahl am Beleg. Vorgangsbezug: {beleg.rc.vorgang}</p>
         <p>Leistungsabschnitt: {beleg.rc.leistung_von} bis {beleg.rc.leistung_bis}. Zahlung: {beleg.rc.zahlungsdatum || "kein Datum"}, {beleg.rc.zahlungsbetrag} EUR.</p>
         <p className="whitespace-pre-wrap">Nachweis: {beleg.rc.nachweis}</p>
-        {rcError && <p className="text-destructive">Festschreibung gesperrt: {rcError} Ein Entwurf verschiebt keine Erklärungspflicht.</p>}
+        {rcError && <p className="text-destructive">Sie können diesen Beleg noch nicht buchen: {rcError}</p>}
       </div>}
 
       {!istEntwurf ? (
@@ -294,7 +294,7 @@ export default async function BelegDetailPage({
             <CardHeader>
               <CardTitle>Entwurf bearbeiten</CardTitle>
               <CardDescription>
-                Speichern aktualisiert den Entwurf. Festschreiben erzeugt den
+                Speichern aktualisiert den Entwurf. Beim Buchen entsteht der
                 Journal-Eintrag.
               </CardDescription>
             </CardHeader>
@@ -315,7 +315,7 @@ export default async function BelegDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Festschreiben</CardTitle>
+              <CardTitle>Beleg buchen</CardTitle>
               <CardDescription>
                 Vergibt die Belegnummer, schreibt ins Buchungsjournal und
                 sperrt danach Metadaten sowie Datei (GoBD-Mindeststandard).
@@ -324,7 +324,7 @@ export default async function BelegDetailPage({
             <CardContent>
               <form action={festschreibenBelegAction}>
                 <input type="hidden" name="id" value={id} />
-                <Button type="submit" disabled={!!rcError}>Beleg festschreiben</Button>
+                <Button type="submit" disabled={!!rcError}>Beleg buchen</Button>
               </form>
             </CardContent>
           </Card>

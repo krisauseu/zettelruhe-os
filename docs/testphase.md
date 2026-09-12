@@ -107,3 +107,23 @@ README, Status, Roadmap und Entwicklung sind nachgezogen. App und PocketBase mit
 Migration/Hook gemeinsam aktualisieren. Kein Produktionsbuild, VPS-Nachtest oder
 Deployment. Der E-Rechnungs-XML-Export und wiederkehrende Vorlagen sind nicht
 Teil der Erweiterung. Bestehende Original-PDFs werden nicht neu erzeugt.
+
+## TP-032: UI-Wording-Audit, 2026-09-12
+
+Änderung in Shell, E-Rechnungen, Belegen, Kassenbuch, Rechnungen, Angeboten,
+Kontakten, Kontoauszug, Nutzerverwaltung und Exportfehlermeldungen. Die sichtbare
+Prozesssprache verwendet nun unter anderem "auslesen" statt "parsen" und
+"buchen" für die geprüften endgültigen Buchungsvorgänge. Technische
+Status-/Modellbegriffe und die Exportfunktion bleiben erhalten. Owner: die
+jeweiligen UI-Dateien, `lib/labels.ts`, `einvoice/{actions,send-invariants,
+validate-outbound}.ts`, `reporting/repository.ts`, `travel/actions.ts`.
+
+Lokale Prüfung am 2026-09-12, macOS/Node 25.9.0, Next 16.3.0:
+
+- `cd app && npm run typecheck` bestanden.
+- `cd app && npx vitest run src/modules/einvoice src/modules/reporting/repository-export.test.ts src/modules/expenses src/modules/cash src/modules/sales src/modules/travel`: 23 Dateien, 342 Tests bestanden.
+- `cd app && npm test`: 760 bestanden, 163 sichere Integrationstests übersprungen.
+- `cd app && npm run lint -- --max-warnings=0` und `git diff --check` bestanden.
+
+Kein Browser-, VPS- oder Deploymenttest. Keine Änderung an Geschäftslogik,
+Persistenz, Import-/Exportabläufen oder Finanzinvarianten.

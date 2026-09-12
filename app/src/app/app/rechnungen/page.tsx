@@ -86,7 +86,7 @@ export default async function RechnungenListPage({
     <div className="mx-auto flex max-w-5xl flex-col gap-6">
       <PageHeader
         title="Rechnungen"
-        description="Freie Rechnungen — Entwurf mit Vorschau, bei Festschreibung Nummer, Original-PDF und Buchungsjournal."
+        description="Rechnungen als Entwürfe erfassen. Beim Buchen erhalten sie Rechnungsnummer, Original-PDF und Buchungsjournal."
       >
         {session.kannSchreiben ? (
           <Link
@@ -167,7 +167,7 @@ export default async function RechnungenListPage({
               description={
                 q || status
                   ? "Filter anpassen oder neue Rechnung anlegen."
-                  : "Entwurf anlegen und bei Festschreibung Nummer, PDF und Buchungsjournal erzeugen."
+                  : "Rechnung als Entwurf speichern. Erst beim Buchen werden Nummer und PDF erstellt."
               }
               actionHref="/app/rechnungen/neu"
               actionLabel="Erste Rechnung anlegen"

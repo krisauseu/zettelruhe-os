@@ -93,7 +93,7 @@ export default async function BelegeListPage({
     <div className="mx-auto flex max-w-5xl flex-col gap-6">
       <PageHeader
         title="Belege"
-        description="Ausgaben und Einnahmen mit Datei — Festschreibung schreibt ins Buchungsjournal."
+        description="Ausgaben und Einnahmen mit Beleg. Als Entwurf speichern und danach buchen."
       >
         {session.kannSchreiben ? (
           <Link
@@ -188,7 +188,7 @@ export default async function BelegeListPage({
               description={
                 q || status
                   ? "Filter anpassen oder neuen Beleg anlegen."
-                  : "Ausgaben und Einnahmen mit Datei — Festschreibung schreibt ins Buchungsjournal."
+                  : "Ausgaben und Einnahmen mit Beleg. Als Entwurf speichern und danach buchen."
               }
               actionHref="/app/belege/neu"
               actionLabel="Ersten Beleg anlegen"

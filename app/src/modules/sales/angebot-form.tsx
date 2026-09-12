@@ -137,7 +137,8 @@ export function AngebotForm({
             ))}
           </select>
           <p className="text-xs text-muted-foreground">
-            Für das Senden erforderlich. Im Entwurf optional speicherbar.
+            Das Feld ist für den Versand erforderlich. In Entwürfen können Sie
+            es vorab speichern.
           </p>
         </div>
 

@@ -109,8 +109,8 @@ export const E_RECHNUNG_PARSE_STATUS_LABELS: Record<
   EInvoiceParseStatus,
   string
 > = {
-  ok: "Geparst",
-  fehler: "Parse-Fehler",
+  ok: "Ausgelesen",
+  fehler: "Einlesefehler",
 };
 
 /** E-Rechnung: erkanntes Format light */

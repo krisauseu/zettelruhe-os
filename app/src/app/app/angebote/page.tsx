@@ -92,7 +92,7 @@ export default async function AngeboteListPage({
     <div className="mx-auto flex max-w-5xl flex-col gap-6">
       <PageHeader
         title="Angebote"
-        description="Noch nicht verbindliche Verkaufsdokumente — Entwurf mit Vorschau, beim Senden Nummer und Original-PDF (ohne Buchungsjournal, ohne SMTP-Pflicht)."
+        description="Angebote im Entwurf erstellen und prüfen. Beim Versenden wird eine Nummer vergeben und ein PDF erzeugt."
       >
         {session.kannSchreiben ? (
           <Link

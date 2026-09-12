@@ -184,13 +184,13 @@ export function KassenbuchForm({
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Mit Speichern wird der Eintrag <strong>festgeschrieben</strong>, erhält
-        eine Belegnummer und erscheint im Buchungsjournal. Der Kassensaldo darf
-        nicht negativ werden. Korrekturen nur über Storno/Gegenbuchung.
+        Mit dem Buchen wird der Kassenbuch-Eintrag abgeschlossen, erhält eine
+        Belegnummer und erscheint im Buchungsjournal. Der Kassensaldo darf nicht
+        negativ werden. Korrekturen nur über Storno/Gegenbuchung.
       </p>
 
       <div>
-        <Button type="submit">Festschreiben</Button>
+        <Button type="submit">Eintrag buchen</Button>
       </div>
     </form>
   );

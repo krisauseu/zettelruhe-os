@@ -236,11 +236,11 @@ export default async function NutzerPage({
                         action={entferneMitgliedschaftAction}
                         title="Mitgliedschaft entfernen?"
                         message={`${m.name} verliert den Zugang zu dieser Firma. Das Login bleibt bestehen, falls die Person in einer anderen Firma Mitglied ist.`}
-                        confirmLabel="Entfernen"
+                        confirmLabel="Mitglied entfernen"
                       >
                         <input type="hidden" name="id" value={m.id} />
                         <Button type="submit" size="sm" variant="danger">
-                          Entfernen
+                          Mitglied entfernen
                         </Button>
                       </ConfirmForm>
                     </div>

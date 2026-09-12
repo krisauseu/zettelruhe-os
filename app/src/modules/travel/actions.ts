@@ -75,7 +75,9 @@ export async function updateFahrtAction(formData: FormData): Promise<void> {
   try {
     await updateFahrt(firmaId, id, input);
   } catch (e) {
-    const msg = e instanceof Error ? e.message : "Speichern fehlgeschlagen.";
+    const msg = e instanceof Error
+      ? e.message
+      : "Speichern ist fehlgeschlagen. Bitte prüfen Sie die Eingaben und versuchen es erneut.";
     redirect(`/app/fahrten/${id}?error=${encodeURIComponent(msg)}`);
   }
 

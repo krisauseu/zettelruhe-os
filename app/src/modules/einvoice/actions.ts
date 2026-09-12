@@ -70,7 +70,9 @@ export async function createBelegFromERechnungAction(
     belegId = beleg.id;
   } catch (e) {
     const msg =
-      e instanceof Error ? e.message : "Beleg-Entwurf konnte nicht angelegt werden.";
+      e instanceof Error
+        ? e.message
+        : "Beleg konnte nicht angelegt werden. Bitte prüfen Sie die Datei oder laden Sie sie erneut hoch.";
     redirect(`/app/e-rechnungen/${id}?error=${encodeURIComponent(msg)}`);
   }
 

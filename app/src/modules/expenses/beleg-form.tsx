@@ -238,7 +238,7 @@ export function BelegForm({
 
       <p className="text-xs text-muted-foreground">
         {mode === "create"
-          ? "Wird als Entwurf gespeichert. Festschreibung erfolgt auf der Detailseite und schreibt ins Buchungsjournal."
+          ? "Der Beleg bleibt im Entwurfsstatus. Erst beim Buchen wird er abgeschlossen."
           : "Nur Entwürfe sind editierbar. Nach der Festschreibung sind Metadaten und Datei unveränderbar."}
       </p>
 

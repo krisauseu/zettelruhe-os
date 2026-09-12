@@ -137,7 +137,8 @@ export function RechnungForm({
             ))}
           </select>
           <p className="text-xs text-muted-foreground">
-            Für die Festschreibung erforderlich. Im Entwurf optional speicherbar.
+            Notwendig zum Buchen. Im Entwurf können Sie diese Angaben zuerst
+            unvollständig speichern.
           </p>
         </div>
 

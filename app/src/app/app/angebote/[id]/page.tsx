@@ -151,7 +151,7 @@ export default async function AngebotDetailPage({
           description={
             angebot.gesendet_am
               ? `Gesendet am ${formatDateTimeDe(angebot.gesendet_am)}`
-              : "Entwurf — editierbar bis zum Senden. Keine Angebotsnummer vor dem Senden."
+              : "Der Entwurf bleibt bis zum Versand änderbar. Vor dem Versand gibt es noch keine Angebotsnummer."
           }
         />
         {sp.error ? (

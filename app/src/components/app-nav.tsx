@@ -213,7 +213,8 @@ export function AppNav({ items }: { items: NavItem[] }) {
 
       {viewPrefs.favoritesOnly && viewPrefs.favorites.length === 0 ? (
         <p className="px-3 pb-1 text-[10px] leading-4 text-sidebar-muted">
-          Keine Favoriten. Stern an einem Eintrag setzen.
+          Noch keine Favoriten vorhanden. Tippen Sie auf den Stern neben einem
+          Punkt, um ihn als Favorit zu markieren.
         </p>
       ) : null}
 

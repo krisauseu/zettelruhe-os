@@ -199,7 +199,7 @@ export default async function RechnungDetailPage({
           description={
             rechnung.festgeschrieben_am
               ? `Festgeschrieben am ${formatDateTimeDe(rechnung.festgeschrieben_am)}`
-              : "Entwurf — editierbar bis zur Festschreibung. Keine Rechnungsnummer vor der Festschreibung."
+              : "Sie können diesen Entwurf noch bearbeiten. Eine Rechnungsnummer wird erst beim Buchen vergeben."
           }
         />
         {sp.error ? (
@@ -212,7 +212,7 @@ export default async function RechnungDetailPage({
         ) : null}
         {sp.festgeschrieben ? (
           <p className="mt-2 text-sm text-green-700 dark:text-green-400">
-            Rechnung festgeschrieben: Nummer vergeben, PDF erzeugt,
+            Rechnung gebucht: Nummer vergeben, PDF erzeugt,
             Buchungsjournal geschrieben.
           </p>
         ) : null}
@@ -687,8 +687,8 @@ export default async function RechnungDetailPage({
               <CardTitle>Entwurf bearbeiten</CardTitle>
               <CardDescription>
                 Speichern aktualisiert den Entwurf. Die Vorschau zeigt den
-                zuletzt gespeicherten Stand. Festschreiben vergibt die Nummer,
-                erzeugt das Original-PDF und schreibt ins Buchungsjournal.
+                zuletzt gespeicherten Stand. Erst beim Buchen werden Nummer,
+                PDF und Buchungsjournal erstellt.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -733,7 +733,7 @@ export default async function RechnungDetailPage({
 
           <Card>
             <CardHeader>
-              <CardTitle>Festschreiben</CardTitle>
+              <CardTitle>Rechnung buchen</CardTitle>
               <CardDescription>
                 Vergibt die Rechnungsnummer aus dem Nummernkreis, erzeugt das
                 Original-PDF (ohne Wasserzeichen), schreibt eine Einnahme ins
@@ -745,13 +745,13 @@ export default async function RechnungDetailPage({
             <CardContent className="flex flex-col gap-3">
               {!rechnung.kunde ? (
                 <p className="text-sm text-destructive">
-                  Bitte zuerst eine:n Kund:in speichern, dann festschreiben.
+                  Bitte zuerst eine:n Kund:in speichern, dann buchen.
                 </p>
               ) : null}
               <form action={festschreibenRechnungAction}>
                 <input type="hidden" name="id" value={id} />
                 <Button type="submit" disabled={!rechnung.kunde}>
-                  Rechnung festschreiben
+                  Rechnung buchen
                 </Button>
               </form>
             </CardContent>

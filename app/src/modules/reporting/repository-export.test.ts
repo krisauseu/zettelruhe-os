@@ -221,7 +221,7 @@ describe("Export-Pagination", () => {
         bis: "2026-12-31",
       }),
     ).rejects.toThrow(
-      "Exportdaten haben sich während des Exports geändert. Bitte Export erneut starten.",
+      "Die Daten haben sich während des Exports geändert. Bitte starten Sie den Export neu.",
     );
   });
 
