@@ -319,18 +319,35 @@ describe("Bankzeile und IBAN-Anzeige", () => {
 });
 
 describe("Fußtext-Zeilen", () => {
-  it("trimmt und verwirft Leerzeilen", () => {
+  it("hält Zeilenumbrüche inklusive leerer Zeilen bei", () => {
     expect(
       footerTextZeilen(
         "Vielen Dank für Ihren Auftrag.\n\nFür Rückfragen stehe ich Ihnen gerne zur Verfügung.\n\nMit freundlichen Grüßen\n\nAnton Titz\n",
       ),
     ).toEqual([
       "Vielen Dank für Ihren Auftrag.",
+      "",
       "Für Rückfragen stehe ich Ihnen gerne zur Verfügung.",
+      "",
       "Mit freundlichen Grüßen",
+      "",
       "Anton Titz",
+      "",
     ]);
-    expect(footerTextZeilen("  \n\n  ")).toEqual([]);
+    expect(footerTextZeilen("  \n\n  ")).toEqual(["", "", ""]);
+  });
+
+  it("unterstützt eine simple Zeile ohne Leerzeile", () => {
+    expect(footerTextZeilen("Hallo\nWelt")).toEqual(["Hallo", "Welt"]);
+  });
+
+  it("bewahrt mehrere Leerzeilen in Folge", () => {
+    expect(footerTextZeilen("Hallo\n\n\nWelt")).toEqual([
+      "Hallo",
+      "",
+      "",
+      "Welt",
+    ]);
   });
 });
 

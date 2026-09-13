@@ -155,8 +155,10 @@ const styles = StyleSheet.create({
   metaLabel: {
     color: "#555",
   },
-  kopftext: {
+  kopftextBlock: {
     marginBottom: 14,
+  },
+  kopftextZeile: {
     fontSize: 9.5,
     color: "#222",
     lineHeight: 1.45,
@@ -424,7 +426,7 @@ function DokumentFusstext({ layout }: { layout: DokumentPdfLayout }) {
     <View style={styles.fusstextBlock} wrap={false}>
       {zeilen.map((z, i) => (
         <Text key={`fuss-${i}`} style={styles.footerTextZeile}>
-          {z}
+          {z.length === 0 ? " " : z}
         </Text>
       ))}
     </View>
@@ -691,7 +693,13 @@ function DokumentSeite({
         ) : null}
 
         {layout.kopftext ? (
-          <Text style={styles.kopftext}>{layout.kopftext}</Text>
+          <View style={styles.kopftextBlock} wrap={false}>
+            {footerTextZeilen(layout.kopftext).map((z, i) => (
+              <Text key={`kopf-${i}`} style={styles.kopftextZeile}>
+                {z.length === 0 ? " " : z}
+              </Text>
+            ))}
+          </View>
         ) : null}
 
         <Positionstabelle

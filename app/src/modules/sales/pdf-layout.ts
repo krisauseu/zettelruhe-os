@@ -166,12 +166,12 @@ export function footerBankzeile(bank?: DokumentBank): string {
   return parts.join("  ·  ");
 }
 
-/** Leere Zeilen im konfigurierbaren Fußtext verwerfen — kompakter Satz. */
+/**
+ * Zeilen im konfigurierbaren Fußtext beibehalten, inklusive leerer Zwischenzeilen.
+ * Mehrfache Leerzeilen werden so wie im Texteingabefeld übernommen.
+ */
 export function footerTextZeilen(text: string): string[] {
-  return text
-    .split(/\r?\n/)
-    .map((l) => l.trim())
-    .filter(Boolean);
+  return text.split(/\r?\n/).map((l) => l.trim());
 }
 
 export type FooterFirmaStammdaten = {

@@ -281,6 +281,45 @@ describe("PDF-Render", () => {
     expect(buf.length).toBeGreaterThan(800);
   });
 
+  it("erhält leere Zeilen in Kopf- und Fußtext", async () => {
+    const buf = await renderRechnungPdf({
+      rechnung: rechnung(),
+      positionen: [{ ...position, steuersatz: "", betrag_ust: "0.00" }],
+      firma: firma({
+        telefon: "030 123456",
+        email: "post@example.test",
+        webseite: "https://www.werkstatt.example",
+        steuernummer: "11/222/33333",
+      }),
+      kunde,
+      entwurf: true,
+      layout: {
+        ...defaultDokumentPdfLayout(),
+        kopftext:
+          "Vielen Dank für Ihre Beauftragung.\n\nFür Rückfragen bitte einfach melden.",
+        fusstext:
+          "Freundliche Grüße\n\n\nAnton Titz",
+        bank: {
+          name: "Fyrst Bank",
+          iban: "DE56390702100080446800",
+          bic: "DEUTDEDKP09",
+          kontoinhaber: "Anton Titz",
+        },
+      },
+    });
+
+    const runs = pdfTextRuns(buf);
+    expect(runs).toContainEqual({
+      text: "Für Rückfragen bitte einfach melden.",
+      size: 9.5,
+    });
+    expect(runs).toContainEqual({ text: "Freundliche Grüße", size: 9 });
+    expect(runs).toContainEqual({ text: "Anton Titz", size: 9 });
+    expect(
+      runs.some((r) => r.text === " "),
+    ).toBeTruthy();
+  });
+
   it("erzeugt Angebots-PDF ohne Zahlblock", async () => {
     const angebot: Angebot = {
       id: "a1",
