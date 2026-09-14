@@ -1,0 +1,21 @@
+WARNING: The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+
+> app@1.0.0 test
+> vitest run src/lib/sec001-network.test.ts src/lib/smtp.test.ts src/modules/ustid
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.11 /app
+
+ ✓ src/modules/ustid/format.test.ts (5 tests) 12ms
+ ✓ src/modules/ustid/invariants.test.ts (6 tests) 12ms
+ ✓ src/modules/ustid/evatr.test.ts (6 tests) 91ms
+ ✓ src/lib/smtp.test.ts (3 tests) 9ms
+ ✓ src/lib/sec001-network.test.ts (2 tests) 174ms
+
+ Test Files  5 passed (5)
+      Tests  22 passed (22)
+   Start at  17:37:12
+   Duration  1.11s (transform 1.10s, setup 0ms, import 1.68s, tests 298ms, environment 1ms)

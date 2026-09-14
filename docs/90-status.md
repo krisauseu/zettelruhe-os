@@ -1,5 +1,12 @@
 # Status — Zettelruhe
 
+2026-09-14: SEC-001 aktualisiert die Kernabhängigkeiten. Vorher sechs
+Audit-Paketbefunde, davon drei Produktion; nachher jeweils null. Lokale
+Kandidaten-, Isolation-, SMTP-/BZSt- und Restoreprüfungen sind im
+[Sicherheitsbericht](security/SEC-001/README.md) belegt. Repositoryabschluss
+auf `origin/main` beauftragt; kein Release oder Deployment. Cloud-Integration
+und VPS-Freigabe bleiben separate Aufträge.
+
 2026-09-11: Optionale Positionsbeschreibungen für Angebote und Rechnungen
 sind implementiert und lokal geprüft (TP-031). Formulare, Persistenz,
 Angebotsübernahme und PDF sind ergänzt. Migration und Hooks müssen zusammen

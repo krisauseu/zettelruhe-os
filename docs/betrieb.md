@@ -284,3 +284,12 @@ trennen. Der Dokumentationsabgleich vom 2026-09-10 führt kein Update aus.
 ---
 
 _Dokumentationsstand: 2026-09-10, Codebasis `0842832`. Dies ist kein Nachweis eines aktuellen Deployments oder Restore-Tests._
+
+## SEC-001: lokaler Sicherheitskandidat, 2026-09-14
+
+[Prüfbericht und reproduzierbare Kandidaten](security/SEC-001/README.md).
+Die Prüfung betrifft neue synthetische Datenvolumes. Der Rückfall verwendet
+das ursprüngliche Backup mit alten Hooks und altem Next, keinen Schema-Downgrade
+der aktualisierten Datenbank. Vor einer Übernahme Zielbackup, exakten Commit,
+Image-/Config-Digests und passendes AGPL-Quellangebot separat freigeben.
+Der lokale Nachweis aktualisiert weder Cloud-`core.lock.json` noch den VPS.

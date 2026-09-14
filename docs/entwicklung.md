@@ -26,6 +26,15 @@ Die vollständige Zwei-PB-Abnahme liegt im separaten Cloud-Repository unter
 `docs/tasks/TP-002.md`, der Starter unter `scripts/test-tp002-isolated.mjs`.
 Die Kernreferenz dort kennzeichnet diesen Stand ausdrücklich als Entwicklung.
 
+## SEC-001, 2026-09-14
+
+Next, sharp/libheif, Nodemailer und die betroffenen Dev-Abhängigkeiten sind
+kompatibel aktualisiert. Beide Lockfile-Audits melden null Befunde.
+[Versionen, isolierte Prüfungen, Quellcodeangebot und Freigabegrenzen](security/SEC-001/README.md).
+Der Release-Smoke akzeptiert `RELEASE_BASE_REF` und optional
+`RELEASE_ROLLBACK_NEXT_IMAGE` für einen synthetischen Backup-Rückfallvergleich.
+Die Kandidaten sind lokal; Cloud-Lockfile und VPS bleiben unverändert.
+
 ## Quellen und Arbeitsregeln
 
 | Quelle | Wann lesen und wie einordnen |
@@ -84,9 +93,9 @@ Mitgliedschaften führen. Fachlogik und Oberfläche laufen zusammen in Next;
 PocketBase stellt Auth, SQLite, Collections und Dateien bereit.
 
 Der geprüfte Paketstand in [app/package.json](../app/package.json) verwendet
-Next.js 16.3.0, React 19.2.8, TypeScript mit `strict`, Tailwind CSS 4,
+Next.js 16.3.5, React 19.2.8, TypeScript mit `strict`, Tailwind CSS 4,
 `decimal.js`, `jose`, `@react-pdf/renderer`, `qrcode` und Nodemailer.
-Vitest 4.1.10 und ESLint 9 prüfen den Code. Das
+Vitest 4.1.11 und ESLint 9 prüfen den Code. Das
 [Lockfile](../app/package-lock.json) bindet die aufgelösten Paketversionen.
 Kein ORM, PocketBase-Client-SDK oder separates Domain-Backend ist eingebunden.
 

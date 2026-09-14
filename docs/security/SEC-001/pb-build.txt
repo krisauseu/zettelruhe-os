@@ -1,0 +1,77 @@
+#0 building with "orbstack" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 641B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/alpine:3.21
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/7] FROM docker.io/library/alpine:3.21
+#4 CACHED
+
+#5 [internal] load build context
+#5 transferring context: 396.00kB 0.0s done
+#5 DONE 0.0s
+
+#6 [2/7] RUN apk add --no-cache ca-certificates unzip curl wget 	&& curl -fsSL "https://github.com/pocketbase/pocketbase/releases/download/v0.39.10/pocketbase_0.39.10_linux_amd64.zip" 		-o /tmp/pb.zip 	&& unzip /tmp/pb.zip -d /pb 	&& chmod +x /pb/pocketbase 	&& rm /tmp/pb.zip 	&& apk del unzip curl
+#6 0.239 fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/main/x86_64/APKINDEX.tar.gz
+#6 1.307 fetch https://dl-cdn.alpinelinux.org/alpine/v3.21/community/x86_64/APKINDEX.tar.gz
+#6 1.776 (1/13) Installing ca-certificates (20260413-r0)
+#6 1.945 (2/13) Installing brotli-libs (1.1.0-r2)
+#6 2.085 (3/13) Installing c-ares (1.34.8-r0)
+#6 2.218 (4/13) Installing libunistring (1.2-r0)
+#6 2.390 (5/13) Installing libidn2 (2.3.7-r0)
+#6 2.517 (6/13) Installing nghttp2-libs (1.69.0-r0)
+#6 2.647 (7/13) Installing libpsl (0.21.5-r3)
+#6 2.775 (8/13) Installing zstd-libs (1.5.6-r2)
+#6 2.928 (9/13) Installing libcurl (8.14.1-r2)
+#6 3.071 (10/13) Installing curl (8.14.1-r2)
+#6 3.206 (11/13) Installing unzip (6.0-r15)
+#6 3.333 (12/13) Installing pcre2 (10.43-r0)
+#6 3.465 (13/13) Installing wget (1.25.0-r0)
+#6 3.610 Executing busybox-1.37.0-r14.trigger
+#6 3.624 Executing ca-certificates-20260413-r0.trigger
+#6 3.676 OK: 13 MiB in 28 packages
+#6 6.791 Archive:  /tmp/pb.zip
+#6 6.793   inflating: /pb/CHANGELOG.md
+#6 6.794   inflating: /pb/LICENSE.md
+#6 6.794   inflating: /pb/pocketbase
+#6 7.009 WARNING: opening from cache https://dl-cdn.alpinelinux.org/alpine/v3.21/main: No such file or directory
+#6 7.009 WARNING: opening from cache https://dl-cdn.alpinelinux.org/alpine/v3.21/community: No such file or directory
+#6 7.010 (1/8) Purging curl (8.14.1-r2)
+#6 7.011 (2/8) Purging libcurl (8.14.1-r2)
+#6 7.011 (3/8) Purging libpsl (0.21.5-r3)
+#6 7.011 (4/8) Purging nghttp2-libs (1.69.0-r0)
+#6 7.011 (5/8) Purging unzip (6.0-r15)
+#6 7.011 (6/8) Purging zstd-libs (1.5.6-r2)
+#6 7.011 (7/8) Purging brotli-libs (1.1.0-r2)
+#6 7.011 (8/8) Purging c-ares (1.34.8-r0)
+#6 7.012 Executing busybox-1.37.0-r14.trigger
+#6 7.021 OK: 10 MiB in 20 packages
+#6 DONE 7.1s
+
+#7 [3/7] COPY pb_migrations /pb/pb_migrations
+#7 DONE 0.1s
+
+#8 [4/7] COPY pb_hooks /pb/pb_hooks
+#8 DONE 0.0s
+
+#9 [5/7] COPY entrypoint.sh /pb/entrypoint.sh
+#9 DONE 0.1s
+
+#10 [6/7] RUN chmod +x /pb/entrypoint.sh
+#10 DONE 0.1s
+
+#11 [7/7] WORKDIR /pb
+#11 DONE 0.0s
+
+#12 exporting to image
+#12 exporting layers 0.1s done
+#12 writing image sha256:81e3672daea423bf508ef0321837ac8e904e647a89693b4a081044d72c7fc8d7 done
+#12 naming to docker.io/library/zr-sec001-pb:20260914 done
+#12 DONE 0.1s

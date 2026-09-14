@@ -1,0 +1,188 @@
+#0 building with "orbstack" instance using docker driver
+
+#1 [internal] load build definition from Next.Dockerfile
+#1 transferring dockerfile: 1.07kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 84B done
+#3 DONE 0.0s
+
+#4 [deps 1/4] FROM docker.io/library/node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 2.81MB 0.0s done
+#5 DONE 0.1s
+
+#6 [deps 2/4] WORKDIR /app
+#6 CACHED
+
+#7 [deps 3/4] COPY package.json package-lock.json ./
+#7 DONE 0.1s
+
+#8 [deps 4/4] RUN npm ci
+#8 28.19
+#8 28.19 added 495 packages, and audited 496 packages in 28s
+#8 28.19
+#8 28.19 170 packages are looking for funding
+#8 28.19   run `npm fund` for details
+#8 28.19
+#8 28.19 found 0 vulnerabilities
+#8 28.19 npm notice
+#8 28.19 npm notice New major version of npm available! 10.9.8 -> 12.0.2
+#8 28.19 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+#8 28.19 npm notice To update run: npm install -g npm@12.0.2
+#8 28.19 npm notice
+#8 DONE 28.9s
+
+#9 [builder 3/5] COPY --from=deps /app/node_modules ./node_modules
+#9 DONE 1.0s
+
+#10 [builder 4/5] COPY . .
+#10 DONE 0.1s
+
+#11 [builder 5/5] RUN npm run build
+#11 0.792
+#11 0.792 > app@1.0.0 build
+#11 0.792 > next build
+#11 0.792
+#11 1.445 ▲ Next.js 16.3.5 (Turbopack)
+#11 1.654 ✓ Running next.config.ts took 208ms
+#11 1.669 - Experiments (use with caution):
+#11 1.669   · serverActions
+#11 1.669
+#11 1.727   Creating an optimized production build ...
+#11 10.03 ✓ Compiled successfully in 8.1s
+#11 10.04   Running TypeScript ...
+#11 24.05   Finished TypeScript in 14.0s ...
+#11 24.06   Collecting page data using 9 workers ...
+#11 26.42   Generating static pages using 9 workers (0/6) ...
+#11 26.54   Generating static pages using 9 workers (1/6)
+#11 26.54   Generating static pages using 9 workers (2/6)
+#11 26.54   Generating static pages using 9 workers (4/6)
+#11 26.58 ✓ Generating static pages using 9 workers (6/6) in 164ms
+#11 26.58   Finalizing page optimization ...
+#11 27.10
+#11 27.10 Route (app)
+#11 27.10 ┌ ƒ /
+#11 27.10 ├ ○ /_not-found
+#11 27.10 ├ ƒ /app
+#11 27.10 ├ ƒ /app/angebote
+#11 27.10 ├ ƒ /app/angebote/[id]
+#11 27.10 ├ ƒ /app/angebote/[id]/pdf
+#11 27.10 ├ ƒ /app/angebote/[id]/pdf/vorschau
+#11 27.10 ├ ƒ /app/angebote/neu
+#11 27.10 ├ ƒ /app/auswertungen
+#11 27.10 ├ ƒ /app/bankkonten
+#11 27.10 ├ ƒ /app/bankkonten/[id]
+#11 27.10 ├ ƒ /app/bankkonten/[id]/import
+#11 27.10 ├ ƒ /app/bankkonten/neu
+#11 27.10 ├ ƒ /app/belege
+#11 27.10 ├ ƒ /app/belege/[id]
+#11 27.10 ├ ƒ /app/belege/[id]/datei
+#11 27.10 ├ ƒ /app/belege/neu
+#11 27.10 ├ ƒ /app/e-rechnungen
+#11 27.10 ├ ƒ /app/e-rechnungen/[id]
+#11 27.10 ├ ƒ /app/e-rechnungen/[id]/datei
+#11 27.10 ├ ƒ /app/e-rechnungen/neu
+#11 27.10 ├ ƒ /app/eur
+#11 27.10 ├ ƒ /app/export
+#11 27.10 ├ ƒ /app/export/belegarchiv
+#11 27.10 ├ ƒ /app/export/datev
+#11 27.10 ├ ƒ /app/export/journal-csv
+#11 27.10 ├ ƒ /app/fahrten
+#11 27.10 ├ ƒ /app/fahrten/[id]
+#11 27.10 ├ ƒ /app/fahrten/neu
+#11 27.10 ├ ƒ /app/firma
+#11 27.10 ├ ƒ /app/firma/logo
+#11 27.10 ├ ƒ /app/firma/neu
+#11 27.10 ├ ƒ /app/firma/neu/submit
+#11 27.10 ├ ƒ /app/firma/wechseln
+#11 27.10 ├ ƒ /app/journal
+#11 27.10 ├ ƒ /app/journal/[id]
+#11 27.10 ├ ƒ /app/journal/neu
+#11 27.10 ├ ƒ /app/kassenbuch
+#11 27.10 ├ ƒ /app/kassenbuch/[id]
+#11 27.10 ├ ƒ /app/kassenbuch/neu
+#11 27.10 ├ ƒ /app/katalog
+#11 27.10 ├ ƒ /app/katalog/[id]
+#11 27.10 ├ ƒ /app/katalog/export
+#11 27.10 ├ ƒ /app/katalog/import
+#11 27.10 ├ ƒ /app/katalog/neu
+#11 27.10 ├ ƒ /app/kategorien
+#11 27.10 ├ ƒ /app/kategorien/[id]
+#11 27.10 ├ ƒ /app/kategorien/neu
+#11 27.10 ├ ƒ /app/kontakte
+#11 27.10 ├ ƒ /app/kontakte/[id]
+#11 27.10 ├ ƒ /app/kontakte/export
+#11 27.10 ├ ƒ /app/kontakte/import
+#11 27.10 ├ ƒ /app/kontakte/neu
+#11 27.10 ├ ƒ /app/kontoauszug
+#11 27.10 ├ ƒ /app/nutzer
+#11 27.10 ├ ƒ /app/passwort
+#11 27.10 ├ ƒ /app/projekte
+#11 27.10 ├ ƒ /app/projekte/[id]
+#11 27.10 ├ ƒ /app/projekte/neu
+#11 27.10 ├ ƒ /app/rechnungen
+#11 27.10 ├ ƒ /app/rechnungen/[id]
+#11 27.10 ├ ƒ /app/rechnungen/[id]/e-rechnung/[versandId]
+#11 27.10 ├ ƒ /app/rechnungen/[id]/pdf
+#11 27.10 ├ ƒ /app/rechnungen/[id]/pdf/vorschau
+#11 27.10 ├ ƒ /app/rechnungen/neu
+#11 27.10 ├ ƒ /app/suche
+#11 27.10 ├ ƒ /app/ust
+#11 27.10 ├ ƒ /app/ust/elster-xml
+#11 27.10 ├ ƒ /app/wiederkehrende-rechnungen
+#11 27.10 ├ ƒ /app/wiederkehrende-rechnungen/[id]
+#11 27.10 ├ ƒ /app/wiederkehrende-rechnungen/neu
+#11 27.10 ├ ƒ /app/zahlungen
+#11 27.10 ├ ƒ /app/zeiten
+#11 27.10 ├ ƒ /app/zeiten/[id]
+#11 27.10 ├ ƒ /app/zeiten/neu
+#11 27.10 ├ ƒ /app/zm
+#11 27.10 ├ ƒ /app/zm/csv
+#11 27.10 ├ ○ /apple-icon.png
+#11 27.10 ├ ƒ /health
+#11 27.10 ├ ○ /icon.png
+#11 27.10 ├ ƒ /login
+#11 27.10 ├ ƒ /login/submit
+#11 27.10 ├ ƒ /logout
+#11 27.10 ├ ○ /manifest.webmanifest
+#11 27.10 ├ ƒ /setup
+#11 27.10 └ ƒ /setup/submit
+#11 27.10
+#11 27.10
+#11 27.10 ƒ Proxy (Middleware)
+#11 27.10
+#11 27.10 ○  (Static)   prerendered as static content
+#11 27.10 ƒ  (Dynamic)  server-rendered on demand
+#11 27.10
+#11 27.16 npm notice
+#11 27.16 npm notice New major version of npm available! 10.9.8 -> 12.0.2
+#11 27.16 npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.0.2
+#11 27.16 npm notice To update run: npm install -g npm@12.0.2
+#11 27.16 npm notice
+#11 DONE 27.4s
+
+#12 [runner 3/6] RUN addgroup --system --gid 1001 nodejs 	&& adduser --system --uid 1001 nextjs
+#12 CACHED
+
+#13 [runner 4/6] COPY --from=builder /app/public ./public
+#13 CACHED
+
+#14 [runner 5/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+#14 DONE 0.2s
+
+#15 [runner 6/6] COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+#15 DONE 0.1s
+
+#16 exporting to image
+#16 exporting layers
+#16 exporting layers 0.2s done
+#16 writing image sha256:01f46b255e887738273798361e8921aa5fdbbb06f989b6f66732cb02c62b4848 done
+#16 naming to docker.io/library/zr-sec001-next:20260914-final done
+#16 DONE 0.2s

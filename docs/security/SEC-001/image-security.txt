@@ -1,0 +1,29 @@
+{"path":"/_next/image","file":"test.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/_next/image","file":"disguised.png","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/_next/image","file":"truncated.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/_next/image/","file":"test.avif","status":308,"location":"/_next/image?url=%2Fsec001%2Ftest.avif&w=64&q=75","bytes":48}
+{"path":"/_next/image/","file":"disguised.png","status":308,"location":"/_next/image?url=%2Fsec001%2Fdisguised.png&w=64&q=75","bytes":52}
+{"path":"/_next/image/","file":"truncated.avif","status":308,"location":"/_next/image?url=%2Fsec001%2Ftruncated.avif&w=64&q=75","bytes":53}
+{"path":"//_next/image","file":"test.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"//_next/image","file":"disguised.png","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"//_next/image","file":"truncated.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/_next//image","file":"test.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/_next//image","file":"disguised.png","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/_next//image","file":"truncated.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/%5fnext/image","file":"test.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/%5fnext/image","file":"disguised.png","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/%5fnext/image","file":"truncated.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/_next/%69mage","file":"test.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/_next/%69mage","file":"disguised.png","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/_next/%69mage","file":"truncated.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/_next%2fimage","file":"test.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/_next%2fimage","file":"disguised.png","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/_next%2fimage","file":"truncated.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/_next/image%3f","file":"test.avif","status":404,"type":"text/html; charset=utf-8","bytes":10343}
+{"path":"/_next/image%3f","file":"disguised.png","status":404,"type":"text/html; charset=utf-8","bytes":10343}
+{"path":"/_next/image%3f","file":"truncated.avif","status":404,"type":"text/html; charset=utf-8","bytes":10343}
+{"path":"/x/../_next/image","file":"test.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/x/../_next/image","file":"disguised.png","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"path":"/x/../_next/image","file":"truncated.avif","status":302,"location":"/brand/zettelruhe-mark.png","bytes":0}
+{"directPatchedOptimizer":{"status":200,"type":"image/jpeg"}}
+PASS 27 manipulated image requests, HEAD/POST, SSRF/private/nested URLs; original proxy rule retained; libheif 1.23.2.

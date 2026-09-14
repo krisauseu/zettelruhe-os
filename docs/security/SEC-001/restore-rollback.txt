@@ -1,0 +1,11 @@
+Starting synthetic PB: fresh
+Fresh install: empty volume, migrations, health JSON and setup redirect passed.
+Fresh setup: synthetic owner, company and authenticated dashboard passed.
+Starting synthetic PB: old
+Starting synthetic PB: restore
+Starting restored synthetic PB
+Synthetic 595fff545d4f377806d273b2b8bfa8d5ac32a7dc upgrade/restore: collections unchanged, file SHA-256 identical, login/dashboard/receipts/journal passed.
+Starting synthetic PB: rollback
+Rollback to original backup and old hooks: records/files identical; old Next login and receipts passed. No schema downgrade on upgraded data.
+Browser fixture: /var/folders/h6/lr3r4dyx37j586_hsyxl2gd40000gn/T/zettelruhe-release-smoke-XOLzLC/session.json
+Release smoke resources removed.

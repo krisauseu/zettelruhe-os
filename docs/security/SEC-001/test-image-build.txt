@@ -1,0 +1,44 @@
+#0 building with "orbstack" instance using docker driver
+
+#1 [internal] load build definition from Next.Dockerfile
+#1 transferring dockerfile: 1.07kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 84B done
+#3 DONE 0.0s
+
+#4 [deps 1/4] FROM docker.io/library/node:22-alpine@sha256:c610fcdfb1d5b4740dd70c284ed3cb16bb857e0f7166196e36a5501df7a3aa32
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 25.56kB 0.0s done
+#5 DONE 0.0s
+
+#6 [builder 3/5] COPY --from=deps /app/node_modules ./node_modules
+#6 CACHED
+
+#7 [builder 4/5] COPY . .
+#7 CACHED
+
+#8 [deps 4/4] RUN npm ci
+#8 CACHED
+
+#9 [deps 3/4] COPY package.json package-lock.json ./
+#9 CACHED
+
+#10 [deps 2/4] WORKDIR /app
+#10 CACHED
+
+#11 [builder 5/5] RUN npm run build
+#11 CACHED
+
+#12 exporting to image
+#12 exporting layers
+#12 exporting layers 2.3s done
+#12 writing image sha256:059f69c496911ee0da4fd8e6d24db756a289a4aeda1f2e699e78ac1a29468e48 done
+#12 naming to docker.io/library/zr-sec001-test:20260914-final done
+#12 DONE 2.3s

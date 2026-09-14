@@ -34,3 +34,6 @@ next-env.d.ts
 
 # Betriebsbackups enthalten Datenbank, Dateien und ggf. Secrets
 /backups/
+
+# Lokale SEC-001-Quellangebote und OCI-Archive
+/artifacts/sec001-*/

@@ -1,0 +1,110 @@
+
+> app@1.0.0 test
+> vitest run
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.11 /app
+
+ ✓ src/modules/sales/pdf-layout.test.ts (34 tests) 53ms
+ ✓ src/modules/reporting/aggregate.test.ts (22 tests) 24ms
+ ✓ src/modules/reporting/ustva.test.ts (23 tests) 39ms
+ ↓ src/lib/kasse-transaktion.integration.test.ts (27 tests | 27 skipped)
+ ↓ src/lib/beleg-transaktion.integration.test.ts (29 tests | 29 skipped)
+ ✓ src/modules/einvoice/parse.test.ts (32 tests) 126ms
+ ✓ src/modules/reporting/zm.test.ts (22 tests) 34ms
+ ✓ src/modules/sales/invariants.test.ts (27 tests) 43ms
+ ✓ src/modules/expenses/invariants.test.ts (40 tests) 28ms
+ ✓ src/modules/einvoice/outbound.test.ts (14 tests) 48ms
+ ↓ src/lib/rechnung-transaktion.integration.test.ts (45 tests | 45 skipped)
+ ✓ src/modules/reporting/uebersicht.test.ts (12 tests) 63ms
+ ↓ src/lib/rc-transaktion.integration.test.ts (39 tests | 4 skipped)
+ ↓ src/lib/festschreibung.integration.test.ts (42 tests | 42 skipped)
+ ↓ src/lib/release-risiken.integration.test.ts (15 tests | 15 skipped)
+ ✓ src/modules/payments/invariants.test.ts (26 tests) 54ms
+ ✓ src/modules/banking/mt940.test.ts (28 tests) 59ms
+ ✓ src/modules/reporting/repository-export.test.ts (14 tests) 71ms
+ ✓ src/modules/cash/invariants.test.ts (18 tests) 33ms
+ ✓ src/modules/sales/angebot-invariants.test.ts (19 tests) 40ms
+ ✓ src/modules/platform/rechte.test.ts (24 tests) 36ms
+ ✓ src/components/app-nav-state.test.ts (14 tests) 35ms
+ ✓ src/modules/contacts/csv.test.ts (14 tests) 29ms
+ ✓ src/modules/categories/invariants.test.ts (23 tests) 48ms
+ ✓ src/modules/expenses/migration-kunde.test.ts (18 tests) 90ms
+ ✓ src/modules/reporting/export.test.ts (9 tests) 24ms
+ ✓ src/modules/banking/csv.test.ts (17 tests) 61ms
+ ✓ src/modules/reporting/periods.test.ts (20 tests) 33ms
+stderr | src/modules/expenses/beleg-form-input.test.ts > RC form boundary and shared preview > does not render an error for a fresh RC form
+Cannot specify a encType or method for a form that specifies a function as the action. React provides those automatically. They will get overridden.
+
+ ✓ src/modules/expenses/beleg-form-input.test.ts (26 tests) 215ms
+ ✓ src/modules/sales/wiederkehrend-invariants.test.ts (10 tests) 36ms
+ ✓ src/modules/journal/invariants.test.ts (18 tests) 138ms
+ ✓ src/modules/expenses/festschreibung.test.ts (8 tests) 62ms
+ ✓ src/modules/expenses/reverse-charge.test.ts (36 tests) 1475ms
+     ✓ keeps the generated PocketBase core and Decimal licence byte-identical  1392ms
+ ✓ src/modules/time/invariants.test.ts (10 tests) 35ms
+ ✓ src/modules/expenses/compress-beleg-image.test.ts (12 tests) 50ms
+ ✓ src/lib/finanz-transaktion.test.ts (14 tests) 152ms
+ ✓ src/modules/ustid/evatr.test.ts (6 tests) 149ms
+ ✓ src/lib/instance-context.test.ts (4 tests) 184ms
+ ✓ src/lib/nummernkreis.test.ts (9 tests) 24ms
+ ✓ src/lib/sec001-network.test.ts (2 tests) 264ms
+ ✓ src/modules/sales/pdf-render.test.ts (11 tests) 3032ms
+     ✓ rechnung/kleinunternehmer: Details sind 2 pt kleiner; leer ohne Zusatzzeile  782ms
+     ✓ rechnung/regelbesteuerung_ist: Details sind 2 pt kleiner; leer ohne Zusatzzeile  331ms
+     ✓ angebot/regelbesteuerung_ist: Details sind 2 pt kleiner; leer ohne Zusatzzeile  316ms
+     ✓ erzeugt Original-Rechnung unter Regelbesteuerung mit GiroCode  355ms
+ ✓ src/modules/reporting/par19.test.ts (9 tests) 27ms
+ ✓ src/components/app-sidebar-state.test.ts (6 tests) 22ms
+ ✓ src/modules/einvoice/actions.test.ts (2 tests) 113ms
+ ✓ src/modules/platform/auth-instance.test.ts (4 tests) 131ms
+ ✓ src/modules/platform/firma-invariants.test.ts (8 tests) 16ms
+ ✓ src/lib/env.test.ts (3 tests) 9ms
+ ✓ src/modules/ustid/format.test.ts (5 tests) 12ms
+ ✓ src/modules/sales/girocode.test.ts (4 tests) 223ms
+ ✓ src/modules/jobs/runner.test.ts (3 tests) 159ms
+ ✓ src/lib/pb-files.test.ts (2 tests) 323ms
+ ✓ src/modules/travel/invariants.test.ts (6 tests) 17ms
+ ✓ src/modules/platform/passwort.test.ts (3 tests) 22ms
+ ✓ src/modules/sales/actions.test.ts (4 tests) 143ms
+ ✓ src/modules/banking/invariants.test.ts (8 tests) 13ms
+ ✓ src/lib/smtp.test.ts (3 tests) 13ms
+ ✓ src/modules/ustid/invariants.test.ts (6 tests) 20ms
+ ✓ src/modules/expenses/beleg-datei-zeilen.test.ts (4 tests) 16ms
+ ↓ src/lib/instance-context.integration.test.ts (1 test | 1 skipped)
+ ✓ src/lib/money.test.ts (7 tests) 69ms
+ ✓ src/app/app/export/datev/route.test.ts (1 test) 21ms
+ ✓ src/modules/journal/repository.test.ts (3 tests) 15ms
+ ✓ src/lib/session.test.ts (3 tests) 59ms
+ ✓ src/app/app/export/belegarchiv/route.test.ts (1 test) 14ms
+ ✓ src/modules/sales/description.test.ts (4 tests) 13ms
+ ✓ src/modules/reporting/uebersicht-verlauf.test.ts (2 tests) 97ms
+ ✓ src/modules/jobs/lock.test.ts (2 tests) 17ms
+ ✓ src/modules/jobs/scheduler.test.ts (1 test) 13ms
+ ✓ src/lib/setup-verified.test.ts (3 tests) 15ms
+ ✓ src/modules/catalog/einheiten.test.ts (4 tests) 15ms
+ ✓ src/modules/projects/invariants.test.ts (4 tests) 8ms
+ ✓ src/modules/catalog/repository.test.ts (7 tests) 12ms
+ ✓ src/modules/platform/einladung-mail.test.ts (2 tests) 7ms
+ ✓ src/modules/sales/wiederkehrend-pagination.test.ts (1 test) 9ms
+ ✓ src/lib/app-return-path.test.ts (1 test) 8ms
+ ✓ src/modules/expenses/repository.test.ts (1 test) 4ms
+ ✓ src/modules/search/search.test.ts (2 tests) 4ms
+
+ Test Files  70 passed | 7 skipped (77)
+      Tests  765 passed | 163 skipped (963)
+   Start at  17:45:40
+   Duration  9.27s (transform 8.97s, setup 0ms, import 21.99s, tests 8.56s, environment 15ms)
+
+
+> app@1.0.0 typecheck
+> next typegen && tsc --noEmit --incremental false
+
+Generating route types...
+✓ Types generated successfully
+
+> app@1.0.0 lint
+> eslint --max-warnings=0

@@ -10,6 +10,7 @@ const root=fileURLToPath(new URL('../',import.meta.url));
 const temp=mkdtempSync(join(tmpdir(),'zettelruhe-release-smoke-'));
 const prefix='zr-release-'+randomUUID();
 const images={pb:process.env.RELEASE_PB_IMAGE || 'zettelruhe-release-pb:20260910',next:process.env.RELEASE_NEXT_IMAGE || 'zettelruhe-release-next:20260910'};
+const baseRef=process.env.RELEASE_BASE_REF || 'f48be21';
 const resources={containers:[],volumes:[],network:false};
 const docker=(...args)=>{try{return execFileSync('docker',args,{encoding:'utf8',stdio:['ignore','pipe','pipe'],maxBuffer:20*1024*1024}).trim();}catch{throw new Error('Docker operation failed: '+args[0]);}};
 function cleanup(){for(const name of resources.containers.reverse())try{docker('rm','-f',name);}catch{}for(const name of resources.volumes)try{docker('volume','rm',name);}catch{}if(resources.network)try{docker('network','rm',prefix);}catch{}rmSync(temp,{recursive:true,force:true});}
@@ -32,9 +33,9 @@ async function client(instance){
  async function api(path,body,method='POST') {const r=await fetch(instance.url+path,{method,headers:{Authorization:token,...(body instanceof FormData?{}:{'Content-Type':'application/json'})},...(body!==undefined?{body:body instanceof FormData?body:JSON.stringify(body)}:{})});if(!r.ok)throw new Error('Synthetic API failed: '+path.split('?')[0]+' '+r.status);return r.status===204?null:r.json();}
  return {api,token,create:(col,body)=>api('/api/collections/'+col+'/records',body),list:col=>api('/api/collections/'+col+'/records?perPage=500',undefined,'GET')};
 }
-async function next(instance,port){
+async function next(instance,port,image=images.next){
  const name=prefix+'-next-'+port,url='http://127.0.0.1:'+port;
- docker('run','-d','--name',name,'--network',prefix,'-p','127.0.0.1:'+port+':3000','-e','APP_URL='+url,'-e','PB_URL=http://'+instance.name+':8090','-e','PB_SUPERUSER_EMAIL='+instance.email,'-e','PB_SUPERUSER_PASSWORD='+instance.password,'-e','SESSION_SECRET='+randomUUID()+randomUUID(),'-e','JOBS_DISABLED=true',images.next);resources.containers.push(name);
+ docker('run','-d','--name',name,'--network',prefix,'-p','127.0.0.1:'+port+':3000','-e','APP_URL='+url,'-e','PB_URL=http://'+instance.name+':8090','-e','PB_SUPERUSER_EMAIL='+instance.email,'-e','PB_SUPERUSER_PASSWORD='+instance.password,'-e','SESSION_SECRET='+randomUUID()+randomUUID(),'-e','JOBS_DISABLED=true',image);resources.containers.push(name);
  await ready(url+'/health');const health=await(await fetch(url+'/health')).json();if(!health.ok)throw new Error('Health JSON is not ready');return {name,url};
 }
 try{
@@ -42,8 +43,8 @@ try{
  // The old files are obtained from the requested base, not from a running installation.
  for(const [from,to] of [['pb_hooks','old-hooks'],['pb_migrations','old-migrations']]){
   mkdirSync(join(temp,to));
-  const files=execFileSync('git',['ls-tree','-r','--name-only','f48be21','pocketbase/'+from],{cwd:root,encoding:'utf8'}).trim().split('\n');
-  for(const file of files){const rel=file.slice(('pocketbase/'+from+'/').length);mkdirSync(join(temp,to,rel,'..'),{recursive:true});writeFileSync(join(temp,to,rel),execFileSync('git',['show','f48be21:'+file],{cwd:root}));}
+  const files=execFileSync('git',['ls-tree','-r','--name-only',baseRef,'pocketbase/'+from],{cwd:root,encoding:'utf8'}).trim().split('\n');
+  for(const file of files){const rel=file.slice(('pocketbase/'+from+'/').length);mkdirSync(join(temp,to,rel,'..'),{recursive:true});writeFileSync(join(temp,to,rel),execFileSync('git',['show',baseRef+':'+file],{cwd:root}));}
  }
  const fresh=await pb('fresh');const fc=await client(fresh);
  if((await fc.list('firmen')).totalItems!==0)throw new Error('Fresh volume was not empty');
@@ -88,7 +89,24 @@ try{
  const signed=await fetch(restoreApp.url+'/login/submit',{method:'POST',body:login,redirect:'manual'});
  const cookie=signed.headers.getSetCookie().find(c=>c.startsWith('zettelruhe_session='))?.split(';')[0];if(!cookie)throw new Error('Restore login failed');
  for(const path of ['/app','/app/belege','/app/journal']){const r=await fetch(restoreApp.url+path,{headers:{Cookie:cookie}});if(!r.ok)throw new Error('Restore page failed');}
- console.log('Synthetic f48be21 upgrade/restore: collections unchanged, file SHA-256 identical, login/dashboard/receipts/journal passed.');
+ console.log('Synthetic '+baseRef+' upgrade/restore: collections unchanged, file SHA-256 identical, login/dashboard/receipts/journal passed.');
+ if(process.env.RELEASE_ROLLBACK_NEXT_IMAGE){
+  const rollback=await pb('rollback',true);docker('stop',rollback.name);
+  docker('run','--rm','--network','none','-v',rollback.volume+':/target','-v',temp+':/backup:ro','--entrypoint','sh',images.pb,'-c','find /target -mindepth 1 -maxdepth 1 -exec rm -rf {} \\; && tar xzf /backup/synthetic-backup.tar.gz -C /target');
+  docker('start',rollback.name);rollback.url='http://'+docker('port',rollback.name,'8090/tcp');await ready(rollback.url+'/api/health');const bc=await client(rollback);
+  for(const col of Object.keys(before)){
+   const normalize=rows=>rows.map(r=>{const {collectionId,collectionName,expand,...rest}=r;return rest;}).sort((a,b)=>a.id.localeCompare(b.id));
+   if(JSON.stringify(normalize(before[col]))!==JSON.stringify(normalize((await bc.list(col)).items)))throw Error('Rollback changed '+col);
+  }
+  const br=(await bc.list('belege')).items[0],bt=await bc.api('/api/files/token',{});
+  const bf=await fetch(`${rollback.url}/api/files/belege/${br.id}/${br.datei[0]}?token=${encodeURIComponent(bt.token)}`);
+  if(!bf.ok || !Buffer.from(await bf.arrayBuffer()).equals(fileBytes))throw Error('Rollback file differs');
+  const oldApp=await next(rollback,43129,process.env.RELEASE_ROLLBACK_NEXT_IMAGE);
+  const login=await fetch(oldApp.url+'/login/submit',{method:'POST',body:new URLSearchParams({email:'upgrade@synthetic.invalid',password:secrets.password}),redirect:'manual'});
+  const cookie=login.headers.getSetCookie().find(c=>c.startsWith('zettelruhe_session='))?.split(';')[0];
+  if(!cookie || !(await fetch(oldApp.url+'/app/belege',{headers:{Cookie:cookie}})).ok)throw Error('Rollback login/page failed');
+  console.log('Rollback to original backup and old hooks: records/files identical; old Next login and receipts passed. No schema downgrade on upgraded data.');
+ }
  writeFileSync(join(temp,'session.json'),JSON.stringify({temp,prefix,app:app.url,pb:fresh.url,restoreApp:restoreApp.url,email:secrets.email,password:secrets.password,pbEmail:fresh.email,pbPassword:fresh.password}),{mode:0o600});
  console.log('Browser fixture: '+join(temp,'session.json'));
  if(process.argv.includes('--keep')){console.log('Fixture remains available for up to 60 minutes; SIGTERM removes only its own resources.');await pause(60*60*1000);}

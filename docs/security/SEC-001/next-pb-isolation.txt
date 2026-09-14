@@ -1,0 +1,24 @@
+PASS one Next, two private PB volumes, authenticated proxy ingress, no PB/control/Next published ports
+PASS both empty cloud instances reject public setup without writes
+ RUN  v4.1.11 /app
+
+ ✓ src/lib/instance-context.integration.test.ts (1 test) 717ms
+     ✓ keeps nested parallel reads and admin tokens bound with identical record IDs  715ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  17:44:52
+   Duration  1.28s (transform 127ms, setup 0ms, import 166ms, tests 717ms, environment 0ms)
+PASS 20 nested parallel core contexts against both real PBs with identical IDs
+PASS A/B login, canonical redirect, host-only secure cookies, live app data with identical IDs
+PASS real contact Server Actions write only to their PB and reject sibling origins
+PASS cross-host and manipulated sessions rejected including private files
+PASS private file bytes and company switching within each instance
+PASS forwarding/tenant header spoofing, unknown host, exact origins, direct PB paths
+PASS 24 interleaved real Next/PB private-file requests
+PASS real scheduler creates one recurring draft per PB and both Next PDF previews render
+PASS PB A outage denies A and keeps B usable without fallback
+PASS live config/session/PB credential rotation, wrong PB secret fails closed, B remains logged in
+PASS logout clears only the host cookie using the canonical redirect
+PASS same built app: fresh self-hosted setup, owner session, normal page and login
+TP-002 integration passed: 14 groups. Images sha256:01f46b255e887738273798361e8921aa5fdbbb06f989b6f66732cb02c62b4848 / sha256:81e3672daea423bf508ef0321837ac8e904e647a89693b4a081044d72c7fc8d7

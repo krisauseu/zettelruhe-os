@@ -1,0 +1,15 @@
+TP-022: pocketbase version 0.39.10, neuer tmpfs-Bestand mit geprüfter synthetischer Migrationsfixture, isolierter Loopback-Port.
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v4.1.11 /Users/kf/zettelruhe/app
+
+
+ Test Files  6 passed (6)
+      Tests  197 passed (197)
+   Start at  19:34:13
+   Duration  11.55s (transform 1.14s, setup 0ms, import 2.48s, tests 42.43s, environment 2ms)
+
+TP-022 synthetischer Bestand vor Bereinigung: {"firmen":219,"kontakte":83,"rechnungen":82,"rechnungspositionen":288,"belege":95,"kassenbuch_eintraege":38,"buchungsjournal":177,"storageFiles":94}
+TP-022: Testcontainer samt tmpfs-Daten und Dateien entfernt.
