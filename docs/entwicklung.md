@@ -1,6 +1,6 @@
 # Entwicklung und Bestandsaufnahme
 
-Stand: 2026-09-10, Release `v1.0.0` im bereinigten Repository
+Stand: 2026-09-15, Release `v1.0.1` im bereinigten Repository
 `krisauseu/zettelruhe-os`. Die lokale Releasevorbereitung ab `f48be21` bleibt
 unten als datierter Prüfnachweis erhalten.
 Diese beim Codex-Onboarding angelegte Übersicht bleibt der gemeinsame technische

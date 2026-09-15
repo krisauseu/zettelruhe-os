@@ -1,9 +1,8 @@
 # Zettelruhe — Feature-Roadmap
 
-Stand nach v1.0.0: Der generische [serverseitige Instanzkontext](instance-context.md)
-für Cloud-TP-002 ist implementiert und lokal mit einer gemeinsamen Next-Anwendung
-und getrennten PocketBase-Instanzen geprüft. Self-Hosting bleibt verfügbar.
-Dies ist ein Entwicklungsstand, kein neuer veröffentlichter Release oder Deployment.
+Stand `v1.0.1`: Der generische [serverseitige Instanzkontext](instance-context.md)
+ist enthalten. Self-Hosting bleibt verfügbar. SEC-001 aktualisiert die betroffenen
+Kern- und Entwicklungsabhängigkeiten; die Funktionsgrenzen bleiben unverändert.
 
 
 Abgeleitet aus dem Grill-with-Docs (Scope: Solo-Selbstständige DE, self-hosted, EÜR).  
@@ -15,7 +14,7 @@ Glossary: [`CONTEXT.md`](../CONTEXT.md) · ADRs: [`docs/adr/`](./adr/)
 
 *Happy Path ohne OCR, PSD2, API, Kundenportal, automatischen Mahnlauf.*
 
-Stand: 2026-09-10, Release `v1.0.0` im bereinigten Repository
+Stand: 2026-09-15, Release `v1.0.1` im bereinigten Repository
 `krisauseu/zettelruhe-os`.
 M1 und M2 sind abgeschlossen. Die Listen beschreiben den vorhandenen Umfang;
 noch fehlende frühere v1-Wünsche stehen gesondert außerhalb des Releaseumfangs. Abnahme und Betriebsstand stehen ausschließlich im [Status](90-status.md).

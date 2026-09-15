@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.0.1] - 2026-09-15
+
+Release-Titel: **Zettelruhe 1.0.1 - Security- und Wartungsupdate**
+
+Dieses Patch-Release aktualisiert Next.js auf 16.3.5, sharp auf 0.35.4 und
+Nodemailer auf 9.1.1. Betroffene transitive Abhängigkeiten sind ebenfalls
+korrigiert. `npm audit` meldet sowohl für den Produktionsumfang als auch für das
+gesamte Lockfile keine bekannten Befunde.
+
+Seit `v1.0.0` können Angebots- und Rechnungspositionen eine optionale mehrzeilige
+Beschreibung enthalten. Sie bleibt bei der Angebotsübernahme erhalten und steht
+auch im PDF. Leerzeilen in Kopf- und Fußtexten werden im PDF nicht mehr entfernt.
+Überarbeitete Bezeichnungen machen Buchungs- und E-Rechnungsabläufe verständlicher.
+
+Beim Update müssen Next und PocketBase gemeinsam aktualisiert werden, da die
+Positionsbeschreibung eine PocketBase-Migration und aktualisierte Hooks enthält.
+Vorher Datenbank, Dateien und Konfiguration sichern. Bestehende festgeschriebene
+Dokumente und ihre Original-PDFs werden nicht verändert.
+
+### Prüfstand
+
+Für SEC-001 bestanden Unit-Tests, Typecheck, Lint ohne Warnungen,
+Produktionsbuild, Finanz-/RC-Integration, Zwei-Instanzen-Isolation,
+SMTP-/BZSt-Tests, Bildabschirmung sowie synthetischer Upgrade-, Restore- und
+Rollbacktest. Die abschließende Repositoryprüfung bestand erneut Unit-Tests,
+Typecheck, Lint, beide Hook-Generatorabgleiche und beide npm-Audits.
+
+Die Nachweise sind lokal und verwenden synthetische Daten. Dieses Release enthält
+keinen neuen VPS-, Provider- oder Deploymentnachweis. Details und Grenzen stehen
+im [SEC-001-Bericht](docs/security/SEC-001/README.md).
+
 ## [1.0.0] - 2026-09-10
 
 Release-Titel: **Zettelruhe – Open-Source-Buchhaltung für Solo-Selbstständige**

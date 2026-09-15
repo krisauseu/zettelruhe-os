@@ -1,24 +1,23 @@
 # Status — Zettelruhe
 
-2026-09-14: SEC-001 aktualisiert die Kernabhängigkeiten. Vorher sechs
+2026-09-15: Release-Stand `v1.0.1` für SEC-001 vorbereitet. SEC-001 aktualisiert
+die Kernabhängigkeiten. Vorher sechs
 Audit-Paketbefunde, davon drei Produktion; nachher jeweils null. Lokale
 Kandidaten-, Isolation-, SMTP-/BZSt- und Restoreprüfungen sind im
-[Sicherheitsbericht](security/SEC-001/README.md) belegt. Repositoryabschluss
-auf `origin/main` beauftragt; kein Release oder Deployment. Cloud-Integration
-und VPS-Freigabe bleiben separate Aufträge.
+[Sicherheitsbericht](security/SEC-001/README.md) belegt. Kein Deployment.
+Cloud-Integration und VPS-Freigabe bleiben separate Aufträge.
 
 2026-09-11: Optionale Positionsbeschreibungen für Angebote und Rechnungen
 sind implementiert und lokal geprüft (TP-031). Formulare, Persistenz,
 Angebotsübernahme und PDF sind ergänzt. Migration und Hooks müssen zusammen
 mit der App ausgerollt werden. Kein Deployment; [Abnahme](testphase.md#tp-031-optionale-positionsbeschreibung-2026-09-11).
 
-Stand nach v1.0.0: Der generische [serverseitige Instanzkontext](instance-context.md)
-für Cloud-TP-002 ist implementiert und lokal mit einer gemeinsamen Next-Anwendung
-und getrennten PocketBase-Instanzen geprüft. Self-Hosting bleibt verfügbar.
-Dies ist ein Entwicklungsstand, kein neuer veröffentlichter Release oder Deployment.
+Stand `v1.0.1`: Der generische [serverseitige Instanzkontext](instance-context.md)
+ist enthalten und lokal mit einer gemeinsamen Next-Anwendung und getrennten
+PocketBase-Instanzen geprüft. Self-Hosting bleibt verfügbar.
 
 
-Stand: 2026-09-10, Release `v1.0.0` im bereinigten Repository
+Stand: 2026-09-15, Release `v1.0.1` im bereinigten Repository
 `krisauseu/zettelruhe-os`.
 
 Die technischen Releasekorrekturen und lokalen Prüfungen sind abgeschlossen.
@@ -32,7 +31,7 @@ fortgeführt. [Abnahme](issues/release-abnahme-2026-09-10.md),
 
 M1 und M2 sind abgeschlossen. Der Git-Tag `meilenstein-2` beschreibt einen
 früheren Stand des Vorgänger-Repositorys. Der stabile Open-Source-Stand ist
-`v1.0.0` im neuen Repository. PR #1 aus dem Vorgänger-Repository wurde nicht
+`v1.0.1` im neuen Repository. PR #1 aus dem Vorgänger-Repository wurde nicht
 übernommen. Der nächste Schritt nach dem Release bleibt das separate
 [Cloud-Projekt](release-und-cloud-plan.md).
 
@@ -113,8 +112,8 @@ Zettelruhe soll ein Tool für jedermann werden — verschiedene Steuer-Modi, ver
 
 **Offene Abnahmen und mögliche Folgearbeit:**
 
-- Open-Source-Kern ab `v1.0.0` pflegen; technische Grenzen und Prüfstand stehen im [Releaseplan](release-und-cloud-plan.md).
-- RC ist produktiv bestätigt. `v1.0.0` ist der Release-Stand; keine neue ELSTER-Freigabe verlangen.
+- Open-Source-Kern ab `v1.0.1` pflegen; technische Grenzen und Prüfstand stehen im [Releaseplan](release-und-cloud-plan.md).
+- RC ist produktiv bestätigt. `v1.0.1` ist der Release-Stand; keine neue ELSTER-Freigabe verlangen.
 - TP-009 und neue Komfortfunktionen sind dem späteren Cloud-Angebot zugeordnet. Kernpflege und bekannte technische Befunde bleiben in `entwicklung.md`.
 - **Zwei-Instanzen-Testbetrieb**: Voraussetzung vor einem späteren Adapter-/Control-Plane-Auftrag; keine Bestätigung eines abgeschlossenen Tests im Repository.
 - Nach dem Kernrelease folgt das separate Cloud-Projekt. Neue Komfortfunktionen aus der Roadmap gehören ins Aboangebot; die genaue Reihenfolge und Umsetzung erhalten eigene Aufträge.

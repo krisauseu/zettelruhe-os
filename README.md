@@ -1,9 +1,8 @@
 # Zettelruhe
 
-Stand nach v1.0.0: Der generische [serverseitige Instanzkontext](docs/instance-context.md)
-für Cloud-TP-002 ist implementiert und lokal mit einer gemeinsamen Next-Anwendung
-und getrennten PocketBase-Instanzen geprüft. Self-Hosting bleibt verfügbar.
-Dies ist ein Entwicklungsstand, kein neuer veröffentlichter Release oder Deployment.
+Stand `v1.0.1`: Security- und Wartungsupdate mit aktualisierten Abhängigkeiten,
+optionalen Positionsbeschreibungen sowie kleineren PDF- und Textkorrekturen.
+Self-Hosting bleibt verfügbar. [Release Notes](CHANGELOG.md).
 
 
 Self-hosted Open-Source-Buchhaltung für Solo-Selbstständige in Deutschland  
@@ -189,7 +188,7 @@ LICENSE                   AGPL-3.0
 
 ## Status
 
-Stand: 10. September 2026, Release `v1.0.0`.
+Stand: 15. September 2026, Release `v1.0.1`.
 
 Scheduler, Zahlungen, Bankzuordnung und Rechnungsstorno wurden gegen konkrete
 Fehler-, Replay- und Parallelitätsfälle abgesichert. Tests, Typecheck, Lint,
@@ -206,7 +205,7 @@ benötigt keine Freigabe einer von Zettelruhe betriebenen ELSTER-Schnittstelle;
 eine solche Schnittstelle gibt es nicht. Aktuelle Abnahmen und offene Punkte
 stehen im [Status](docs/90-status.md).
 
-Das Repository ist öffentlich. Der GitHub-Release zu `v1.0.0` markiert diesen Stand.
+Das Repository ist öffentlich. Der GitHub-Release zu `v1.0.1` markiert diesen Stand.
 Der heutige Funktionsumfang bleibt Open Source. Neue Komfortfunktionen wie
 Belegerkennung und Briefpapier sind für das separate Aboangebot
 `zettelruhe-cloud` vorgesehen. [Release- und Cloud-Plan](docs/release-und-cloud-plan.md).

@@ -1,6 +1,6 @@
 # Dokumentation pflegen
 
-Stand: 2026-09-10, Release `v1.0.0` im bereinigten Repository
+Stand: 2026-09-15, Release `v1.0.1` im bereinigten Repository
 `krisauseu/zettelruhe-os`; der frühere Abgleich auf `0842832` bleibt unten datiert. Diese Übersicht ordnet die
 Dateien im Dokumentationsordner ein und legt ihre Pflege fest. Der laufende
 Projektstand steht in [90-status.md](90-status.md).
