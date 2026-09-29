@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import type { MitgliedschaftRolle } from "@/modules/platform/rechte";
 
 /** Serializable nav config (icon keys, not React components). Gruppen kollabierbar. */
-function buildNav(kannVerwalten: boolean): NavItem[] {
+function buildNav(kannVerwalten: boolean, kannFirmaAnlegen: boolean): NavItem[] {
   const stammdaten: NavItem[] = [
     { type: "group", label: "Stammdaten" },
     { href: "/app/kontakte", label: "Kontakte", icon: "kontakte" },
@@ -30,6 +30,9 @@ function buildNav(kannVerwalten: boolean): NavItem[] {
       label: "Nutzer:innen",
       icon: "nutzer",
     });
+  }
+  if (kannFirmaAnlegen) {
+    stammdaten.push({ href: "/app/mail-einstellungen", label: "Mailversand", icon: "firma" });
   }
   return [
     { href: "/app", label: "Übersicht", icon: "dashboard" },
@@ -104,7 +107,7 @@ export function AppShell({
           />
         </>
       }
-      nav={<AppNav items={buildNav(kannVerwalten)} />}
+      nav={<AppNav items={buildNav(kannVerwalten, kannFirmaAnlegen)} />}
       footer={
         <>
           <ThemeToggle />

@@ -480,7 +480,7 @@ export default async function RechnungDetailPage({
                 Postweg reicht „PDF ansehen / drucken“.
                 {(await isSmtpConfigured())
                   ? " Versand an die Kontakt-E-Mail."
-                  : " SMTP ist nicht konfiguriert (SMTP_HOST) — kein Mailversand."}{" "}
+                  : " Mailversand ist nicht konfiguriert."}{" "}
                 Zahlungserinnerung manuell, kein Mahnlauf.
               </CardDescription>
             </CardHeader>

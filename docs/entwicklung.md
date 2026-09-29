@@ -1,5 +1,45 @@
 # Entwicklung und Bestandsaufnahme
 
+Lokal abgenommenes Cloud-TP-013 vom 2026-09-29: `app/src/lib/smtp.ts` trennt
+System- und Geschäftsmail. `app/src/lib/mail-settings.ts` und
+`app/src/app/app/mail-einstellungen/page.tsx` erlauben Instanz-Eigentümern
+tenantgebundenes SMTP über die private Control-API des Cloud-Repositories.
+Ohne eigenen Zugang nutzt Cloud den zentralen Fallback mit Reply-To der
+aktiven Firma. DNS-, TLS-, Authentifizierungs- und andere Transportfehler
+werden an der Versandgrenze ohne Rohfehler oder `cause` in eine neutrale
+UI-Meldung übersetzt; kein stiller Fallback. Keine PB-Feld- oder Schemamigration.
+Der Cloud-Auftrag `zettelruhe-cloud/docs/tasks/TP-013-cloud-mail.md` enthält
+den Betriebsvertrag und den lokalen Abnahmenachweis; die zulässigen späteren
+Commit-Dateien stehen dort in `docs/tasks/TP-013-diff-scope.md`.
+
+Der lokale Starter `zettelruhe-cloud/scripts/test-tp013-mail-local.mjs`
+besteht 13 Prüfgruppen mit einer Cloud-Next-Runtime, zwei getrennten
+PocketBase-Instanzen, Control, gerenderten Server Actions und echten
+SMTP-Capture-Verbindungen mit STARTTLS und AUTH. Geprüft sind Einladungen
+über Systemmail, alle drei Geschäftsmailarten über Tenant A bzw. Fallback B,
+Reply-To aus dem geladenen und anschließend geänderten Firmenrecord B,
+abwechselnde und parallele A/B-Aufrufe, temporär eigenes SMTP für B sowie
+falsches Passwort A ohne Fallback und ohne Secret-Ausgabe. B und Systemmail
+bleiben im Fehlerfall funktionsfähig. Dasselbe Next-Image läuft anschließend
+mit einer dritten PB im Self-Hosting und lokalem Relay ohne STARTTLS/AUTH.
+Transporter pro Versand und Secret-Rotation sind zusätzlich im Quellcode und
+in `app/src/lib/smtp-cloud.test.ts` geprüft. Der Scheduler wurde als reiner
+Erzeuger wiederkehrender Rechnungsentwürfe bestätigt; kein SMTP-Fall ergänzt.
+
+Nach dem E2E bestanden im Kern `npm test`, `npm run typecheck` und
+`npm run lint` unter Node 22.22.3/npm 10.9.8, jeweils Exitcode 0. Vitest 4.1.11
+meldet 70 bestandene und 7 übersprungene Testdateien sowie 775 bestandene und
+163 übersprungene Tests. Der ergänzende JSON-Report ordnet weitere 35 Fälle
+der verschachtelten RC-Integrationssuite als `pending` ein; ohne sicheren
+PB-Starter nicht ausgeführt, keine Todos oder Fehlschläge. Der erneute native
+Produktionsbuild `npm run build -- --webpack` bestand unter Node 25.9.0/npm
+11.12.1 ohne Fontfixture oder Build-Overrides. Der bekannte lokale
+Turbopack-Port-Bindefehler wurde nicht bearbeitet. Dies belegt die lokale
+Mailkette, keinen externen Mailprovider, VPS oder Produktionsbetrieb.
+Der anschließende Release `v1.0.2` liegt direkt auf dem TP-013-Commit;
+Paket- und Dependency-Versionen bleiben unverändert. Die finale Regression
+und Cloud-Bindung stehen im TP-013-Auftrag des Cloud-Repositories.
+
 Stand: 2026-09-15, Release `v1.0.1` im bereinigten Repository
 `krisauseu/zettelruhe-os`. Die lokale Releasevorbereitung ab `f48be21` bleibt
 unten als datierter Prüfnachweis erhalten.

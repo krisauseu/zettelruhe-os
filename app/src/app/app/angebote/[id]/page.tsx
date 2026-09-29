@@ -382,7 +382,7 @@ export default async function AngebotDetailPage({
                 Zusätzlich zum PDF. Für Postweg reicht „PDF ansehen / drucken“.
                 {(await isSmtpConfigured())
                   ? " Versand an die Kontakt-E-Mail."
-                  : " SMTP ist nicht konfiguriert (SMTP_HOST) — kein Mailversand."}
+                  : " Mailversand ist nicht konfiguriert."}
               </CardDescription>
             </CardHeader>
             <CardContent>

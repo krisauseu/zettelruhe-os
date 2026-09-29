@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireFirmaSession } from "@/lib/session";
 import { MITGLIEDSCHAFT_ROLLE_LABELS } from "@/lib/labels";
-import { isSmtpConfigured } from "@/lib/smtp";
+import { isSystemSmtpConfigured } from "@/lib/smtp";
 import { listMitgliederDerFirma } from "@/modules/platform/mitgliedschaft";
 import {
   aendereRolleAction,
@@ -53,7 +53,7 @@ export default async function NutzerPage({
 
   const sp = await searchParams;
   const mitglieder = await listMitgliederDerFirma(session.firmaId);
-  const smtpOk = (await isSmtpConfigured());
+  const smtpOk = (await isSystemSmtpConfigured());
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-6">
@@ -78,8 +78,8 @@ export default async function NutzerPage({
             Neue Person anlegen oder bestehende E-Mail dieser Firma zuordnen.
             Bei bestehendem Konto bleibt das Passwort unverändert.
             {smtpOk
-              ? " Ist SMTP eingerichtet, erhält die Person eine E-Mail — ohne das Startpasswort."
-              : " SMTP ist nicht eingerichtet; es geht keine Einladungs-Mail raus."}
+              ? " Die Person erhält eine E-Mail von Zettelruhe — ohne das Startpasswort."
+              : " Der Systemmailer ist nicht eingerichtet; es geht keine Einladungs-Mail raus."}
           </CardDescription>
         </CardHeader>
         <CardContent>

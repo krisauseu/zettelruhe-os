@@ -6,7 +6,7 @@ import { getInstanceContext } from "@/lib/instance-context";
 
 import { getFirmaById } from "@/lib/pb";
 import { MITGLIEDSCHAFT_ROLLE_LABELS } from "@/lib/labels";
-import { isSmtpConfigured, sendMail } from "@/lib/smtp";
+import { isSystemSmtpConfigured, sendSystemMail } from "@/lib/smtp";
 import type { MitgliedschaftRolle } from "./rechte";
 
 export function baueEinladungMail(input: {
@@ -53,7 +53,7 @@ export async function sendeEinladungPerMail(input: {
   rolle: MitgliedschaftRolle;
   einladendeName: string;
 }): Promise<{ to: string; messageId: string } | null> {
-  if (!(await isSmtpConfigured())) {
+  if (!(await isSystemSmtpConfigured())) {
     return null;
   }
 
@@ -66,7 +66,7 @@ export async function sendeEinladungPerMail(input: {
     loginUrl: await loginUrl(),
   });
 
-  const result = await sendMail({
+  const result = await sendSystemMail({
     to: input.to,
     subject: mail.subject,
     text: mail.text,

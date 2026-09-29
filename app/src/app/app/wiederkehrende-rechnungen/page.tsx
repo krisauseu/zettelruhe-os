@@ -11,7 +11,6 @@ import {
   todayBerlin,
 } from "@/modules/sales";
 import {
-  isSmtpConfigured,
   listRecentJobRuns,
   runJobsTickAction,
   JOB_KEY_WIEDERKEHREND,
@@ -77,7 +76,6 @@ export default async function WiederkehrendeRechnungenPage({
     listRecentJobRuns(JOB_KEY_WIEDERKEHREND, 3).catch(() => []),
   ]);
 
-  const smtpOk = (await isSmtpConfigured());
   const lastRun = runs[0] ?? null;
 
   return (
@@ -127,8 +125,7 @@ export default async function WiederkehrendeRechnungenPage({
         <CardHeader className="pb-3">
           <CardTitle className="text-base">Job &amp; Versand</CardTitle>
           <CardDescription>
-            In-Process-Scheduler im Next-Container mit DB-Lock. SMTP:{" "}
-            {smtpOk ? "konfiguriert" : "nicht konfiguriert"}.
+            In-Process-Scheduler im Next-Container mit DB-Lock. Er erzeugt Rechnungsentwürfe und versendet keine E-Mail.
           </CardDescription>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">

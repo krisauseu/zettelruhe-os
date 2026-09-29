@@ -1,8 +1,10 @@
 # Serverseitiger Instanzkontext
 
-Stand 2026-09-10, Entwicklung nach v1.0.0 für Cloud-TP-002. Kein neuer Release
-und kein Produktionsdeployment. Die generischen Änderungen bleiben AGPL in
-diesem Repository; Register, Secrets und Betriebssteuerung liegen außerhalb.
+Stand 2026-09-29: Cloud-TP-013 ergänzt den für Cloud-TP-002 eingeführten
+Instanzkontext um getrennte Mailwege und ist lokal mit echter SMTP-Kette
+abgenommen und in Core-Release `v1.0.2` enthalten. Kein Produktionsdeployment. Die generischen
+Änderungen bleiben AGPL in diesem Repository; Register, Secrets und
+Betriebssteuerung liegen außerhalb.
 
 ## Kontext und Zugriff
 
@@ -15,7 +17,13 @@ proprietären Cloud-Imports.
 
 `GET /v1/resolve?hostname=...` liefert den unveränderlichen Kontext mit tenantId,
 PB-Origin, kanonischer HTTPS-App-URL, configVersion, sessionVersion,
-Session-Schlüssel, Superuser-Zugang und optionaler SMTP-Konfiguration.
+Session-Schlüssel, Superuser-Zugang und optional `smtp` (Tenant),
+`systemSmtp` (Zettelruhe-Systemmail) sowie `fallbackSmtp`
+(Zettelruhe-Geschäftsmail). Die private Control-Schnittstelle
+`GET/PUT/DELETE /v1/mail` verwaltet Tenant-SMTP nur nach serverseitiger
+Instanz-Eigentümer-, Session- und Originprüfung. Passwörter werden nicht an
+Browser ausgeliefert. Der vollständige lokale Auftrag steht im
+Cloud-Repository unter `docs/tasks/TP-013-cloud-mail.md`.
 Dienstauthentifizierung erfolgt über Bearer-Token. Beide Diensttokens brauchen
 mindestens 32 Zufallszeichen. PB-/Control-Aufrufe verwenden Timeouts, `no-store`
 und verfolgen keine Redirects. `/v1/instances` liefert bereite Hosts für Jobs.
@@ -39,6 +47,16 @@ Self-Hosting hat einen eigenen unveränderlichen ENV-Snapshot; Konfigurationswec
 erzeugen einen neuen. SMTP-Transporter werden pro Versand erzeugt, ohne globalen
 Passwortcache. Der Zahlungsnachzug-Cache trennt tenantId, configVersion und Firma.
 Es gibt keine globale aktuelle Kundeninstanz und keine ENV-Umschaltung.
+Einladungen verwenden in Cloud ausschließlich `systemSmtp`; Geschäftsbriefe
+verwenden `smtp` oder, falls nicht vorhanden, `fallbackSmtp` mit einem
+Reply-To aus der aktiven Firma. Self-Hosting behält sein eigenes `SMTP_*`-ENV
+für beide Mailarten. Der Scheduler erzeugt derzeit nur Entwürfe, keinen Versand.
+Ein vorhandener, aber fehlerhafter Tenant-Zugang führt zu einem sichtbaren
+Versandfehler und löst keinen Fallback aus. `smtp.ts` ersetzt DNS-, TLS-,
+Authentifizierungs- und Versandfehler an der gemeinsamen Versandgrenze durch
+eine neutrale Meldung ohne ursprünglichen Fehler, `cause` oder Logausgabe.
+Fachliche Validierungen wie ungültiger Empfänger oder fehlende Firmenadresse
+bleiben erhalten.
 
 ## Sessions und URLs
 
@@ -60,7 +78,54 @@ gewählte Rücksprungpfade bleiben innerhalb `/app` auf derselben Instanz.
 Private Seiten und Downloads sind nicht öffentlich cachebar. Es gibt keinen
 tenantübergreifenden Next-Datencache; PB-Fetches verwenden `no-store`.
 
-## Abnahme und Grenzen
+## Lokale Mailabnahme Cloud-TP-013 am 2026-09-29
+
+Der Starter `zettelruhe-cloud/scripts/test-tp013-mail-local.mjs` besteht
+13 Prüfgruppen mit ausschließlich synthetischen Daten und lokalen
+SMTP-Capture-Servern. Eine gemeinsame Cloud-Next-Runtime nutzt zwei getrennte
+PocketBase-Instanzen und den echten Cloud-Control-Kontext. Die Prüfung ruft
+Server Actions aus tatsächlich gerenderten App-Seiten auf und verbindet sich
+per SMTP mit STARTTLS und AUTH; `sendMail()` wird dabei nicht gemockt.
+
+- Tenant A: Einladungen über den zentralen Systemmailer, Angebot, Rechnung
+  und Zahlungserinnerung über eigenes SMTP mit konfiguriertem Absender.
+- Tenant B ohne eigenen Zugang: Einladungen über Systemmail; alle drei
+  Geschäftsmailarten über den zentralen Fallback. `From` bleibt zentral,
+  `Reply-To` folgt dem tatsächlich geladenen aktiven Firmenrecord, auch
+  nach dessen Änderung in PocketBase.
+- Isolation: direkt aufeinanderfolgende und parallele A/B/A/B-Vorgänge
+  sowie zwölf zusätzliche parallele Vorgänge bleiben getrennt. Temporär
+  erhält auch B einen eigenen SMTP-Zugang; die Capture-Server belegen
+  getrennte Credentials und Absender. Der Quellcode und zwölf Unit-Fälle
+  in `app/src/lib/smtp-cloud.test.ts` sichern ergänzend einen neuen
+  Transporter pro Versand, parallele Kontexte und Secret-Rotation ab.
+- Falsches SMTP-Passwort für A: alle drei Geschäftsmailaktionen scheitern
+  sichtbar, ohne Fallback-Versand. Antworten, UI und normale Logs enthalten
+  keine Credentials oder sensitiven SMTP-Details. Tenant B und Einladungen
+  über den Systemmailer bleiben funktionsfähig.
+- Self-Hosting: dasselbe Next-Image mit einer dritten, getrennten PB nutzt
+  `SMTP_*` für System- und Geschäftsmail. Ein lokaler Relay ohne STARTTLS
+  und AUTH bleibt möglich. Keine neue Self-Hosting-Architektur.
+- Scheduler: Die Quellprüfung bestätigt ausschließlich wiederkehrende
+  Rechnungsentwürfe; kein Mailversand und deshalb kein zusätzlicher SMTP-Fall.
+
+Nach dem E2E bestanden Core-Tests, Typecheck und Lint unter Node 22.22.3/npm
+10.9.8. Vitest meldet 775 bestandene und 163 übersprungene Tests; zusätzlich
+führt der JSON-Reporter 35 nicht ausgeführte Fälle der verschachtelten
+RC-Integrationssuite als `pending` (keine Todos oder Fehler).
+Der native Produktionsbuild `npm run build -- --webpack` bestand unter
+Node 25.9.0/npm 11.12.1 ohne Fontfixture oder Build-Overrides.
+
+Der vollständige Aufbau und die verbleibenden Produktionspunkte stehen im
+Cloud-Repository unter `docs/tasks/TP-013-cloud-mail.md`, die spätere
+Commit-Dateiauswahl in `docs/tasks/TP-013-diff-scope.md`. Der AGPL-Core-Release
+`v1.0.2` wird direkt auf diesem TP-013-Commit veröffentlicht. Die finale
+Cloud-Bindung dokumentiert der Cloud-Auftrag; Cloud-Images und gesonderte
+Produktionsabnahme bleiben offen. Die lokalen Capture-Ergebnisse
+belegen keine Zustellung an echte Empfänger, Provider-/DNS-Freigabe oder
+Produktionslast. Der Releaseauftrag umfasst keinen VPS-Zugriff und kein Deployment.
+
+## Historische Abnahme Cloud-TP-002 und Betriebsgrenzen
 
 Cloud-TP-002 enthält den ausführbaren Starter. Er prüft ein gebautes Next mit
 zwei echten PB-Instanzen, getrennten Daten-/Dateivolumes und Credentials hinter
@@ -83,8 +148,9 @@ Laufende Requests/Jobs behalten ihren Snapshot. Konfigurations-/Sessionwiderruf
 wirkt beim nächsten Request oder Job, nicht rückwirkend auf bereits laufende
 Operationen. Next und Host bleiben gemeinsame Ausfallbereiche. Der Test belegt
 keinen Schutz vor einem kompromittierten Next-/Hostprozess, kein öffentliches
-TLS, keine Produktionslast und keinen VPS-Rollout. SMTP wurde hinsichtlich
-Kontext/Passwortwechsel geprüft, ohne echten Mailversand.
+TLS, keine Produktionslast und keinen VPS-Rollout. In der damaligen Abnahme
+vom 2026-09-10 wurde SMTP hinsichtlich Kontext/Passwortwechsel geprüft, ohne
+echten Mailversand. Die lokale SMTP-Abnahme vom 2026-09-29 steht oben.
 
 Prüfergebnis vom 2026-09-10: 748 Unit-Tests, Typecheck, Lint, Produktionsbuild,
 195 echte Finanz-/RC-Tests und 14 Cloud-Integrationsgruppen bestanden.

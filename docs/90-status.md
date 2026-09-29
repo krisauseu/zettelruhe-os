@@ -1,5 +1,21 @@
 # Status — Zettelruhe
 
+2026-09-29: Die generische Mailtrennung für Cloud-TP-013 ist lokal abgenommen.
+13 E2E-Prüfgruppen mit gemeinsamer Next-Runtime, zwei getrennten Cloud-PBs,
+Control und lokalen SMTP-Capture-Servern belegen Systemmailer, Tenant-SMTP,
+Fallback, Reply-To aus dem aktiven Firmenrecord, parallele Tenant-Isolation
+und sichtbare SMTP-Fehler ohne stillen Fallback oder Secret-Ausgabe. Dasselbe
+Next-Image besteht mit einer dritten PB den Self-Hosting-Nachweis über
+`SMTP_*` und Relay ohne STARTTLS. Der Scheduler erzeugt weiterhin nur Entwürfe.
+Nach dem E2E bestanden Core-Tests (775 bestanden, 163 übersprungen; zusätzlich
+35 vom Reporter als pending geführte RC-Integrationstests ohne sicheren Starter),
+Typecheck, Lint und Produktionsbuild mit Webpack.
+[Abnahme und Prüfgrenzen](instance-context.md#lokale-mailabnahme-cloud-tp-013-am-2026-09-29).
+Core-Release: `v1.0.2`, annotierter Tag direkt auf dem TP-013-Commit.
+Die endgültige Cloud-Bindung und erneute lokale Regression dokumentiert
+`zettelruhe-cloud/docs/tasks/TP-013-cloud-mail.md`. Produktionsabnahme bleibt
+offen; der Releaseauftrag umfasst keinen VPS-Zugriff und kein Deployment.
+
 2026-09-15: Release-Stand `v1.0.1` für SEC-001 vorbereitet. SEC-001 aktualisiert
 die Kernabhängigkeiten. Vorher sechs
 Audit-Paketbefunde, davon drei Produktion; nachher jeweils null. Lokale

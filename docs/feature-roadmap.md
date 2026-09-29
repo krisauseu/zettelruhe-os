@@ -1,6 +1,16 @@
 # Zettelruhe — Feature-Roadmap
 
-Stand `v1.0.1`: Der generische [serverseitige Instanzkontext](instance-context.md)
+Cloud-TP-013 ist am 2026-09-29 lokal mit zwei Cloud-Tenants und echten
+SMTP-Verbindungen zu lokalen Testservern abgenommen: tenantgebundenes SMTP
+und Zettelruhe-Fallback für Angebote, Rechnungen und Zahlungserinnerungen,
+zentraler Systemmailer für Einladungen. Fallback-Reply-To stammt aus der
+aktiven Firma; fehlerhaftes eigenes SMTP bleibt ein sichtbarer Fehler.
+Self-Hosting mit `SMTP_*` und Relay ohne STARTTLS ist geprüft. Der Scheduler
+erzeugt weiterhin nur Rechnungsentwürfe. [Abnahme](instance-context.md#lokale-mailabnahme-cloud-tp-013-am-2026-09-29).
+Core-Release `v1.0.2` enthält die Mailintegration. Die Produktionsfreigabe
+bleibt offen.
+
+Vorheriger Stand `v1.0.1`: Der generische [serverseitige Instanzkontext](instance-context.md)
 ist enthalten. Self-Hosting bleibt verfügbar. SEC-001 aktualisiert die betroffenen
 Kern- und Entwicklungsabhängigkeiten; die Funktionsgrenzen bleiben unverändert.
 

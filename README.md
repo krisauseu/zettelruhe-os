@@ -1,6 +1,18 @@
 # Zettelruhe
 
-Stand `v1.0.1`: Security- und Wartungsupdate mit aktualisierten Abhängigkeiten,
+Cloud-TP-013 ist am 2026-09-29 lokal mit echten Next-/PocketBase-/Control-
+Aufrufen und ausschließlich lokalen SMTP-Testservern abgenommen:
+Einladungen verwenden den Zettelruhe-Systemmailer; Angebote, Rechnungen und
+Zahlungserinnerungen eigenes Tenant-SMTP oder den zentralen Fallback mit
+Reply-To der aktiven Firma. Tenant-Isolation und Fehler ohne stillen Fallback
+sind geprüft. Self-Hosting verwendet weiter `SMTP_*`, auch mit lokalem Relay
+ohne STARTTLS. [Nachweis und Grenzen](docs/instance-context.md#lokale-mailabnahme-cloud-tp-013-am-2026-09-29).
+Release `v1.0.2` enthält diese generische Mailintegration. Die lokale Abnahme
+ist keine Produktionsfreigabe. Die Veröffentlichung verwendet einen annotierten
+Git-Tag und Textrelease ohne Binäranhänge; Paket- und Dependency-Versionen
+bleiben gegenüber `v1.0.1` unverändert.
+
+Vorheriger Stand `v1.0.1`: Security- und Wartungsupdate mit aktualisierten Abhängigkeiten,
 optionalen Positionsbeschreibungen sowie kleineren PDF- und Textkorrekturen.
 Self-Hosting bleibt verfügbar. [Release Notes](CHANGELOG.md).
 

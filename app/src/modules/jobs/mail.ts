@@ -16,7 +16,7 @@ import {
 } from "@/modules/sales/repository";
 import { formatMoneyDe } from "@/lib/money";
 import { formatDateDe } from "@/lib/labels";
-import { isSmtpConfigured, sendMail, SMTP_NOT_CONFIGURED_ERROR } from "@/lib/smtp";
+import { isSmtpConfigured, sendBusinessMail, SMTP_NOT_CONFIGURED_ERROR } from "@/lib/smtp";
 
 export { isSmtpConfigured, SMTP_NOT_CONFIGURED_ERROR };
 
@@ -117,7 +117,7 @@ export async function sendeRechnungPerMail(
     .filter(Boolean)
     .join("\n");
 
-  const result = await sendMail({
+  const result = await sendBusinessMail(firmaId, {
     to,
     subject,
     text,
@@ -180,7 +180,7 @@ export async function sendeAngebotPerMail(
     .filter(Boolean)
     .join("\n");
 
-  const result = await sendMail({
+  const result = await sendBusinessMail(firmaId, {
     to,
     subject,
     text,
@@ -269,7 +269,7 @@ export async function sendeZahlungserinnerungPerMail(
     }
   }
 
-  const result = await sendMail({
+  const result = await sendBusinessMail(firmaId, {
     to,
     subject,
     text,

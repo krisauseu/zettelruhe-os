@@ -2,7 +2,7 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import { timingSafeEqual } from "node:crypto";
 import { cache } from "react";
-import type { SmtpConfig } from "./smtp";
+import { validSmtpConfig, type SmtpConfig } from "./smtp";
 
 export type InstanceContext = Readonly<{
   tenantId: string;
@@ -14,6 +14,8 @@ export type InstanceContext = Readonly<{
   adminEmail: string;
   adminPassword: string;
   smtp: Readonly<SmtpConfig> | null;
+  systemSmtp?: Readonly<SmtpConfig> | null;
+  fallbackSmtp?: Readonly<SmtpConfig> | null;
 }>;
 export const isCloud = () => process.env.INSTANCE_MODE === "cloud";
 const jobs = new AsyncLocalStorage<InstanceContext>();
@@ -39,8 +41,13 @@ export function validateInstance(value: InstanceContext, hostname?: string): Ins
       !Number.isSafeInteger(value.configVersion) || value.configVersion < 1 ||
       !Number.isSafeInteger(value.sessionVersion) || value.sessionVersion < 1 ||
       typeof value.sessionSecret !== "string" || value.sessionSecret.length < 32 ||
-      !value.adminEmail || !value.adminPassword) throw new Error("INSTANCE_CONFIG_INVALID");
-  return Object.freeze({ ...value, smtp: value.smtp ? Object.freeze({ ...value.smtp }) : null });
+      !value.adminEmail || !value.adminPassword ||
+      (value.smtp != null && !validSmtpConfig(value.smtp)) ||
+      (value.systemSmtp != null && !validSmtpConfig(value.systemSmtp)) ||
+      (value.fallbackSmtp != null && !validSmtpConfig(value.fallbackSmtp))) throw new Error("INSTANCE_CONFIG_INVALID");
+  return Object.freeze({ ...value, smtp: value.smtp ? Object.freeze({ ...value.smtp }) : null,
+    systemSmtp: value.systemSmtp ? Object.freeze({ ...value.systemSmtp }) : null,
+    fallbackSmtp: value.fallbackSmtp ? Object.freeze({ ...value.fallbackSmtp }) : null });
 }
 
 async function control(path: string): Promise<unknown> {
@@ -89,7 +96,9 @@ export async function getInstanceContext(): Promise<InstanceContext> {
 }
 /** Only trusted server code supplies contexts. Nested and parallel jobs keep separate stores. */
 export function withInstance<T>(context: InstanceContext, work: () => T): T {
-  return jobs.run(Object.freeze({ ...context, smtp: context.smtp ? Object.freeze({ ...context.smtp }) : null }), work);
+  return jobs.run(Object.freeze({ ...context, smtp: context.smtp ? Object.freeze({ ...context.smtp }) : null,
+    systemSmtp: context.systemSmtp ? Object.freeze({ ...context.systemSmtp }) : null,
+    fallbackSmtp: context.fallbackSmtp ? Object.freeze({ ...context.fallbackSmtp }) : null }), work);
 }
 export async function assertPublicSetupAllowed(): Promise<void> {
   if (isCloud()) throw new Error("PUBLIC_SETUP_DISABLED");
