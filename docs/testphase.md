@@ -13,6 +13,7 @@ Funde aus dem Alltagstest nach Meilenstein 2: kleine Bugs, Verbesserungen, Ände
 | ID | Datum | Art | Bereich | Kurz |
 |----|-------|-----|---------|------|
 | TP-009 | 2026-08-26 | Verbesserung | Katalog / Firma | Mengeneinheiten in den Firmeneinstellungen pflegen (analog Kategorien und Katalog): eigene Liste, Abkürzungen, optional Einzahl/Mehrzahl. Roadmap: Cloud-Ausbau seit Betreiberentscheidung vom 2026-09-10; kein Issue für den Open-Source-Release. |
+| TP-034 | 2026-10-02 | Bug | Firma / Cloud-Edge | Erfolgreicher Write, danach 401 am Query-Redirect; Core korrekt, Cloud-Edge-Fehler lokal reproduziert. Korrektur außerhalb des Auftrags offen; [Diagnose und Regression](#tp-034-firmenspeichern--unauthorized-nach-erfolgsredirect-2026-10-02). |
 
 ## Erledigt
 
@@ -152,3 +153,69 @@ Patchrelease `v1.0.3` per annotiertem Git-Tag; Paketversionen wie bei `v1.0.2`
 unverändert. Kein Browserlauf nötig für die durch bestehende Mailtests geprüfte
 Bezeichnung. Kein echter Mailversand, VPS-Zugriff, Deployment oder erneuter
 Cloud-E2E-Lauf; kein Zugriff auf andere Repositories, keine Cloud-Bindung geändert.
+
+## TP-034: Firmenspeichern → unauthorized nach Erfolgsredirect, 2026-10-02
+
+**Diagnose abgeschlossen, Produktionsfehler offen außerhalb des Core.**
+Untersuchter Core: `38de606` (`v1.0.3`). `FirmaForm` ruft
+`platform/firma-actions.ts:updateFirmaAction` auf. Das Firmenupdate wird awaited;
+Revalidierung und `redirect("/app/firma?saved=1")` liegen bereits außerhalb des
+`try/catch` (Zeilen 183–187). Das M1-15/TP-023-Muster ist hier korrekt umgesetzt.
+Echte Schreibfehler führen weiterhin zum Fehlerredirect, Auth-/Rechteprüfungen
+laufen vor dem Schreiben. Die Action verändert weder Sessioncookie noch
+Tenantbindung. Die Zielseite lädt Session, Mitgliedschaft und Firma erneut;
+`saved` verändert die Autorisierung nicht. Im Core gibt es keinen Erzeuger der
+rohen Antwort `{"error":"unauthorized"}`.
+
+Nur lesend untersuchter Nachbarcheckout `zettelruhe-cloud`:
+`services/control/server.mjs:21–43` erkennt den Edge-Auth-Endpunkt über einen
+exakten Vergleich mit `req.url === '/internal/edge/authorize'`. Ein angehängtes
+`?saved=1` verfehlt diesen Zweig und landet in der Service-Bearer-Prüfung;
+der Browser-Sessioncookie ist dort kein Service-Token. Die Antwort ist exakt
+HTTP 401 mit `{"error":"unauthorized"}`. `deploy/runtime/production.py:528`
+erzeugt `uri /internal/edge/authorize` ohne explizite Query-Bereinigung.
+[Caddys Rewrite-Semantik](https://caddyserver.com/docs/caddyfile/directives/rewrite)
+erhält eine nicht überschriebene Query. Der Cloud-Bericht
+`docs/tasks/TP-008-production-runtime.md:685–690` dokumentiert bereits einen
+entsprechenden Mutationsfehler mit damaliger betrieblicher Korrektur.
+Die aktuell produktive Caddy-Konfiguration wurde nicht abgerufen; ihre
+Übereinstimmung mit dem lokalen Generator bleibt unbestätigt.
+
+Lokale Reproduktion mit dem **unveränderten** Cloud-Control-Handler,
+synthetischem Ready-Tenant und Aufruf seines HTTP-Request-Listeners (ohne
+Netzwerklistener, Kundendaten oder Konfigurationsdateien):
+
+| Edge-Auth-Request | Ergebnis |
+|---|---|
+| `/internal/edge/authorize` | 204 |
+| `/internal/edge/authorize?saved=1` | 401, `{"error":"unauthorized"}` |
+| `/internal/edge/authorize?error=test` | 401, dieselbe Antwort |
+
+Dies erklärt die bereits gespeicherten Daten: Der POST ist abgeschlossen,
+erst der nachfolgende GET mit Query scheitert am vorgeschalteten Edge-Gate.
+Ein Core-Workaround durch Entfernen von `saved=1` würde nur den Auslöser
+verbergen und ließe weitere Query-Pfade kaputt. Keine Änderung an Core-Laufzeit,
+Cloud, Caddy, Sessionarchitektur oder Tenantarchitektur vorgenommen.
+
+Neue Regression: `app/src/modules/platform/firma-actions.test.ts`. Sie führt
+die echte Action mit echtem Next-Redirect aus, prüft das Firmenupdate, lässt
+den Zielrequest durch den echten Core-Proxy und rendert die echte Firmenseite
+mit derselben signierten Cloud-Session. PB-/Control-HTTP und Nexts
+Request-/Cache-APIs sind Testdoubles; Session-, Mitgliedschafts- und
+Tenantprüfung sind echt. Zusätzlich: PB 401/403/500, fehlender Name,
+Lesemitgliedschaft, fehlende Session und Ablehnung der Session für fremden Tenant.
+Der Erfolgsfall ist bereits mit unverändertem Core grün: Schutz vor künftiger
+Regression, **kein Nachweis einer Behebung des Produktionsfehlers**.
+
+Prüfung am 2026-10-02 unter macOS, Node 25.9.0, npm 11.12.1, Next 16.3.5:
+`cd app && npx vitest run src/modules/platform/firma-actions.test.ts
+src/modules/einvoice/actions.test.ts src/lib/instance-context.test.ts`:
+13/13 bestanden (davon 7 neue Fälle). Gesamtsuite `npm test`: 71 Testdateien
+bestanden, 7 übersprungen; Vitest meldet 782 bestandene und 163 übersprungene
+Tests (weitere 35 Fälle in nicht aktivierten verschachtelten Integrationssuites;
+kein echter PB-Starter). `npm run typecheck` und
+`npx eslint src/modules/platform/firma-actions.test.ts` bestanden.
+Kein Browser-/HTTP-E2E mit laufender Next-Runtime, keine echte PB-Integration,
+kein Produktionsbuild, VPS-Zugriff oder Deployment. Der Core-Test kann den
+vorgeschalteten Cloud-Edge nicht abnehmen. Die Fehlerbehebung dort ist durch
+die ausdrückliche Auftragsgrenze „keine Änderungen an zettelruhe-cloud“ offen.

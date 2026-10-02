@@ -1,5 +1,16 @@
 # Entwicklung und Bestandsaufnahme
 
+TP-034 (2026-10-02): Der Firmenspeicherpfad in Core `38de606`/`v1.0.3`
+hat den Erfolgsredirect bereits außerhalb der Fehlerbehandlung. Die neue
+`platform/firma-actions.test.ts` prüft Action → `/app/firma?saved=1` →
+Core-Proxy und authentifiziert gerenderte Firmenseite mit echtem Sessiontoken
+und synthetischen PB-/Control-HTTP-Antworten. Lokal 7/7 neue Fälle, zusammen
+mit TP-023 und Instanzkontext 13/13; Typecheck und gezielter ESLint bestanden
+(macOS, Node 25.9.0, Next 16.3.5). Die rohe `unauthorized`-Antwort wurde im
+unveränderten lokalen Cloud-Control-Handler bei angehängter Query reproduziert.
+Keine Core-Laufzeitkorrektur; aktuelle Produktionskonfiguration und Behebung
+am Cloud-Edge bleiben ungeprüft/offen. [Befund und Prüfgrenzen](testphase.md#tp-034-firmenspeichern--unauthorized-nach-erfolgsredirect-2026-10-02).
+
 Lokal abgenommenes Cloud-TP-013 vom 2026-09-29: `app/src/lib/smtp.ts` trennt
 System- und Geschäftsmail. `app/src/lib/mail-settings.ts` und
 `app/src/app/app/mail-einstellungen/page.tsx` erlauben Instanz-Eigentümern
