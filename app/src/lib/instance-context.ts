@@ -1,6 +1,7 @@
 /** Generic server-side deployment adapter. No customer register is bundled here. */
 import { AsyncLocalStorage } from "node:async_hooks";
-import { timingSafeEqual } from "node:crypto";
+import { createHmac, timingSafeEqual } from "node:crypto";
+import { isIP } from "node:net";
 import { cache } from "react";
 import { validSmtpConfig, type SmtpConfig } from "./smtp";
 
@@ -20,6 +21,43 @@ export type InstanceContext = Readonly<{
 export const isCloud = () => process.env.INSTANCE_MODE === "cloud";
 const jobs = new AsyncLocalStorage<InstanceContext>();
 const requests = new WeakMap<object, Promise<InstanceContext>>();
+const APP_HOST_HEADER = "x-instance-app-host";
+const APP_HOST_PROOF_HEADER = "x-instance-app-host-proof";
+const APP_HOST_LIFETIME_MS = 5 * 60 * 1000;
+
+function publicHostname(host: string): boolean {
+  return /^[a-z0-9.-]+$/.test(host) && host.length <= 253 && !isIP(host);
+}
+
+function internalTransport(host: string): boolean {
+  try {
+    const url = new URL(`http://${host}`);
+    return url.host === host && isIP(url.hostname.replace(/^\[|\]$/g, "")) !== 0;
+  } catch {
+    return false;
+  }
+}
+
+function hostProof(host: string, issued: string, key: string): string {
+  return createHmac("sha256", key).update(`zettelruhe:app-host:v1\n${issued}\n${host}`).digest("hex");
+}
+
+/** Server-only request overrides. Next forwards these on internal action redirects.
+ * The host comes from the resolved context, never from forwarded/client headers.
+ * No context credentials or proof are sent as browser response headers.
+ */
+export function instanceRequestHeaders(h: Headers, context: InstanceContext): Headers {
+  const key = process.env.INSTANCE_INGRESS_TOKEN ?? "";
+  if (key.length < 32) throw new Error("INSTANCE_INGRESS_DENIED");
+  const host = new URL(context.appUrl).hostname;
+  if (!publicHostname(host)) throw new Error("INSTANCE_HOST_INVALID");
+  const issued = String(Date.now());
+  const result = new Headers(h);
+  result.set(APP_HOST_HEADER, host);
+  result.set(APP_HOST_PROOF_HEADER, `${issued}.${hostProof(host, issued, key)}`);
+  result.set("x-forwarded-host", host);
+  return result;
+}
 
 export function requireIngress(h: Pick<Headers, "get">): string {
   const expected = process.env.INSTANCE_INGRESS_TOKEN ?? "";
@@ -27,8 +65,25 @@ export function requireIngress(h: Pick<Headers, "get">): string {
   if (expected.length < 32 || actual.length !== expected.length ||
       !timingSafeEqual(Buffer.from(actual), Buffer.from(expected))) throw new Error("INSTANCE_INGRESS_DENIED");
   const host = h.get("host") ?? "";
-  if (!/^[a-z0-9.-]+$/.test(host) || host.length > 253) throw new Error("INSTANCE_HOST_INVALID");
-  return host;
+  const canonical = h.get(APP_HOST_HEADER);
+  const proof = h.get(APP_HOST_PROOF_HEADER);
+  let hostname = host;
+  if (canonical !== null || proof !== null) {
+    const match = /^(\d{13})\.([a-f0-9]{64})$/.exec(proof ?? "");
+    if (!canonical || !publicHostname(canonical) || !match ||
+        Number(match[1]) > Date.now() || Date.now() - Number(match[1]) > APP_HOST_LIFETIME_MS ||
+        !timingSafeEqual(Buffer.from(match[2], "hex"), Buffer.from(hostProof(canonical, match[1], expected), "hex"))) {
+      throw new Error("INSTANCE_HOST_INVALID");
+    }
+    // A public Host must still match exactly. A changed internal transport Host
+    // cannot select an instance: only the server-authenticated canonical host can.
+    if (host !== canonical && !internalTransport(host)) throw new Error("INSTANCE_HOST_INVALID");
+    hostname = canonical;
+  }
+  if (!publicHostname(hostname)) throw new Error("INSTANCE_HOST_INVALID");
+  const forwarded = h.get("x-forwarded-host");
+  if (forwarded !== null && forwarded !== hostname) throw new Error("INSTANCE_HOST_INVALID");
+  return hostname;
 }
 
 export function validateInstance(value: InstanceContext, hostname?: string): InstanceContext {

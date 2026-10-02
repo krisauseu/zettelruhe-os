@@ -1,4 +1,4 @@
-import { isCloud, requireIngress, resolveInstance } from "@/lib/instance-context";
+import { isCloud, requireIngress, resolveInstance, instanceRequestHeaders } from "@/lib/instance-context";
 import { verifySessionToken } from "@/lib/session-token";
 import { NextResponse, type NextRequest } from "next/server";
 import { jwtVerify } from "jose";
@@ -46,7 +46,7 @@ export async function proxy(request: NextRequest) {
         response.headers.set("Cache-Control", "private, no-store");
         return response;
       }
-      const response = NextResponse.next();
+      const response = NextResponse.next({ request: { headers: instanceRequestHeaders(request.headers, context) } });
       response.headers.set("Cache-Control", "private, no-store");
       return response;
     } catch (error) {

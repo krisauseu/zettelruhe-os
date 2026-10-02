@@ -1,5 +1,22 @@
 # Entwicklung und Bestandsaufnahme
 
+TP-036 (2026-10-02): `instance-context.ts` und `proxy.ts` erhalten den bereits
+aufgelösten kanonischen App-Host auch dann, wenn Next einen Server-Action-Redirect
+intern mit Container-IP:Port aufruft. Der Proxy setzt serverseitige Requestheader
+mit fünf Minuten gültigem HMAC-Nachweis aus dem vorhandenen Ingress-Schlüssel;
+Client-/Forwarded-Host und IP allein wählen keinen Tenant. Keine neue ENV oder
+Migration. Guard-/Proxyregression in `src/lib/instance-redirect.test.ts` (13 Fälle).
+`node scripts/test-instance-redirect-local.mjs` vom Root prüft das gebaute Next
+mit echten Firma-/Rechnungs-Actions, erzwungenem internem IP-Transporthost,
+authentifizierten Zielseiten und synthetischen Control-/PB-HTTP-Antworten.
+Prerequisite: `cd app && npm run build -- --webpack`. Der Starter nutzt nur
+Loopback-Ports, In-Memory-Daten und `JOBS_DISABLED=1`; keine bestehenden Daten
+oder produktiven Dienste. Lokal macOS/Node 25.9.0/Next 16.3.5: vier HTTP-Prüfgruppen,
+808 Unit-Tests, Typecheck, Lint und Webpack-Produktionsbuild bestanden.
+163 Tests und 35 zusätzliche RC-Unterfälle ohne sichere PB-Starter nicht ausgeführt.
+Keine manuelle Browser-/PB-/Deploymentabnahme. `INSTANCE_UNAVAILABLE` und
+TP-034 bleiben separate Befunde. [Details](testphase.md#tp-036-kanonischer-host-bei-internen-next-redirects-2026-10-02).
+
 TP-034 (2026-10-02): Der Firmenspeicherpfad in Core `38de606`/`v1.0.3`
 hat den Erfolgsredirect bereits außerhalb der Fehlerbehandlung. Die neue
 `platform/firma-actions.test.ts` prüft Action → `/app/firma?saved=1` →

@@ -36,6 +36,29 @@ React-Cache unterstützt Server Components; eine WeakMap hält den gleichen
 Snapshot auch im Route Handler. Secrets werden nicht in weitergereichte
 Kontextheader oder Client-Props geschrieben.
 
+Seit TP-036 (2026-10-02) erhält der Proxy den kanonischen Host aus dem bereits
+aufgelösten `context.appUrl` in internen Next-Requests.
+`NextResponse.next({ request: { headers } })` setzt `x-instance-app-host` und
+`x-instance-app-host-proof` ausschließlich für den nachgelagerten Request.
+Der Nachweis enthält einen Ausgabezeitpunkt und einen domänengetrennten
+HMAC-SHA256 über Zeit und Host, signiert mit dem vorhandenen Ingress-Schlüssel,
+maximal fünf Minuten gültig. Next reicht diese Header beim internen RSC-Redirect
+einer Server Action weiter. Keine neue ENV und keine Kontextsecrets im Header.
+
+`requireIngress()` verlangt auch dabei das geschützte Eingangstoken und einen
+gültigen Nachweis. Öffentliche Hosts und vorhandener `x-forwarded-host` müssen
+exakt zum kanonischen Host passen. Ein abweichender IP:Port-Transporthost wird
+nur mit dem authentifizierten kanonischen Host akzeptiert; IP allein bleibt
+abgewiesen. Control wird weiterhin mit dem kanonischen Host aufgerufen und
+prüft dessen App-URL-Bindung. Unbekannte Hosts, Queryparameter und ungeprüfte
+Forwarded-Hosts liefern keine Tenantidentität. Session-/Originprüfung bleibt
+erhalten. Ablauf oder Schlüsselrotation verwirft alte Nachweise.
+
+Die lokale Produktions-Next-Regressionsprüfung besteht mit Firma und Rechnung,
+echten Actions und erzwungenem internem IP:Port-Folgehost. Control/PB sind
+synthetische lokale HTTP-Fixtures; keine Cloud-/VPS-/Deploymentabnahme.
+[Prüfung und Grenzen](testphase.md#tp-036-kanonischer-host-bei-internen-next-redirects-2026-10-02).
+
 Jobs laufen in `withInstance(context, work)` über AsyncLocalStorage. Verschachtelte
 und parallele Aufrufe stellen ihren jeweiligen äußeren Kontext wieder her.
 Der Scheduler lädt je Tick die bereiten Hosts, löst jede Instanz vor ihrem Lauf

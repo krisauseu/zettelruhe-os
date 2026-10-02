@@ -19,6 +19,7 @@ Funde aus dem Alltagstest nach Meilenstein 2: kleine Bugs, Verbesserungen, Ände
 
 | ID | Datum | Art | Bereich | Kurz | Notiz |
 |----|-------|-----|---------|------|-------|
+| TP-036 | 2026-10-02 | Bug | Instanzkontext / Server Actions | Kanonischen Tenant-Host beim internen Next-Redirect erhalten | Owner: `app/src/lib/instance-context.ts`, `app/src/proxy.ts`. Kurzlebiger HMAC-Nachweis für den bereits aufgelösten App-Host, ausschließlich in Next-Request-Overrides. 13 neue Guard-/Proxyfälle und echte Firma-/Rechnungs-Actions in lokaler Produktions-Next-Runtime mit erzwungenem IP:Port-Folgehost bestanden; [Verfahren, Sicherheitsgrenzen und Abnahme](#tp-036-kanonischer-host-bei-internen-next-redirects-2026-10-02). |
 | TP-035 | 2026-10-02 | Bug | Shell / Navigation | Mailversand nur im Cloud-Modus anzeigen; bestehende Instanz-Eigentümerprüfung beibehalten | Owner: `app/src/components/app-shell.tsx`, Regression: `app/src/components/app-shell.test.ts`. Bestehendes `isCloud()` aus `lib/instance-context.ts` wie auf der unveränderten Mailseite; keine neue Moduserkennung. Lokal macOS, Node 22.22.3, Next 16.3.5: `cd app && ./node_modules/.bin/vitest run src/components/app-shell.test.ts src/components/app-nav-state.test.ts src/components/app-sidebar-state.test.ts src/modules/platform/rechte.test.ts` — 57/57 grün, davon 13 neue Navigationsfälle (Cloud/Self-Hosting, Instanz- und Firmenrollen, ENV-Standard). `npm run typecheck` und gezielter ESLint beider Shell-Dateien mit `--max-warnings=0` grün. Gerendertes Navigations-HTML geprüft; keine Browserabnahme, um für diesen Menüfix keinen App-Start mit möglichem Zahlungsjournal-Nachzug auszulösen. Kein Deployment, Versions-/Tag-Wechsel oder Cloud-Bindungsänderung. |
 | TP-001 | 2026-08-20 | Änderung | Kontakte | Kontaktnummer je Kontakt (ein Nummernkreis, Prefix an der Firma; PB-ID bleibt Verknüpfung) | Owner: `contacts/*`, `lib/pb.ts`, `platform/firma-*`, Migration `1730002000_kontaktnummer.js`. Tests: `cd app && npx vitest run src/lib/nummernkreis.test.ts src/modules/contacts src/modules/search src/modules/sales/pdf-render.test.ts src/modules/einvoice/outbound.test.ts`. Browser kf nach Docker-Rebuild: keine Fehler. |
 | TP-002 | 2026-08-21 | Verbesserung | Belege | Handyfotos vor dem Speichern auf JPEG ≤2000 px Kante / q=0.82; PDF unverändert | Owner: `expenses/beleg-datei-input.tsx`, `expenses/compress-beleg-image.ts`. Tests: `cd app && npx vitest run src/modules/expenses` (24). Chrome: 4000×3000 JPEG 92 KB → 24 KB, PDF unverändert. Seite `/app/belege/neu` nicht live (kein Compose/Session). |
@@ -220,3 +221,60 @@ Kein Browser-/HTTP-E2E mit laufender Next-Runtime, keine echte PB-Integration,
 kein Produktionsbuild, VPS-Zugriff oder Deployment. Der Core-Test kann den
 vorgeschalteten Cloud-Edge nicht abnehmen. Die Fehlerbehebung dort ist durch
 die ausdrückliche Auftragsgrenze „keine Änderungen an zettelruhe-cloud“ offen.
+
+## TP-036 Kanonischer Host bei internen Next-Redirects (2026-10-02)
+
+**Ursache:** Next 16.3.5 lädt nach erfolgreichen Server Actions die relative
+Redirect-Zielseite intern als RSC über seine Server-Origin (`createRedirectRenderResult`
+in `next/dist/server/app-render/action-handler.js`). Wenn dieser Transport den
+`Host` durch eine Containeradresse ersetzt, prüft `requireIngress()` bisher
+diese Adresse erneut als öffentlichen Host und verwirft sie mit
+`INSTANCE_HOST_INVALID`; `proxy.ts` antwortet mit HTTP 503. Der Write und die
+Redirects von `updateRechnungAction` und `updateFirmaAction` sind bereits korrekt
+außerhalb der Write-Fehlerbehandlung. `?saved=1` ist nur der Erfolgsmarker.
+
+**Korrektur:** Nach geschützter Hostauflösung setzt der bestehende Proxy den
+Host aus `context.appUrl` als `x-instance-app-host` mit einem zeitlich begrenzten,
+domänengetrennten HMAC-SHA256-Nachweis (`x-instance-app-host-proof`, fünf Minuten).
+Signierschlüssel ist das bestehende `INSTANCE_INGRESS_TOKEN`; keine neue ENV,
+Tenantregistrierung, Session oder Context-Persistenz. Next-Request-Overrides
+reichen diese Angaben an Action/Server Components und interne Folgeaufrufe.
+Die Nachweise werden ausschließlich als Requestheader gesetzt, nicht als
+Browserantwort. Control löst weiterhin den kanonischen Host auf und validiert
+den zurückgegebenen Kontext. Ein öffentlicher Host muss exakt dazu passen;
+ein IP-Transporthost darf nur mit gültigem Nachweis durchgereicht werden und
+kann selbst keinen Tenant auswählen. Eingangstoken, Hostformat, HMAC, Laufzeit,
+Forwarded-Host und anschließend die tenantgebundene Session werden geprüft.
+Fremde/mehrdeutige Forwarded-Hosts, unbekannte Hosts, gefälschte oder unvollständige
+Nachweise bleiben abgewiesen. Self-Hosting nutzt unverändert ENV und sein Cookie.
+
+**Lokale Abnahme:** macOS, Node 25.9.0, Next 16.3.5, 2026-10-02:
+
+- `cd app && npm test`: 73 Dateien bestanden, 7 übersprungen; 808 Tests bestanden,
+  163 übersprungen. 35 weitere verschachtelte RC-Integrationsfälle bleiben ohne
+  sicheren PB-Starter nicht ausgeführt. 13 neue Fälle in `instance-redirect.test.ts`
+  prüfen externe/interne Requests, Container-IP allein, exakte Hostbindung,
+  fremde Forwarded-Hosts, manipulierte/abgelaufene/künftig datierte/unter anderem
+  Schlüssel signierte Nachweise, tenantId-Bindung und das echte Self-Hosting-Cookie.
+- `cd app && npm run typecheck`, `npm run lint -- --max-warnings=0` und
+  `npm run build -- --webpack`: bestanden. Build mit synthetischer Cloud-ENV
+  und deaktiviertem Scheduler; keine Datenmigration.
+- `node scripts/test-instance-redirect-local.mjs`: vier Prüfgruppen bestanden.
+  Gebaute Produktions-Next-Runtime, echte gerenderte Formulare und Server Actions,
+  lokale synthetische HTTP-Fixtures für Control/PB, gültige signierte Session.
+  Ein testlokaler HTTP-Transport ersetzt bei Nexts echtem internen Redirect
+  den Host durch Loopback-IP:Port. Firma und Rechnung werden jeweils einmal
+  gespeichert; der interne RSC-Folgeaufruf und die anschließende authentifizierte
+  `?saved=1`-Seite enthalten den geänderten Inhalt. Containerhost allein,
+  manipulierter Forwarded-Host, unbekannter Host mit Tenantquery und gefälschter
+  Kontextheader scheitern. Browserantworten enthalten keine Nachweise,
+  Middleware-Requestheader oder Secrets. `JOBS_DISABLED=1`, ausschließlich
+  dynamische Loopback-Ports und In-Memory-Testdaten; keine echten PB-Daten.
+
+**Grenzen:** Keine manuelle Browser-, echte PocketBase-, Cloud-Edge-, VPS- oder
+Deploymentabnahme. TP-034 prüfte den externen öffentlichen Zielhost; sein
+datierter Befund ist kein Nachweis für den hier ergänzten Containerhost-Fall.
+Der separate Cloud-Edge-401-Fund bleibt offen. `control()` und dessen
+`INSTANCE_UNAVAILABLE`-Fehler bei erfolgloser Control-Antwort bleiben unverändert;
+der unbewiesene Verdacht dazu wird hier weder untersucht noch behoben. Billing-
+und Rate-Limits bleiben unverändert.
