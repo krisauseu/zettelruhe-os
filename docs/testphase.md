@@ -127,3 +127,28 @@ Lokale Prüfung am 2026-09-12, macOS/Node 25.9.0, Next 16.3.0:
 
 Kein Browser-, VPS- oder Deploymenttest. Keine Änderung an Geschäftslogik,
 Persistenz, Import-/Exportabläufen oder Finanzinvarianten.
+
+## TP-033: Deutscher Absendername beim Cloud-Mailversand, 2026-10-02
+
+Änderung: `app/src/lib/smtp.ts` verwendet beim zentralen Cloud-Fallback
+`<Firmenname> über Zettelruhe <versand@zettelruhe.de>` statt „via Zettelruhe“.
+Nur die sichtbare Bezeichnung und drei bestehende String-Erwartungen in
+`app/src/lib/smtp-cloud.test.ts` sind geändert. Reply-To aus dem tenantgebunden
+geladenen Firmenrecord, `firmen.email`, SMTP-Vertrag, Transport und Caching
+bleiben unverändert.
+
+Lokale Prüfung am 2026-10-02, macOS, Node 25.9.0/npm 11.12.1, Next 16.3.5:
+
+- In `app/`: `npm test` bestanden (70 Testdateien, 775 Tests; 7 Dateien und
+  163 Tests übersprungen, zusätzlich 35 verschachtelte RC-Fälle ohne sicheren
+  PB-Starter nicht ausgeführt, entsprechend dem bisherigen Prüfstand).
+- `npm run typecheck`, `npm run lint -- --max-warnings=0` und
+  `npm run build -- --webpack` bestanden.
+- Beide Hook-Generatoren (`scripts/build-rc-hook.mjs` und
+  `scripts/build-finanz-domain-hook.mjs`) mit `--check` sowie
+  `git diff --check` bestanden.
+
+Patchrelease `v1.0.3` per annotiertem Git-Tag; Paketversionen wie bei `v1.0.2`
+unverändert. Kein Browserlauf nötig für die durch bestehende Mailtests geprüfte
+Bezeichnung. Kein echter Mailversand, VPS-Zugriff, Deployment oder erneuter
+Cloud-E2E-Lauf; kein Zugriff auf andere Repositories, keine Cloud-Bindung geändert.

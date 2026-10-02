@@ -65,7 +65,7 @@ describe("cloud mail separation", () => {
       expect(await isSmtpConfigured()).toBe(true);
       await sendBusinessMail("active-firm", input);
     });
-    expect(sent[0].from).toEqual({ name: "Firma A via Zettelruhe", address: "versand@zettelruhe.de" });
+    expect(sent[0].from).toEqual({ name: "Firma A über Zettelruhe", address: "versand@zettelruhe.de" });
     expect(sent[0].replyTo).toBe("firma-a@synthetic.invalid");
   });
   it("rejects an unknown firm before fallback delivery", async () => {
@@ -106,7 +106,7 @@ describe("cloud mail separation", () => {
     for (const [i, tenant] of ["a", "b", "a", "b"].entries()) {
       const mail = sent.find(mail => mail.subject === `${i}`)!;
       expect(mail.replyTo).toBe(`firma-${tenant}@synthetic.invalid`);
-      expect(mail.from).toEqual({ name: `Firma ${tenant.toUpperCase()} via Zettelruhe`,
+      expect(mail.from).toEqual({ name: `Firma ${tenant.toUpperCase()} über Zettelruhe`,
         address: fallback.from });
     }
   });
@@ -154,7 +154,7 @@ describe("cloud mail separation", () => {
     await withInstance(contextB, () => sendBusinessMail("active-firm", input));
     await withInstance({ ...context, smtp: own }, () => sendSystemMail(input));
     expect(sent).toHaveLength(2);
-    expect(sent[0].from).toEqual({ name: "Firma B via Zettelruhe", address: fallback.from });
+    expect(sent[0].from).toEqual({ name: "Firma B über Zettelruhe", address: fallback.from });
     expect(sent[1].from).toEqual({ name: system.fromName, address: system.from });
     for (const log of logs) expect(log).not.toHaveBeenCalled();
   });

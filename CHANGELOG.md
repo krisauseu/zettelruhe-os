@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.3] - 2026-10-02
+
+Der sichtbare Absendername beim Zettelruhe-Cloud-Versand lautet jetzt
+`<Firmenname> über Zettelruhe` statt `<Firmenname> via Zettelruhe`.
+Absenderadresse, Reply-To aus der aktiven Firma und SMTP-Vertrag bleiben
+unverändert. Patchrelease per annotiertem Git-Tag wie bei `v1.0.2`;
+Paket- und Dependency-Versionen bleiben unverändert. Lokale Prüfungen:
+[TP-033](docs/testphase.md#tp-033-deutscher-absendername-beim-cloud-mailversand-2026-10-02).
+
 ## [1.0.1] - 2026-09-15
 
 Release-Titel: **Zettelruhe 1.0.1 - Security- und Wartungsupdate**

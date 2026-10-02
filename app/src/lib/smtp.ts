@@ -141,5 +141,5 @@ export async function sendBusinessMail(firmaId: string, input: SendMailInput): P
     throw new Error("Für Zettelruhe-Versand braucht die aktive Firma eine gültige E-Mail-Adresse.");
   }
   const name = (firma.name || "Firma").replace(/[\r\n]/g, " ").slice(0, 180);
-  return deliver(config, input, `${name} via Zettelruhe`, firma.email.trim());
+  return deliver(config, input, `${name} über Zettelruhe`, firma.email.trim());
 }
