@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { KeyRound, LogOut } from "lucide-react";
 import type { SessionPayload } from "@/lib/session";
+import { isCloud } from "@/lib/instance-context";
 import { logoutAction } from "@/modules/platform/auth-actions";
 import { FirmaSwitcher } from "@/modules/platform/firma-switcher";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -31,7 +32,7 @@ function buildNav(kannVerwalten: boolean, kannFirmaAnlegen: boolean): NavItem[] 
       icon: "nutzer",
     });
   }
-  if (kannFirmaAnlegen) {
+  if (kannFirmaAnlegen && isCloud()) {
     stammdaten.push({ href: "/app/mail-einstellungen", label: "Mailversand", icon: "firma" });
   }
   return [
