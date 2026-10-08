@@ -8,6 +8,51 @@ Betriebssteuerung liegen außerhalb.
 
 ## Kontext und Zugriff
 
+### Optionale Ersteinrichtung (Cloud-TP-014)
+
+Lokal umgesetzt am 2026-10-08 und im Release `v1.0.4` enthalten:
+Ein externer Provisioner kann für eine neue Instanz den geschlossenen
+PB-Singleton `instanz_einrichtung/initialsetup001` mit vorhandener `eigentuemer`-
+und `firma`-Relation sowie `status=pending` erstellen. Keine Ableitung aus Name,
+URL, Cookie oder Browserzustand. Die neue Migration erzeugt keine Records und
+ändert keine bestehenden Nutzer. Ohne Singleton bzw. im alten PB-Schema ohne
+Collection bleibt der bisherige Cloud-Ablauf; Self-Hosting liest den Zustand nicht.
+
+Login Action und Route führen bei `pending` nach `/app/firma`. Der Proxy sperrt
+normale App-Pfade nach erfolgreicher Control-/Tenant-/Sessionprüfung. Nachgelagerte
+Sessionguards sperren zusätzlich fachliche Actions unabhängig von deren POST-URL.
+Nur Einrichtung der gebundenen Firma durch die erste Eigentümer:in mit bestehender
+Eigentümermitgliedschaft, Firmenlogo sowie Authentifizierung, eigenes Passwort und
+Logout bleiben verfügbar. Die reduzierte AppShell zeigt keinen technischen
+Benutzernamen; Layoutnachträge und Scheduler bleiben bis zum Abschluss aus.
+
+`FirmaForm` ergänzt den Eigentümernamen und nutzt weiterhin alle vorhandenen
+Firmenfelder. Pflichtangaben zum Abschluss: Firmenname, Straße, PLZ, Ort, Land,
+Steuer-Modus und Eigentümername (maximal 200 Zeichen). Steuer-/Layout-/Logo- und
+Nummernkreisvalidierung bleiben bestehen. Der interne superusergeschützte Endpoint
+`POST /internal/zettelruhe/einrichtung/v1/abschliessen` erhält ein multipart
+`payload` mit `akteur`, `firma`, `ownerName`, `values` und
+`nummernkreisAenderungen`; optional Datei `logo`. Er prüft den Marker und beide
+Eigentümerrollen innerhalb einer PB-Transaktion. Firma, Nummernkreise, Logo,
+bestehender `users.name` und `complete` werden gemeinsam gespeichert. Benutzer-ID,
+E-Mail, Benutzer-/Mitgliedschaftsrolle und Mitgliedschaften werden nicht geändert.
+
+Fehler rollen den Abschluss zurück. Erneute Anmeldung setzt dieselbe Einrichtung
+fort; Wiederholung nach verlorenem Antworttransport oder parallelem Abschluss
+liefert `{result: "replayed", firmaId, eigentuemerId, status: "complete"}` ohne
+erneute Änderung. Erfolg führt nach `/app`. Der spätere Name bleibt über die
+vorhandene Nutzerverwaltung mit Firmenverwaltungsrechten änderbar. Historische
+Platzhalternamen werden weder erkannt noch migriert.
+
+Nachweise: 21 gezielte Unitfälle, vier Scheduler-Guardfälle, acht echte PB- und
+vier echte Next-/PB-Prüfgruppen, ergänzt durch die bestehenden Gesamtprüfungen.
+[Datierter Abnahmenachweis](testphase.md#tp-037-cloud-ersteinrichtung-nach-login-2026-10-08).
+Cloudauftrag und vollständige Dateiliste stehen im separaten Repository unter
+`docs/tasks/TP-014-cloud-initial-setup.md`. Die Bereitstellung verlangt den
+veröffentlichten, exakt gebundenen Kernstand und dessen Quellcodeangebot sowie
+Collection/Hooks im PB-Artefakt neuer Instanzen. Alte PBs können ohne diesen
+optionalen Zustand weiterlaufen; keine historische Migration ist Teil des Auftrags.
+
 `app/src/lib/instance-context.ts` ist der generische Serveradapter. Ohne
 `INSTANCE_MODE=cloud` liest er die bekannte einzelne Instanz aus ENV.
 Im Cloud-Modus sind `INSTANCE_CONTROL_URL`, `INSTANCE_CONTROL_TOKEN` und

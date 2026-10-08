@@ -1,4 +1,4 @@
-import { requireSession } from "@/lib/session";
+import { requireAuthenticatedSession } from "@/lib/session";
 import { aendereEigenesPasswortAction } from "@/modules/platform/passwort-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,7 +24,7 @@ export default async function PasswortPage({
 }: {
   searchParams: SearchParams;
 }) {
-  const session = await requireSession();
+  const session = await requireAuthenticatedSession();
   const sp = await searchParams;
 
   return (

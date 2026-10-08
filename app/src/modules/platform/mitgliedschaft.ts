@@ -346,3 +346,15 @@ export async function setzeNutzerPasswort(input: {
     passwordConfirm: password,
   });
 }
+
+/** Change only the existing member's display name; identities and roles stay intact. */
+export async function setzeNutzerName(input: {
+  firmaId: string;
+  zielUserId: string;
+  name: string;
+}): Promise<void> {
+  const name = input.name.trim().replace(/\s+/g, " ");
+  if (!name || name.length > 200) throw new Error("Bitte einen Namen angeben (max. 200 Zeichen).");
+  if (!(await getMitgliedschaft(input.zielUserId, input.firmaId))) throw new Error("Nutzer:in ist kein Mitglied dieser Firma.");
+  await updateRecord("users", input.zielUserId, { name });
+}

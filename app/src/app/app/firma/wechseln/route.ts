@@ -2,6 +2,7 @@ import { getInstanceContext } from "@/lib/instance-context";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { switchActiveFirma } from "@/modules/platform/firma-write";
+import { getInitialSetup } from "@/lib/initial-setup";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,7 @@ export async function POST(request: Request) {
   if (!session) {
     return NextResponse.redirect(new URL("/login", appUrl), 303);
   }
+  if ((await getInitialSetup())?.status === "pending") return NextResponse.redirect(new URL("/app/firma", appUrl), 303);
 
   const formData = await request.formData();
   try {

@@ -1,5 +1,13 @@
 # Zettelruhe — Feature-Roadmap
 
+2026-10-08: Die optionale Ersteinrichtung extern bereitgestellter Instanzen ist
+lokal vorhanden: bestehende Firmenangaben plus Name des vorhandenen ersten
+Eigentümers, serverseitige Sperre bis zum atomaren Abschluss. Nutzer:innenverwaltung
+erlaubt spätere Namensänderungen. Kein zusätzlicher Self-Hosting-Wizard und keine
+historische Migration. Der Kernstand ist für Release `v1.0.4` freigegeben;
+Bereitstellung und Produktionsnachweis werden im Cloud-Auftrag TP-014 geführt.
+[Vertrag und Abnahme](instance-context.md#optionale-ersteinrichtung-cloud-tp-014).
+
 Cloud-TP-013 ist am 2026-09-29 lokal mit zwei Cloud-Tenants und echten
 SMTP-Verbindungen zu lokalen Testservern abgenommen: tenantgebundenes SMTP
 und Zettelruhe-Fallback für Angebote, Rechnungen und Zahlungserinnerungen,

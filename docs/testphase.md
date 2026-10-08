@@ -278,3 +278,89 @@ Der separate Cloud-Edge-401-Fund bleibt offen. `control()` und dessen
 `INSTANCE_UNAVAILABLE`-Fehler bei erfolgloser Control-Antwort bleiben unverändert;
 der unbewiesene Verdacht dazu wird hier weder untersucht noch behoben. Billing-
 und Rate-Limits bleiben unverändert.
+
+## TP-037 Cloud-Ersteinrichtung nach Login (2026-10-08)
+
+**Umsetzung:** Der generische AGPL-Kern unterstützt einen optionalen instanzlokalen
+PB-Singleton `instanz_einrichtung/initialsetup001`. Ein externer Provisioner erstellt
+ihn ausschließlich für neue Cloud-Kunden mit der bereits vorhandenen Firma und
+Eigentümer-ID. Kein Erkennen eines Platzhalterstrings oder Browserzustands. Ohne
+Marker bzw. im alten PB-Schema ohne Collection bleibt der bisherige Ablauf;
+Self-Hosting liest diesen Zustand nicht. Die Migration erzeugt nur eine leere
+Collection und ändert keine historischen Nutzer.
+
+Login Action und Route führen bei `pending` nach `/app/firma`. Proxy und
+serverseitige Sessionguards sperren normale Seiten und fachliche Actions, auch
+bei POST auf diese erlaubte Seite; Control/Billing, Tenantbindung und Originprüfungen
+bleiben vorgeschaltet. Einrichtung der gebundenen Firma, Logo, eigenes Passwort und
+Logout bleiben erreichbar. Die reduzierte Navigation zeigt keinen internen
+Benutzernamen, und Layoutnachträge sowie Scheduler bleiben aus.
+
+Das vorhandene Firmenformular erhält den Eigentümernamen als zusätzlichen Abschnitt.
+Der atomare PB-Abschluss speichert Firmenangaben, Nummernkreise, optional Logo und
+ausschließlich `name` am bestehenden Eigentümeraccount sowie den Abschlussstatus
+in einer Transaktion. ID, E-Mail, Eigentümerrollen und Mitgliedschaften bleiben
+erhalten. Fehler rollen zurück und erlauben Wiederaufnahme; Antwortverlust und
+Parallelaufrufe liefern anschließend ein lesendes Replay. Erfolg führt nach `/app`.
+Die vorhandene Nutzerverwaltung erhält eine Namensänderung mit bestehenden
+Firmenverwaltungsrechten und Prüfung der Zielmitgliedschaft.
+
+**Lokale Abnahme:** macOS, Node 25.9.0, Next 16.3.5, Vitest 4.1.11,
+PocketBase 0.39.10; uncommittierter Arbeitsstand auf Core `454c3ef`:
+
+- `cd app && npm test`: 74 Dateien bestanden, 7 übersprungen; 833 Tests bestanden,
+  163 übersprungen. Weitere 35 verschachtelte RC-Integrationsfälle bleiben ohne
+  ihren separaten Starter nicht ausgeführt. Keine historische Finanztestmatrix
+  zusätzlich gestartet. 21 neue gezielte Fälle in `initial-setup.test.ts` belegen
+  Login Action/Route, Guards, Owner-/Firmenmitgliedschaft, atomaren Aufruf,
+  Fehler/Resume, fehlende Angaben, Cookie-/Tenant-/Control-Isolation, fehlendes
+  altes Schema, fertige Instanzen, reduzierte UI, spätere Namenänderung und
+  Self-Hosting. Eine alte Abschlussaction bleibt nach späteren Firmen-/Namenänderungen
+  ein lesendes Replay und überschreibt diese nicht. Vier neue Scheduler-Guardfälle
+  sind ebenfalls enthalten.
+- `npm run typecheck`, `npm run lint -- --max-warnings=0` und
+  `npm run build -- --webpack`: bestanden. Finaler Build mit synthetischer Cloud-
+  Konfiguration und `JOBS_DISABLED=1`.
+- `node scripts/test-instanz-einrichtung-isolated.mjs`: 8/8 echte PB-Prüfgruppen
+  mit zwei getrennten tmpfs-PBs und aktuellen Produktionshooks/-migrationen.
+  Testlokale Fehlerinjektion nach Firma-, User- und Markerwrite belegt vollständigen
+  DB-Rollback. Pflichtfelder, Rechte, fremde IDs, direkte API-Sperre, Retry/Replay,
+  zwei parallele Abschlüsse (ein Commit, ein Replay), Tenanttrennung bei gleichen
+  IDs, Logo und der unveränderte Nummernkreisendpoint bestanden.
+- `node scripts/test-initial-setup-isolated.mjs`: 4/4 Prüfgruppen mit einer
+  gebauten gemeinsamen Cloud-Next-Runtime, zwei getrennten tmpfs-PBs, synthetischem
+  Control und anschließend separater Self-Hosting-Next-Runtime. Echte Login- und
+  Server-Action-POSTs, gerenderte Formulare, serverseitige Gates, echter
+  Unique-Firmenname-DBfehler mit Rollback/Relogin/Resume, vollständiger Abschluss,
+  unveränderte Identitäten und Mitgliedschaften, Sessiontransfer/fremde Query,
+  Controlzugriffssperre, spätere Eigentümernamenänderung und Self-Hosting bestanden.
+  Eine erneut gesendete alte Einrichtungsform bleibt auch nach späteren Firmen-
+  und Namenänderungen ein lesendes Replay; vollständige Records bleiben gleich.
+- `node scripts/test-instance-redirect-local.mjs`: 4 vorhandene Prüfgruppen
+  bestanden; die Fixture enthält nun den leeren optionalen Einrichtungszustand.
+- Finanz-Hookgenerator, JS-Syntax und `git diff --check`: bestanden. Die lokale
+  Codegraph-CLI wurde aktualisiert und für den Änderungsradius verwendet; ihr
+  MCP-Server war in dieser Sitzung nicht verfügbar.
+- Cloud `npm run check`: 51 Node-Tests und 274 Pythonfälle (273 ausgeführt,
+  ein vorhandener Skip) bestanden, einschließlich zehn neuer Seed-/Resume- und
+  Bestandsschutztests. Auftrag und vollständige Dateiliste:
+  `zettelruhe-cloud/docs/tasks/TP-014-cloud-initial-setup.md`.
+
+Alle temporären Testcontainer und Next-Prozesse wurden entfernt. Dokumentation in
+README, Status, Roadmap, Entwicklung und Instanzkontext wurde im selben Auftrag
+aktualisiert. Die vorhandenen lokalen Löschungen von `.codex/config.toml` und
+`docs/betrieb.md` bleiben erhalten.
+
+**Grenzen:** Keine historische Accountreparatur, kein Commit/Push, Release oder
+Deployment. `core.lock.json` bleibt unverändert. Vor späterer Bereitstellung muss
+der neue AGPL-Kernstand veröffentlicht und exakt gebunden sein; das PB-Artefakt
+für neue Instanzen benötigt Collection und Hooks. Das Quellcodeangebot muss diesen
+Stand abdecken. Bestehende Instanzen werden für diesen Ablauf nicht migriert.
+Keine manuelle Browser-, Cloud-Edge-/Stripe-, VPS- oder Produktionsabnahme.
+
+**Releaseauftrag vom 2026-10-08:** Die bereits lokal geprüften TP-037/Cloud-TP-014-
+Änderungen werden als Core-Release `v1.0.4` auf `main` veröffentlicht. Die
+vorhandenen Löschungen von `.codex/config.toml` und `docs/betrieb.md` sind weiterhin
+ausdrücklich ausgeschlossen. `git diff --check` bestand erneut; es wurde keine
+weitere Testmatrix gestartet. Exakte Core-Bindung, Quellcodeangebot und
+Produktionsnachweis werden im Cloud-Auftrag TP-014 aktualisiert.

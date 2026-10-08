@@ -22,6 +22,7 @@ import {
   type Steuermodus,
 } from "@/lib/pb";
 import { resolveMitgliedschaftFuerSession } from "./mitgliedschaft";
+import { getInitialSetup } from "@/lib/initial-setup";
 
 function formString(formData: FormData, key: string): string {
   const v = formData.get(key);
@@ -43,6 +44,7 @@ export async function loginAction(formData: FormData): Promise<void> {
     redirect("/setup");
   }
 
+  let target = "/app";
   try {
     const user = await authWithPassword(email, password);
     const mitgliedschaft = await resolveMitgliedschaftFuerSession(
@@ -56,6 +58,7 @@ export async function loginAction(formData: FormData): Promise<void> {
       role: user.role,
       firmaId: mitgliedschaft?.firmaId ?? null,
     };
+    if ((await getInitialSetup())?.status === "pending") target = "/app/firma";
     await setSessionCookie(payload);
   } catch {
     redirect(
@@ -63,7 +66,7 @@ export async function loginAction(formData: FormData): Promise<void> {
     );
   }
 
-  redirect("/app");
+  redirect(target);
 }
 
 export async function logoutAction(): Promise<void> {

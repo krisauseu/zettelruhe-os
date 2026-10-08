@@ -621,24 +621,28 @@ exports.route = (e, operation) => {
       if (['beleg', 'kasse'].indexOf(data.key) >= 0) fail('MUTATION_FORBIDDEN');
       result = { nummer: allocate(tx, find(tx, 'firmen', data.firma), data.key) };
     } else if (operation === 'configure') {
-      const firma = auth(tx, data, true);
-      const all = Object.assign({}, JSON.parse(firma.getString('nummernkreise') || '{}'));
-      Object.keys(data.changes).forEach(key => {
-        if (!Object.prototype.hasOwnProperty.call(defaults, key)) fail('INVALID_STATE');
-        const c = data.changes[key];
-        const current = config(firma, key);
-        if (!c.expected || ['prefix', 'digits', 'next'].some(k => current[k] !== c.expected[k])) fail('NUMBER_CHANGED');
-        const v = c.value;
-        if (typeof v.prefix !== 'string' || v.prefix.length > 16 || !Number.isInteger(v.digits) || v.digits < 1 || v.digits > 8 || !Number.isSafeInteger(v.next) || v.next < current.next) fail('INVALID_STATE');
-        all[key] = { prefix: v.prefix, digits: v.digits, next: v.next };
-      });
-      firma.set('nummernkreise', all);
-      save(tx, firma, 'nummernkreis');
-      result = { nummernkreise: all };
+      result = { nummernkreise: configureNummernkreise(tx, auth(tx, data, true), data.changes) };
     }
   });
   return e.json(200, result);
 };
+function configureNummernkreise(tx, firma, changes) {
+  const all = Object.assign({}, JSON.parse(firma.getString('nummernkreise') || '{}'));
+  Object.keys(changes).forEach(key => {
+    if (!Object.prototype.hasOwnProperty.call(defaults, key)) fail('INVALID_STATE');
+    const c = changes[key];
+    const current = config(firma, key);
+    if (!c || !c.expected || ['prefix', 'digits', 'next'].some(k => current[k] !== c.expected[k])) fail('NUMBER_CHANGED');
+    const v = c.value;
+    if (!v || typeof v.prefix !== 'string' || v.prefix.length > 16 || !Number.isInteger(v.digits) || v.digits < 1 || v.digits > 8 || !Number.isSafeInteger(v.next) || v.next < current.next) fail('INVALID_STATE');
+    all[key] = { prefix: v.prefix, digits: v.digits, next: v.next };
+  });
+  firma.set('nummernkreise', all);
+  save(tx, firma, 'nummernkreis');
+  return all;
+}
+// A narrowly scoped reuse for the atomic optional instance-setup operation.
+exports.configureNummernkreise = configureNummernkreise;
 exports.belegUpdate = e => { scope(e, ['beleg-edit', 'beleg-close']); e.next(); };
 exports.belegDelete = e => { scope(e, ['beleg-delete']); e.next(); };
 exports.belegCreate = e => {

@@ -1,5 +1,13 @@
 # Status — Zettelruhe
 
+2026-10-08: Cloud-TP-014/TP-037 ist lokal implementiert und mit gebauter
+Next-Runtime und zwei frischen PBs geprüft. First-Login-Weiterleitung, serverseitige
+Einrichtungssperre, atomarer Abschluss, Wiederaufnahme bei Fehlern, Tenant-Isolation,
+spätere Eigentümernamenänderung und unverändertes Self-Hosting bestanden. Keine
+Bestandsdatenmigration oder historische Accountreparatur. Der Kern wird als
+`v1.0.4` veröffentlicht; Cloud-Bindung und Produktionsnachweis stehen im separaten
+Cloud-Auftrag TP-014. [Abnahme](testphase.md#tp-037-cloud-ersteinrichtung-nach-login-2026-10-08).
+
 2026-09-29: Die generische Mailtrennung für Cloud-TP-013 ist lokal abgenommen.
 13 E2E-Prüfgruppen mit gemeinsamer Next-Runtime, zwei getrennten Cloud-PBs,
 Control und lokalen SMTP-Capture-Servern belegen Systemmailer, Tenant-SMTP,

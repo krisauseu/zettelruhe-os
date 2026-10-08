@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { updateFirmaAction } from "./firma-actions";
+import { completeFirmaEinrichtungAction, updateFirmaAction } from "./firma-actions";
 import { DEFAULT_DOKUMENT_AKZENTFARBE } from "@/modules/sales/pdf-layout";
 
 const NK_ROWS = [
@@ -24,17 +24,19 @@ export function FirmaForm({
   firma,
   error,
   readOnly = false,
+  initialSetup = false,
 }: {
   firma: FirmaRecord;
   error?: string | null;
   readOnly?: boolean;
+  initialSetup?: boolean;
 }) {
   const [steuermodus, setSteuermodus] = useState(firma.steuermodus);
   const steuermodusGeaendert = steuermodus !== firma.steuermodus;
 
   return (
     <form
-      action={readOnly ? undefined : updateFirmaAction}
+      action={readOnly ? undefined : initialSetup ? completeFirmaEinrichtungAction : updateFirmaAction}
       encType="multipart/form-data"
       className="flex flex-col gap-8"
     >
@@ -55,6 +57,18 @@ export function FirmaForm({
       ) : null}
 
       <fieldset disabled={readOnly} className="flex flex-col gap-8 border-0 p-0">
+      {initialSetup ? (
+        <fieldset className="flex flex-col gap-4">
+          <legend className="text-sm font-semibold text-foreground">Erste Eigentümer:in</legend>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="owner_name">Ihr vollständiger Name</Label>
+            <Input id="owner_name" name="owner_name" required maxLength={200} autoComplete="name" />
+            <p className="text-xs text-muted-foreground">
+              Ihr bestehendes Konto erhält diesen Namen. Sie können ihn später unter Nutzer:innen ändern.
+            </p>
+          </div>
+        </fieldset>
+      ) : null}
       <fieldset className="flex flex-col gap-4">
         <legend className="text-sm font-semibold text-foreground">
           Stammdaten
@@ -68,17 +82,18 @@ export function FirmaForm({
           <Input
             id="strasse"
             name="strasse"
+            required={initialSetup}
             defaultValue={firma.strasse ?? ""}
           />
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="plz">PLZ</Label>
-            <Input id="plz" name="plz" defaultValue={firma.plz ?? ""} />
+            <Input id="plz" name="plz" required={initialSetup} defaultValue={firma.plz ?? ""} />
           </div>
           <div className="flex flex-col gap-1.5 sm:col-span-2">
             <Label htmlFor="ort">Ort</Label>
-            <Input id="ort" name="ort" defaultValue={firma.ort ?? ""} />
+            <Input id="ort" name="ort" required={initialSetup} defaultValue={firma.ort ?? ""} />
           </div>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -87,6 +102,7 @@ export function FirmaForm({
             <Input
               id="land"
               name="land"
+              required={initialSetup}
               maxLength={2}
               defaultValue={firma.land || "DE"}
             />
@@ -400,7 +416,7 @@ export function FirmaForm({
 
       {readOnly ? null : (
         <div>
-          <Button type="submit">Firmendaten speichern</Button>
+          <Button type="submit">{initialSetup ? "Einrichtung abschließen" : "Firmendaten speichern"}</Button>
         </div>
       )}
       </fieldset>

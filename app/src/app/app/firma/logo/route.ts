@@ -4,7 +4,7 @@ import { getInstanceContext } from "@/lib/instance-context";
  */
 
 import { NextResponse } from "next/server";
-import { requireFirmaSession } from "@/lib/session";
+import { requireFirmaEinrichtungSession } from "@/lib/session";
 import { fetchRecordFile, getFirmaById } from "@/lib/pb";
 
 export const dynamic = "force-dynamic";
@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export async function GET(): Promise<Response> {
   let firmaId: string;
   try {
-    const session = await requireFirmaSession();
+    const session = await requireFirmaEinrichtungSession();
     firmaId = session.firmaId;
   } catch {
     return NextResponse.redirect(

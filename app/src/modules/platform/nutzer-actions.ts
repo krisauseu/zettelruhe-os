@@ -10,11 +10,24 @@ import {
   einladenNutzer,
   entferneMitgliedschaft,
   setzeNutzerPasswort,
+  setzeNutzerName,
 } from "./mitgliedschaft";
 
 function formString(formData: FormData, key: string): string {
   const v = formData.get(key);
   return typeof v === "string" ? v.trim() : "";
+}
+
+export async function setzeNameAction(formData: FormData): Promise<void> {
+  const session = await requireVerwaltenSession();
+  try {
+    await setzeNutzerName({ firmaId: session.firmaId, zielUserId: formString(formData, "userId"), name: formString(formData, "name") });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Name konnte nicht geändert werden.";
+    redirect(`/app/nutzer?error=${encodeURIComponent(msg)}`);
+  }
+  revalidatePath("/app", "layout");
+  redirect("/app/nutzer?saved=1");
 }
 
 export async function einladenNutzerAction(formData: FormData): Promise<void> {

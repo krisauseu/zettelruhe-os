@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.4] - 2026-10-08
+
+Neue extern bereitgestellte Cloud-Instanzen vervollständigen Firmenstammdaten und
+den vorhandenen Eigentümernamen nach dem ersten Login unter `/app/firma`.
+Normale Seiten, fachliche Actions und Scheduler bleiben bis zum atomaren
+PocketBase-Abschluss gesperrt. Bestehende Instanzen und Self-Hosting behalten
+ihren Ablauf; historische Konten werden nicht umbenannt. Spätere Namenänderungen
+sind in der vorhandenen Nutzerverwaltung möglich.
+
+Next und PocketBase-Artefakte neuer Instanzen benötigen denselben Stand mit
+Collection und Hooks. Das Patchrelease verwendet einen annotierten Git-Tag;
+Paket- und Dependency-Versionen bleiben unverändert. Die bereits lokal bestandene
+Abnahme steht unter [TP-037](docs/testphase.md#tp-037-cloud-ersteinrichtung-nach-login-2026-10-08).
+Die Cloud-Bindung, das AGPL-Quellcodeangebot und die Produktionsabnahme werden im
+separaten Cloud-Auftrag TP-014 dokumentiert.
+
 ## [1.0.3] - 2026-10-02
 
 Der sichtbare Absendername beim Zettelruhe-Cloud-Versand lautet jetzt

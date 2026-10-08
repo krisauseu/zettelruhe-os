@@ -2,6 +2,7 @@ import { getInstanceContext, isCloud, assertMutationOrigin } from "./instance-co
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { MitgliedschaftRolle } from "@/modules/platform/rechte";
+import { assertInitialSetupOwner, getInitialSetup } from "./initial-setup";
 import {
   SESSION_COOKIE,
   SESSION_TTL_SECONDS,
@@ -69,11 +70,18 @@ export async function getSession(): Promise<SessionPayload | null> {
   } catch { return null; }
 }
 
-export async function requireSession(): Promise<SessionPayload> {
+/** Authentication operations remain possible before company setup is complete. */
+export async function requireAuthenticatedSession(): Promise<SessionPayload> {
   const session = await getSession();
   if (!session) {
     throw new Error("Nicht angemeldet.");
   }
+  return session;
+}
+
+export async function requireSession(): Promise<SessionPayload> {
+  const session = await requireAuthenticatedSession();
+  if ((await getInitialSetup())?.status === "pending") redirect("/app/firma");
   return session;
 }
 
@@ -83,6 +91,22 @@ export async function requireSession(): Promise<SessionPayload> {
  */
 export async function requireFirmaSession(): Promise<FirmaSession> {
   const session = await requireSession();
+  return resolveFirmaSession(session);
+}
+
+/** The only company write path allowed while a bootstrapped instance is pending. */
+export async function requireFirmaEinrichtungSession(): Promise<FirmaSession> {
+  const session = await requireAuthenticatedSession();
+  const state = await getInitialSetup();
+  if (state?.status === "pending") assertInitialSetupOwner(state, session);
+  const firmaSession = await resolveFirmaSession(session);
+  if (state?.status === "pending" && (firmaSession.firmaId !== state.firma || firmaSession.mitgliedschaftRolle !== "eigentuemer")) {
+    throw new Error("Keine Eigentümermitgliedschaft für die Ersteinrichtung.");
+  }
+  return firmaSession;
+}
+
+async function resolveFirmaSession(session: SessionPayload): Promise<FirmaSession> {
   const { resolveMitgliedschaftFuerSession } = await import(
     "@/modules/platform/mitgliedschaft"
   );

@@ -75,6 +75,7 @@ export function AppShell({
   kannVerwalten,
   kannSchreiben,
   mitgliedschaftRolle,
+  initialSetup = false,
 }: {
   session: SessionPayload;
   firmen: { id: string; name: string }[];
@@ -83,6 +84,7 @@ export function AppShell({
   kannVerwalten: boolean;
   kannSchreiben: boolean;
   mitgliedschaftRolle: MitgliedschaftRolle | null;
+  initialSetup?: boolean;
 }) {
   return (
     <AppSidebar
@@ -92,23 +94,23 @@ export function AppShell({
             className="absolute inset-x-0 top-0 h-0.5 bg-sidebar-primary"
             aria-hidden
           />
-          <Link href="/app" className="inline-flex rounded-sm">
+          <Link href={initialSetup ? "/app/firma" : "/app"} className="inline-flex rounded-sm">
             <BrandMark className="text-sidebar-foreground" />
           </Link>
           <p className="mt-2 truncate text-xs text-sidebar-muted">
-            {session.name}
-            {mitgliedschaftRolle
+            {initialSetup ? "Einrichtung abschließen" : session.name}
+            {!initialSetup && mitgliedschaftRolle
               ? ` · ${MITGLIEDSCHAFT_ROLLE_LABELS[mitgliedschaftRolle]}`
               : ""}
           </p>
-          <FirmaSwitcher
+          {!initialSetup ? <FirmaSwitcher
             firmen={firmen}
             activeFirmaId={session.firmaId}
             kannFirmaAnlegen={kannFirmaAnlegen}
-          />
+          /> : null}
         </>
       }
-      nav={<AppNav items={buildNav(kannVerwalten, kannFirmaAnlegen)} />}
+      nav={<AppNav items={initialSetup ? [{ href: "/app/firma", label: "Firma einrichten", icon: "firma" }] : buildNav(kannVerwalten, kannFirmaAnlegen)} />}
       footer={
         <>
           <ThemeToggle />

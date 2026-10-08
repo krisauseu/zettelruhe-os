@@ -5,6 +5,7 @@ import { isCloud, jobInstanceHosts, resolveInstance, selfHostedInstance, withIns
  */
 
 import { runWiederkehrendTick } from "./runner";
+import { getInitialSetup } from "@/lib/initial-setup";
 
 const DEFAULT_INTERVAL_MS = 15 * 60 * 1000; // 15 Minuten
 
@@ -36,8 +37,11 @@ async function safeTick(): Promise<void> {
     for (const host of hosts) {
       try {
         const context = host ? await resolveInstance(host) : selfHostedInstance();
-        const result = await withInstance(context, () => runWiederkehrendTick());
-        if (result.status === "fehler") console.error("[jobs] Instanzlauf fehlgeschlagen", context.tenantId);
+        const result = await withInstance(context, async () => {
+          if ((await getInitialSetup())?.status === "pending") return null;
+          return runWiederkehrendTick();
+        });
+        if (result?.status === "fehler") console.error("[jobs] Instanzlauf fehlgeschlagen", context.tenantId);
       } catch {
         console.error("[jobs] Instanzlauf nicht verfügbar");
       }

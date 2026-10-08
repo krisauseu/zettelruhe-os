@@ -1,5 +1,27 @@
 # Entwicklung und Bestandsaufnahme
 
+TP-037/Cloud-TP-014 (2026-10-08): `lib/initial-setup.ts` liest den optionalen
+instanzlokalen Singleton `instanz_einrichtung` im Cloud-Modus. Fehlender Record
+oder altes PB-Schema (404) erhält den bisherigen Ablauf; andere Fehler sperren.
+Normale Sessionguards blockieren `pending`; nur Firmen-Ersteinrichtung und
+Authentifizierungsfunktionen verwenden getrennte serverinterne Einstiegspunkte.
+Der Proxy prüft weiterhin Control/Billing und Tenantbindung vor der Seitensperre.
+`firma-actions.ts` nutzt dieselben Firmenfelder und einen atomaren PB-Endpunkt für
+Firma, Nummernkreise, optional Logo, vorhandenen Eigentümernamen und Abschluss.
+`instanz-einrichtung.js` enthält dessen Rechte- und Statusguards; die neue Migration
+erstellt ausschließlich die leere Collection. Der Provisioner setzt den Marker
+extern nur für neue Kundenaufträge; Bestandsinstanzen benötigen keine Migration.
+Self-Hosting liest ihn nicht. `/app/nutzer` aktualisiert Namen mit bestehenden
+Verwaltungsrechten und Mitgliedschaftsprüfung, ausschließlich als `users.name`.
+
+Gezielte Starter vom Root: `node scripts/test-instanz-einrichtung-isolated.mjs`
+(acht echte PB-Prüfgruppen inklusive Fehlerinjektion und Parallelabschluss) und
+`node scripts/test-initial-setup-isolated.mjs` (vier echte Next-/PB-Prüfgruppen).
+Der zweite benötigt `cd app && npm run build -- --webpack`. Beide verwenden
+ausschließlich neue tmpfs-Testcontainer und synthetische Daten, kein vorhandenes
+Register oder `.env` für Dienste. Gesamte Unit-Suite, Typecheck, Lint und
+Produktionsbuild wurden lokal ausgeführt; [datierter Nachweis und Grenzen](testphase.md#tp-037-cloud-ersteinrichtung-nach-login-2026-10-08).
+
 TP-036 (2026-10-02): `instance-context.ts` und `proxy.ts` erhalten den bereits
 aufgelösten kanonischen App-Host auch dann, wenn Next einen Server-Action-Redirect
 intern mit Container-IP:Port aufruft. Der Proxy setzt serverseitige Requestheader

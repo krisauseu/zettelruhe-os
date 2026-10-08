@@ -1,4 +1,5 @@
-import { isCloud, requireIngress, resolveInstance, instanceRequestHeaders } from "@/lib/instance-context";
+import { isCloud, requireIngress, resolveInstance, instanceRequestHeaders, withInstance } from "@/lib/instance-context";
+import { getInitialSetup } from "@/lib/initial-setup";
 import { verifySessionToken } from "@/lib/session-token";
 import { NextResponse, type NextRequest } from "next/server";
 import { jwtVerify } from "jose";
@@ -45,6 +46,14 @@ export async function proxy(request: NextRequest) {
         const response = NextResponse.redirect(new URL("/login", context.appUrl));
         response.headers.set("Cache-Control", "private, no-store");
         return response;
+      }
+      if (path.startsWith("/app") && session && !["/app/firma", "/app/firma/logo", "/app/passwort"].includes(path)) {
+        const state = await withInstance(context, getInitialSetup);
+        if (state?.status === "pending") {
+          const response = NextResponse.redirect(new URL("/app/firma", context.appUrl), 303);
+          response.headers.set("Cache-Control", "private, no-store");
+          return response;
+        }
       }
       const response = NextResponse.next({ request: { headers: instanceRequestHeaders(request.headers, context) } });
       response.headers.set("Cache-Control", "private, no-store");

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { authWithPassword, isSetupRequired } from "@/lib/pb";
 import { setSessionCookie } from "@/lib/session";
 import { resolveMitgliedschaftFuerSession } from "@/modules/platform/mitgliedschaft";
+import { getInitialSetup } from "@/lib/initial-setup";
 
 export const dynamic = "force-dynamic";
 
@@ -33,12 +34,14 @@ export async function POST(request: Request) {
     );
   }
 
+  let target = "/app";
   try {
     const user = await authWithPassword(email, password);
     const mitgliedschaft = await resolveMitgliedschaftFuerSession(
       user.id,
       user.firma,
     );
+    if ((await getInitialSetup())?.status === "pending") target = "/app/firma";
     await setSessionCookie({
       userId: user.id,
       email: user.email,
@@ -56,5 +59,5 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.redirect(new URL("/app", appUrl), 303);
+  return NextResponse.redirect(new URL(target, appUrl), 303);
 }

@@ -9,6 +9,7 @@ import {
   einladenNutzerAction,
   entferneMitgliedschaftAction,
   setzePasswortAction,
+  setzeNameAction,
 } from "@/modules/platform/nutzer-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -159,7 +160,11 @@ export default async function NutzerPage({
               {mitglieder.map((m) => (
                 <TableRow key={m.id}>
                   <TableCell className="font-medium">
-                    {m.name}
+                    <form action={setzeNameAction} className="flex items-center gap-2">
+                      <input type="hidden" name="userId" value={m.userId} />
+                      <Input name="name" required maxLength={200} defaultValue={m.name} aria-label={`Name von ${m.name}`} className="min-w-36" />
+                      <Button type="submit" size="sm" variant="secondary">Speichern</Button>
+                    </form>
                     {m.userId === session.userId ? (
                       <span className="ml-2 text-xs text-muted-foreground">
                         (Sie)

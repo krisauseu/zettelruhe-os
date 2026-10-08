@@ -3,6 +3,7 @@ const mocks = vi.hoisted(() => ({ setup: vi.fn(), origin: vi.fn(), login: vi.fn(
 vi.mock("@/lib/instance-context", () => ({ assertMutationOrigin: mocks.origin, assertPublicSetupAllowed: mocks.setup }));
 vi.mock("@/lib/pb", () => ({ authWithPassword: mocks.login, isSetupRequired: mocks.required, createFirma: mocks.create, createEigentuemer: mocks.create }));
 vi.mock("@/lib/session", () => ({ setSessionCookie: mocks.cookie, clearSessionCookie: mocks.clear }));
+vi.mock("@/lib/initial-setup", () => ({ getInitialSetup: async () => null }));
 vi.mock("./mitgliedschaft", () => ({ resolveMitgliedschaftFuerSession: async () => ({firmaId: "firma"}) }));
 vi.mock("next/navigation", () => ({redirect: (path:string) => { throw new Error("redirect:"+path); }}));
 import { loginAction, setupAction, logoutAction } from "./auth-actions";

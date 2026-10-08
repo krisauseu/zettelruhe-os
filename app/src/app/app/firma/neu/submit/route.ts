@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";
 import { validateNeueFirmaInput } from "@/modules/platform/firma-invariants";
 import { createAndActivateFirma } from "@/modules/platform/firma-write";
+import { getInitialSetup } from "@/lib/initial-setup";
 import {
   KEINE_FIRMA_ANLEGEN_ERROR,
   istInstanzEigentuemer,
@@ -22,6 +23,7 @@ export async function POST(request: Request) {
   if (!session) {
     return NextResponse.redirect(new URL("/login", appUrl), 303);
   }
+  if ((await getInitialSetup())?.status === "pending") return NextResponse.redirect(new URL("/app/firma", appUrl), 303);
   if (!istInstanzEigentuemer(session.role)) {
     return NextResponse.redirect(
       new URL(

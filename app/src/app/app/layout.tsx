@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/session";
+import { getSession, requireFirmaEinrichtungSession } from "@/lib/session";
+import { getInitialSetup } from "@/lib/initial-setup";
 import { isSetupRequired } from "@/lib/pb";
 import { AppShell } from "@/components/app-shell";
 import { nachziehenZahlungsjournaleEinmal } from "@/modules/payments";
@@ -27,6 +28,14 @@ export default async function ProtectedAppLayout({
   const session = await getSession();
   if (!session) {
     redirect("/login");
+  }
+
+  if ((await getInitialSetup())?.status === "pending") {
+    await requireFirmaEinrichtungSession();
+    return <AppShell session={session} firmen={[]} kannFirmaAnlegen={false}
+      kannVerwalten={false} kannSchreiben={false} mitgliedschaftRolle={null} initialSetup>
+      {children}
+    </AppShell>;
   }
 
   const firmen = await listFirmenFuerNutzer(session.userId).catch(() => []);

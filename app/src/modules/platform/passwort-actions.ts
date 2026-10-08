@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { requireSession } from "@/lib/session";
+import { requireAuthenticatedSession } from "@/lib/session";
 import { aendereEigenesPasswort } from "./passwort";
 
 function formString(formData: FormData, key: string): string {
@@ -13,7 +13,7 @@ function formString(formData: FormData, key: string): string {
 export async function aendereEigenesPasswortAction(
   formData: FormData,
 ): Promise<void> {
-  const session = await requireSession();
+  const session = await requireAuthenticatedSession();
   try {
     await aendereEigenesPasswort({
       userId: session.userId,

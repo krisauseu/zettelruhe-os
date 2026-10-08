@@ -1,5 +1,12 @@
 # Zettelruhe
 
+Cloud-Ersteinrichtung nach Login ist im Release `v1.0.4` vom 2026-10-08 enthalten: Neu extern
+bereitgestellte Instanzen vervollständigen Firma und den vorhandenen Eigentümernamen
+in `/app/firma`, bevor fachliche Funktionen freigegeben werden. Der Kern enthält
+nur die generischen AGPL-Persistenz-, Rechte- und UI-Anpassungen. Bestandsinstanzen
+und Self-Hosting behalten ihren Ablauf. Namen lassen sich später unter Nutzer:innen
+ändern. [Ablauf, Tests und Releasegrenzen](docs/instance-context.md#optionale-ersteinrichtung-cloud-tp-014).
+
 Cloud-TP-013 ist am 2026-09-29 lokal mit echten Next-/PocketBase-/Control-
 Aufrufen und ausschließlich lokalen SMTP-Testservern abgenommen:
 Einladungen verwenden den Zettelruhe-Systemmailer; Angebote, Rechnungen und

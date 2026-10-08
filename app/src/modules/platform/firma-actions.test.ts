@@ -75,6 +75,7 @@ beforeEach(async () => {
     expect(url.origin).toBe(context.pocketbaseUrl);
     if (url.pathname.endsWith("/auth-with-password")) return Response.json({ token: "synthetic-admin" });
     expect(new Headers(init.headers).get("Authorization")).toBe("synthetic-admin");
+    if (url.pathname === "/api/collections/instanz_einrichtung/records") return Response.json({ items: [], totalItems: 0 });
     if (url.pathname === `/api/collections/users/records/${user.userId}`) return Response.json(user);
     if (url.pathname === "/api/collections/mitgliedschaften/records") {
       expect(url.searchParams.get("filter")).toContain(user.userId);

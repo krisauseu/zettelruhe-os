@@ -45,6 +45,7 @@ const fixture = http.createServer(async (req, res) => {
     }
     if (url.pathname.endsWith('/auth-with-password')) return json(res, { token: 'synthetic-admin' });
     assert.equal(req.headers.authorization, 'synthetic-admin');
+    if (url.pathname === '/api/collections/instanz_einrichtung/records') return json(res, list([]));
     if (url.pathname === '/api/collections/users/records/user1') return json(res, user);
     if (url.pathname === '/api/collections/mitgliedschaften/records') return json(res, list([{ id: 'membership1', user: 'user1', firma: 'firma1', rolle: 'eigentuemer' }]));
     if (url.pathname === '/api/collections/firmen/records/firma1') {

@@ -10,11 +10,12 @@ import {
   type NummernkreisConfig,
   type Nummernkreise,
   type Steuermodus,
+  type FirmaStammdatenInput,
 } from "@/lib/pb";
 import {
   requireInstanzEigentuemerSession,
   requireSession,
-  requireVerwaltenSession,
+  requireFirmaEinrichtungSession,
 } from "@/lib/session";
 import {
   assertLogoUpload,
@@ -28,6 +29,8 @@ import {
   validateNeueFirmaInput,
 } from "./firma-invariants";
 import { createAndActivateFirma, switchActiveFirma } from "./firma-write";
+import { completeInitialSetup, getInitialSetup } from "@/lib/initial-setup";
+import { KEINE_VERWALTUNG_ERROR } from "./rechte";
 
 function formString(formData: FormData, key: string): string {
   const v = formData.get(key);
@@ -53,7 +56,18 @@ function parseNummernkreis(
 }
 
 export async function updateFirmaAction(formData: FormData): Promise<void> {
-  const session = await requireVerwaltenSession();
+  return saveFirma(formData, false);
+}
+
+/** A stale setup form must replay completion, rather than become a normal edit. */
+export async function completeFirmaEinrichtungAction(formData: FormData): Promise<void> {
+  return saveFirma(formData, true);
+}
+
+async function saveFirma(formData: FormData, setupSubmission: boolean): Promise<void> {
+  const session = await requireFirmaEinrichtungSession();
+  if (!session.kannVerwalten) redirect(`/app?error=${encodeURIComponent(KEINE_VERWALTUNG_ERROR)}`);
+  const initialSetup = setupSubmission || (await getInitialSetup())?.status === "pending";
   const existing = await getFirmaById(session.firmaId);
   if (!existing) {
     redirect("/app/firma?error=" + encodeURIComponent("Firma nicht gefunden."));
@@ -142,8 +156,7 @@ export async function updateFirmaAction(formData: FormData): Promise<void> {
         changes[key] = { expected: expected[key], value: submitted };
       }
     }
-    await nummernkreiseKonfigurieren(session.firmaId, session.userId, changes);
-    await updateFirma(session.firmaId, {
+    const values: FirmaStammdatenInput = {
       name,
       steuermodus,
       skr: existing.skr,
@@ -170,7 +183,13 @@ export async function updateFirmaAction(formData: FormData): Promise<void> {
       ),
       logo,
       logo_entfernen: logo_entfernen && !logo,
-    });
+    };
+    if (initialSetup) {
+      await completeInitialSetup(session, formString(formData, "owner_name"), values, changes);
+    } else {
+      await nummernkreiseKonfigurieren(session.firmaId, session.userId, changes);
+      await updateFirma(session.firmaId, values);
+    }
   } catch (e) {
     const msg = isDuplicateFirmaNameError(e)
       ? FIRMA_NAME_DOPPELT_ERROR
@@ -184,7 +203,7 @@ export async function updateFirmaAction(formData: FormData): Promise<void> {
   revalidatePath("/app/firma");
   revalidatePath("/app/ust");
   revalidatePath("/app/zm");
-  redirect("/app/firma?saved=1");
+  redirect(initialSetup ? "/app" : "/app/firma?saved=1");
 }
 
 export async function switchFirmaAction(formData: FormData): Promise<void> {

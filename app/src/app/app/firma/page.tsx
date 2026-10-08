@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getFirmaById } from "@/lib/pb";
-import { requireFirmaSession } from "@/lib/session";
+import { requireFirmaEinrichtungSession } from "@/lib/session";
+import { getInitialSetup } from "@/lib/initial-setup";
 import { FirmaForm } from "@/modules/platform/firma-form";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
@@ -35,7 +36,8 @@ export default async function FirmaPage({
 }: {
   searchParams: SearchParams;
 }) {
-  const session = await requireFirmaSession();
+  const session = await requireFirmaEinrichtungSession();
+  const initialSetup = (await getInitialSetup())?.status === "pending";
   const firma = await getFirmaById(session.firmaId);
   const sp = await searchParams;
 
@@ -46,7 +48,7 @@ export default async function FirmaPage({
   const lage = eigeneUstIdLage(firma.ust_id);
   let letzteAnfrage = null;
   let schnappschussHinweis: string | null = null;
-  if (firma.ust_id) {
+  if (firma.ust_id && !initialSetup) {
     try {
       letzteAnfrage = await getLetzteAnfragendeVerwendung(
         session.firmaId,
@@ -61,9 +63,11 @@ export default async function FirmaPage({
     <div className="mx-auto flex max-w-3xl flex-col gap-6">
       <PageHeader
         title="Firma"
-        description="Stammdaten, Steuer-Modus, Dokumenten-Layout und Nummernkreise der aktiven Firma. Festgeschriebene Belege bleiben beim Steuer-Modus-Wechsel unverändert."
+        description={initialSetup
+          ? "Vervollständigen Sie Ihre Firmendaten und Ihren Namen, um Zettelruhe zu nutzen."
+          : "Stammdaten, Steuer-Modus, Dokumenten-Layout und Nummernkreise der aktiven Firma. Festgeschriebene Belege bleiben beim Steuer-Modus-Wechsel unverändert."}
       >
-        {session.kannFirmaAnlegen ? (
+        {session.kannFirmaAnlegen && !initialSetup ? (
           <Link
             href="/app/firma/neu"
             className={cn(buttonVariants({ size: "sm", variant: "outline" }))}
@@ -86,9 +90,10 @@ export default async function FirmaPage({
         firma={firma}
         error={sp.error ?? null}
         readOnly={!session.kannVerwalten}
+        initialSetup={initialSetup}
       />
 
-      <Card>
+      {!initialSetup ? <Card>
         <CardHeader>
           <CardTitle>Eigene USt-IdNr. und das BZSt</CardTitle>
           <CardDescription>
@@ -125,7 +130,7 @@ export default async function FirmaPage({
             </form>
           ) : null}
         </CardContent>
-      </Card>
+      </Card> : null}
     </div>
   );
 }

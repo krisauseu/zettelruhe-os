@@ -8,7 +8,7 @@ import {
   Receipt,
   Search,
 } from "lucide-react";
-import { getSession, requireFirmaSession } from "@/lib/session";
+import { requireSession, requireFirmaSession } from "@/lib/session";
 import { getFirmaById } from "@/lib/pb";
 import { formatMoneyDe } from "@/lib/money";
 import {
@@ -46,7 +46,7 @@ const QUICK_LINKS = [
 ] as const;
 
 export default async function AppHomePage() {
-  const session = await getSession();
+  const session = await requireSession();
 
   let firma: Awaited<ReturnType<typeof getFirmaById>> = null;
   let uebersicht: Awaited<ReturnType<typeof getUebersichtDashboard>> | null =
